@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>CINÉMA JUN — Film & Anime Diary</title>
-<!-- Favicon from provided URL -->
 <link rel="icon" type="image/jpeg" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link rel="apple-touch-icon" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -19,7 +18,7 @@
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
   header{position:sticky;top:0;z-index:100;background:rgba(10,10,12,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-soft);padding:0 2.5rem;height:80px;display:flex;align-items:center;justify-content:space-between}
   .logo-group{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
-  .logo{font-family:var(--serif);font-size:1.9rem;font-weight:300;letter-spacing:.3em;background:linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 70%, #EEDBAA 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .logo{font-family:var(--serif);font-size:1.9rem;font-weight:300;letter-spacing:.3em;background:linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 70%, #EEDBAA 100%);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
   .logo::after{content:'';position:absolute;bottom:-6px;left:0;width:40%;height:1px;background:linear-gradient(90deg, var(--gold), transparent);opacity:.6}
   .tagline{font-family:var(--sans);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-dim);border-left:1px solid var(--border);padding-left:1rem}
   .tagline em{color:var(--gold-light);font-style:normal}
@@ -51,11 +50,12 @@
   .view-btn.active,.view-btn:hover{border-color:var(--gold-dim);color:var(--gold)}
   .search-row{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
   .search-wrap{flex:1;position:relative;min-width:200px}
-  .search-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.65rem 1rem .65rem 2.75rem;border-radius:2px}
+  .search-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:.65rem 1rem .65rem 2.75rem;border-radius:2px;outline:none}
+  .search-input:focus{border-color:var(--gold-dim)}
   .search-icon{position:absolute;left:.9rem;top:50%;transform:translateY(-50%)}
-  select.filter-select{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:.65rem 1rem;border-radius:2px}
+  select.filter-select{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);padding:.65rem 1rem;border-radius:2px;cursor:pointer}
   .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1.25rem}
-  .media-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:2px;overflow:hidden;cursor:pointer}
+  .media-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:2px;overflow:hidden;cursor:pointer;position:relative}
   .media-card:hover{border-color:var(--gold-dim);transform:translateY(-2px)}
   .card-poster{width:100%;aspect-ratio:2/3;object-fit:cover}
   .poster-placeholder{width:100%;aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:3rem}
@@ -71,90 +71,575 @@
   .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:.2s}
   .modal-overlay.open{opacity:1;pointer-events:all}
   .modal{background:var(--surface);border:1px solid var(--border);width:100%;max-width:720px;max-height:90vh;overflow-y:auto;border-radius:2px}
-  .modal-header{padding:1.75rem 2rem 1.25rem;border-bottom:1px solid var(--border-soft)}
+  .modal-header{padding:1.75rem 2rem 1.25rem;border-bottom:1px solid var(--border-soft);display:flex;justify-content:space-between}
   .modal-title{font-family:var(--serif);font-size:1.5rem;font-weight:300}
+  .modal-close{background:none;border:1px solid var(--border);color:var(--text-muted);width:32px;height:32px;cursor:pointer}
   .modal-body{padding:1.5rem 2rem 2rem}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
   .form-group{display:flex;flex-direction:column;gap:.4rem}
   .form-group.full{grid-column:1/-1}
   label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim)}
-  input,select,textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.65rem .9rem;border-radius:2px;width:100%}
+  input,select,textarea{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:.65rem .9rem;border-radius:2px;width:100%;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--gold-dim)}
   .star-rating{display:flex;gap:.25rem}
   .star-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text-dim)}
   .star-btn.active{color:var(--gold)}
   .toast{position:fixed;bottom:2rem;right:2rem;background:var(--surface);border:1px solid var(--gold-dim);color:var(--gold);padding:.75rem 1.25rem;z-index:500;opacity:0;transition:.3s;pointer-events:none}
   .toast.show{opacity:1}
-  @media(max-width:900px){main{grid-template-columns:1fr}aside{display:none}.stats-bar{grid-template-columns:repeat(2,1fr)}.content{padding:1rem}.mob-fab{display:flex;position:fixed;bottom:1.25rem;right:1.25rem;gap:.6rem;z-index:150}.fab-add{width:50px;height:50px;border-radius:50%;background:var(--gold);color:#0A0A0C;font-size:1.5rem;border:none}.fab-filter{padding:.65rem 1rem;border-radius:24px;background:var(--surface);color:var(--text-muted)}.filter-drawer{position:fixed;bottom:0;left:0;right:0;background:var(--surface);transform:translateY(100%);transition:.3s;z-index:301;border-radius:16px 16px 0 0}.filter-drawer.open{transform:translateY(0)}.drawer-handle{width:36px;height:4px;background:var(--border);margin:12px auto}.drawer-section{padding:.75rem 1.5rem}.dchip{padding:.4rem .9rem;border-radius:20px;border:1px solid var(--border);background:transparent;margin:.2rem}.dchip.active{border-color:var(--gold);color:var(--gold)}.drawer-apply{width:calc(100% - 3rem);margin:1rem 1.5rem;padding:.8rem;background:var(--gold);border:none;color:#0A0A0C}}
   .last-edit-badge{font-size:.6rem;color:var(--text-dim);margin-top:.2rem}
+  .tmdb-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:1px solid var(--border);max-height:280px;overflow-y:auto;z-index:50}
+  .tmdb-item{padding:.6rem;cursor:pointer;display:flex;gap:.5rem;border-bottom:1px solid var(--border)}
+  .tmdb-item:hover{background:var(--surface3)}
+  @media(max-width:900px){main{grid-template-columns:1fr}aside{display:none}.stats-bar{grid-template-columns:repeat(2,1fr)}.content{padding:1rem}.mob-fab{display:flex;position:fixed;bottom:1.25rem;right:1.25rem;gap:.6rem;z-index:150}.fab-add{width:50px;height:50px;border-radius:50%;background:var(--gold);color:#0A0A0C;font-size:1.5rem;border:none}.fab-filter{padding:.65rem 1rem;border-radius:24px;background:var(--surface);color:var(--text-muted)}.filter-drawer{position:fixed;bottom:0;left:0;right:0;background:var(--surface);transform:translateY(100%);transition:.3s;z-index:301;border-radius:16px 16px 0 0}.filter-drawer.open{transform:translateY(0)}.drawer-handle{width:36px;height:4px;background:var(--border);margin:12px auto}.drawer-section{padding:.75rem 1.5rem}.dchip{padding:.4rem .9rem;border-radius:20px;border:1px solid var(--border);background:transparent;margin:.2rem;display:inline-block;cursor:pointer}.dchip.active{border-color:var(--gold);color:var(--gold)}.drawer-apply{width:calc(100% - 3rem);margin:1rem 1.5rem;padding:.8rem;background:var(--gold);border:none;color:#0A0A0C;border-radius:4px;cursor:pointer}}
 </style>
 </head>
 <body>
 <div class="sync-bar"><span class="sync-dot" id="sync-dot"></span><span id="sync-status">Connecting...</span></div>
 <header><div class="logo-group"><div class="logo">Ciné<span>ma Jun</span></div><div class="tagline">a home to <em>track</em>, <em>rate</em>, and <em>remember</em></div></div><div class="header-actions"><button class="btn" onclick="loadFromSheets()">↻ Sync</button><button class="btn btn-primary header-add-btn" onclick="openModal()">+ Add Title</button></div></header>
-<div class="stats-bar"><div class="stat-item" onclick="filterByStatus('all')"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div></div><div class="stat-item" onclick="filterByStatus('watching')"><div class="stat-label">Watching</div><div class="stat-value" id="stat-watching">—</div></div><div class="stat-item" onclick="filterByStatus('completed')"><div class="stat-label">Completed</div><div class="stat-value" id="stat-completed">—</div></div><div class="stat-item" onclick="filterByStatus('plan')"><div class="stat-label">Watchlist</div><div class="stat-value" id="stat-plan">—</div></div></div>
+<div class="stats-bar"><div class="stat-item" onclick="applyStatusFilter('all')"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div></div><div class="stat-item" onclick="applyStatusFilter('watching')"><div class="stat-label">Watching</div><div class="stat-value" id="stat-watching">—</div></div><div class="stat-item" onclick="applyStatusFilter('completed')"><div class="stat-label">Completed</div><div class="stat-value" id="stat-completed">—</div></div><div class="stat-item" onclick="applyStatusFilter('plan')"><div class="stat-label">Watchlist</div><div class="stat-value" id="stat-plan">—</div></div></div>
 <main><aside>
-  <div class="sidebar-section"><div class="sidebar-title">Status</div><div class="nav-item active" id="nav-all" onclick="filterStatus('all',this)"><span class="nav-dot dot-all"></span>All<span class="nav-count" id="cnt-all">0</span></div><div class="nav-item" id="nav-watching" onclick="filterStatus('watching',this)"><span class="nav-dot dot-watching"></span>Watching<span class="nav-count" id="cnt-watching-nav">0</span></div><div class="nav-item" id="nav-completed" onclick="filterStatus('completed',this)"><span class="nav-dot dot-completed"></span>Completed<span class="nav-count" id="cnt-completed-nav">0</span></div><div class="nav-item" id="nav-plan" onclick="filterStatus('plan',this)"><span class="nav-dot dot-plan"></span>Plan to Watch<span class="nav-count" id="cnt-plan-nav">0</span></div><div class="nav-item" id="nav-dropped" onclick="filterStatus('dropped',this)"><span class="nav-dot dot-dropped"></span>Dropped<span class="nav-count" id="cnt-dropped-nav">0</span></div></div>
-  <div class="sidebar-section"><div class="sidebar-title">Type</div><div class="nav-item" onclick="filterType('all',this)"><span>◈</span>All Types</div><div class="nav-item" onclick="filterType('Movie',this)"><span>🎬</span>Movie<span class="nav-count" id="cnt-movie">0</span></div><div class="nav-item" onclick="filterType('Series',this)"><span>📺</span>Series<span class="nav-count" id="cnt-series">0</span></div><div class="nav-item" onclick="filterType('Anime Movie',this)"><span>🎌🎬</span>Anime Movie<span class="nav-count" id="cnt-anime-movie">0</span></div><div class="nav-item" onclick="filterType('Anime Series',this)"><span>🎌📺</span>Anime Series<span class="nav-count" id="cnt-anime-series">0</span></div></div>
-  <div class="sidebar-section"><div class="sidebar-title">Director / Studio</div><div class="nav-item" onclick="filterDirector('all',this)"><span>🎭</span>All Directors</div><div id="director-list" style="max-height:180px;overflow-y:auto"></div></div>
-  <div class="sidebar-section"><div class="sidebar-title">Main Cast</div><div class="nav-item" onclick="filterCast('all',this)"><span>⭐</span>All Cast</div><div id="cast-list" style="max-height:180px;overflow-y:auto"></div></div>
+  <div class="sidebar-section"><div class="sidebar-title">Status</div><div class="nav-item active" id="nav-all" onclick="setStatusFilter('all',this)"><span class="nav-dot"></span>All<span class="nav-count" id="cnt-all">0</span></div><div class="nav-item" id="nav-watching" onclick="setStatusFilter('watching',this)"><span class="nav-dot"></span>Watching<span class="nav-count" id="cnt-watching-nav">0</span></div><div class="nav-item" id="nav-completed" onclick="setStatusFilter('completed',this)"><span class="nav-dot"></span>Completed<span class="nav-count" id="cnt-completed-nav">0</span></div><div class="nav-item" id="nav-plan" onclick="setStatusFilter('plan',this)"><span class="nav-dot"></span>Plan to Watch<span class="nav-count" id="cnt-plan-nav">0</span></div><div class="nav-item" id="nav-dropped" onclick="setStatusFilter('dropped',this)"><span class="nav-dot"></span>Dropped<span class="nav-count" id="cnt-dropped-nav">0</span></div></div>
+  <div class="sidebar-section"><div class="sidebar-title">Type</div><div class="nav-item" onclick="setTypeFilter('all',this)"><span>◈</span>All Types</div><div class="nav-item" onclick="setTypeFilter('Movie',this)"><span>🎬</span>Movie<span class="nav-count" id="cnt-movie">0</span></div><div class="nav-item" onclick="setTypeFilter('Series',this)"><span>📺</span>Series<span class="nav-count" id="cnt-series">0</span></div><div class="nav-item" onclick="setTypeFilter('Anime Movie',this)"><span>🎌🎬</span>Anime Movie<span class="nav-count" id="cnt-anime-movie">0</span></div><div class="nav-item" onclick="setTypeFilter('Anime Series',this)"><span>🎌📺</span>Anime Series<span class="nav-count" id="cnt-anime-series">0</span></div></div>
+  <div class="sidebar-section"><div class="sidebar-title">Director / Studio</div><div id="director-list"></div></div>
+  <div class="sidebar-section"><div class="sidebar-title">Main Cast</div><div id="cast-list"></div></div>
   <div class="sidebar-section"><div class="sidebar-title">Genres</div><div class="genre-cloud" id="genre-cloud"></div></div>
 </aside>
-<div class="content"><div class="content-header"><div class="section-title" id="section-title">All <em>Titles</em></div><div class="view-controls"><button class="view-btn active" id="btn-grid" onclick="setView('grid')">⊞</button><button class="view-btn" id="btn-list" onclick="setView('list')">☰</button></div></div>
+<div class="content"><div class="content-header"><div class="section-title" id="section-title">All <em>Titles</em></div><div class="view-controls"><button class="view-btn active" id="btn-grid" onclick="setViewMode('grid')">⊞</button><button class="view-btn" id="btn-list" onclick="setViewMode('list')">☰</button></div></div>
 <div class="search-row"><div class="search-wrap"><span class="search-icon">⌕</span><input class="search-input" type="text" placeholder="Search title, director, cast, genre…" id="search-input" oninput="renderMedia()"></div><select class="filter-select" id="sort-select" onchange="renderMedia()"><option value="added">Recently Added</option><option value="rating">Highest Rated</option><option value="title">A → Z</option><option value="year">Year</option></select></div>
 <div id="media-container"></div></div></main>
 <div class="mob-fab"><button class="fab-filter" id="fab-filter-btn" onclick="openDrawer()">⊟ Filter</button><button class="fab-add" onclick="openModal()">+</button></div>
-<div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title">Filter</div><button class="drawer-reset" onclick="resetAllFilters()">Reset</button></div><div class="drawer-section"><div class="drawer-section-title">Status</div><div class="drawer-chips" id="drawer-status"></div></div><div class="drawer-section"><div class="drawer-section-title">Director</div><div id="drawer-director" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title">Main Cast</div><div id="drawer-cast" class="drawer-chips"></div></div><button class="drawer-apply" onclick="closeDrawer()">Apply</button></div>
+<div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title">Filter</div><button class="drawer-reset" onclick="resetAllFilters()">Reset</button></div><div class="drawer-section"><div class="drawer-section-title">Status</div><div id="drawer-status" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title">Director</div><div id="drawer-director" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title">Main Cast</div><div id="drawer-cast" class="drawer-chips"></div></div><button class="drawer-apply" onclick="closeDrawer()">Apply</button></div>
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title" id="modal-heading">Add New Title</div><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">
-  <div style="margin-bottom:1rem"><label>Search TMDB</label><div class="tmdb-wrap"><div class="tmdb-row"><input class="tmdb-input" id="tmdb-q" placeholder="Title..." oninput="onTmdbType(this.value)"><button class="btn" onclick="clearTmdb()">✕</button></div><div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div></div></div>
-  <div class="add-layout"><div class="poster-box" id="poster-box"><div class="poster-ph">?</div></div><div style="flex:1"><div class="form-group full"><label>Title</label><input type="text" id="f-title"></div><div class="form-grid"><div class="form-group"><label>Type</label><select id="f-type"><option value="Movie">Movie</option><option value="Series">Series</option><option value="Anime Movie">Anime Movie</option><option value="Anime Series">Anime Series</option></select></div><div class="form-group"><label>Year</label><input type="number" id="f-year"></div></div></div></div>
-  <div class="form-grid"><div class="form-group"><label>Status</label><select id="f-status"><option value="plan">Plan to Watch</option><option value="watching">Watching</option><option value="completed">Completed</option><option value="dropped">Dropped</option></select></div><div class="form-group"><label>Watch Date (manual)</label><input type="date" id="f-watchdate"></div><div class="form-group"><label>Director / Studio</label><input type="text" id="f-director" placeholder="Director / Creator"></div><div class="form-group"><label>Main Cast (1 lead)</label><input type="text" id="f-cast" placeholder="e.g., Leonardo DiCaprio"></div><div class="form-group"><label>Genre</label><input type="text" id="f-genre" placeholder="Drama, Action"></div><div class="form-group"><label>Episodes / Runtime</label><input type="text" id="f-episodes"></div><div class="form-group"><label>Current Episode</label><input type="number" id="f-current-episode" min="0"></div><div class="form-group"><label>Progress (%)</label><input type="number" id="f-progress" min="0" max="100"></div><div class="form-group"><label>Rating</label><div class="star-rating" id="star-rating"><button class="star-btn" data-v="1" onclick="setRating(1)">★</button><button class="star-btn" data-v="2" onclick="setRating(2)">★</button><button class="star-btn" data-v="3" onclick="setRating(3)">★</button><button class="star-btn" data-v="4" onclick="setRating(4)">★</button><button class="star-btn" data-v="5" onclick="setRating(5)">★</button></div></div><div class="form-group full"><label>Notes</label><textarea id="f-notes"></textarea></div></div>
-  <input type="hidden" id="f-poster"><input type="hidden" id="f-tmdbid"><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="btn-save" onclick="saveEntry()">Save Title</button></div>
+  <div style="margin-bottom:1rem"><label>Search TMDB</label><div class="tmdb-wrap" style="position:relative"><div class="tmdb-row" style="display:flex;gap:.5rem"><input class="tmdb-input" id="tmdb-q" placeholder="Title..." style="flex:1" oninput="onTmdbType(this.value)"><button class="btn" onclick="clearTmdb()">✕</button></div><div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div></div></div>
+  <div style="display:flex;gap:1rem;margin-bottom:1rem"><div class="poster-box" id="poster-box"><div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center;background:var(--surface2)">?</div></div><div style="flex:1"><div class="form-group full"><label>Title</label><input type="text" id="f-title"></div><div class="form-grid"><div class="form-group"><label>Type</label><select id="f-type"><option value="Movie">Movie</option><option value="Series">Series</option><option value="Anime Movie">Anime Movie</option><option value="Anime Series">Anime Series</option></select></div><div class="form-group"><label>Year</label><input type="number" id="f-year"></div></div></div></div>
+  <div class="form-grid"><div class="form-group"><label>Status</label><select id="f-status"><option value="plan">Plan to Watch</option><option value="watching">Watching</option><option value="completed">Completed</option><option value="dropped">Dropped</option></select></div><div class="form-group"><label>Watch Date (manual)</label><input type="date" id="f-watchdate"></div><div class="form-group"><label>Director / Studio</label><input type="text" id="f-director"></div><div class="form-group"><label>Main Cast (1 lead)</label><input type="text" id="f-cast"></div><div class="form-group"><label>Genre</label><input type="text" id="f-genre"></div><div class="form-group"><label>Episodes / Runtime</label><input type="text" id="f-episodes"></div><div class="form-group"><label>Current Episode</label><input type="number" id="f-current-episode" min="0"></div><div class="form-group"><label>Progress (%)</label><input type="number" id="f-progress" min="0" max="100"></div><div class="form-group"><label>Rating</label><div class="star-rating" id="star-rating"><button class="star-btn" data-v="1" onclick="setRating(1)">★</button><button class="star-btn" data-v="2" onclick="setRating(2)">★</button><button class="star-btn" data-v="3" onclick="setRating(3)">★</button><button class="star-btn" data-v="4" onclick="setRating(4)">★</button><button class="star-btn" data-v="5" onclick="setRating(5)">★</button></div></div><div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div></div>
+  <input type="hidden" id="f-poster"><input type="hidden" id="f-tmdbid"><div class="modal-footer" style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-soft)"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="btn-save" onclick="saveEntry()">Save Title</button></div>
 </div></div></div>
 <div class="modal-overlay" id="detail-overlay" onclick="closeDetailOutside(event)"><div class="modal"><div class="modal-header"><div id="d-poster"></div><div><div class="modal-title" id="d-title"></div><div id="d-meta"></div></div><button class="modal-close" onclick="closeDetail()">✕</button></div><div class="modal-body" id="detail-body"></div></div></div>
 <div class="toast" id="toast"></div>
+
 <script>
+// ============ KONFIGURASI ============
+// ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
 const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzc8oI-e19Xtcn0-W357E9yHgHg6S3NY6TTN0gRiQ_rcVwak4ZnEnd0gNktoxMoF1YYDQ/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
-let mediaData = [], currentRating = 0, editingId = null, filterSt = 'all', filterTy = 'all', filterGenre = 'all', filterDirector = 'all', filterCast = 'all', viewMode = 'grid', isSaving = false;
 
-function setSyncStatus(status, msg) { document.getElementById('sync-dot').className='sync-dot '+status; document.getElementById('sync-status').textContent=msg; }
-function showToast(msg, isErr) { let t=document.getElementById('toast'); t.textContent=msg; t.className='toast'+(isErr?' error':'')+' show'; setTimeout(()=>t.classList.remove('show'),2500); }
-async function apiSheets(body) { let r=await fetch(API_SHEETS,{method:'POST',body:JSON.stringify(body)}); return await r.json(); }
-async function loadFromSheets() { setSyncStatus('syncing','Loading...'); try{ let data=await (await fetch(API_SHEETS+'?action=getAll')).json(); if(data.error)throw new Error(data.error); mediaData=(data.movies||[]).map(m=>({...m,id:Number(m.id),year:Number(m.year),added:Number(m.added||0),rating:Number(m.rating||0),progress:Number(m.progress||0),currentEpisode:Number(m.currentEpisode||0),watchDate:m.watchDate||'',lastEdit:Number(m.lastEdit||Date.now()),mainCast:m.mainCast||''})); renderMedia(); setSyncStatus('online','Synced'); }catch(e){ setSyncStatus('error','Error'); showToast(e.message,true); } }
-function getFiltered(){ let data=[...mediaData]; if(filterSt!=='all') data=data.filter(x=>x.status===filterSt); if(filterTy!=='all') data=data.filter(x=>x.type===filterTy); if(filterGenre!=='all') data=data.filter(x=>x.genre&&x.genre.toLowerCase().includes(filterGenre.toLowerCase())); if(filterDirector!=='all') data=data.filter(x=>x.director&&x.director.toLowerCase().includes(filterDirector.toLowerCase())); if(filterCast!=='all') data=data.filter(x=>x.mainCast&&x.mainCast.toLowerCase().includes(filterCast.toLowerCase())); let q=document.getElementById('search-input').value.toLowerCase(); if(q) data=data.filter(x=>x.title.toLowerCase().includes(q)||(x.director&&x.director.toLowerCase().includes(q))||(x.mainCast&&x.mainCast.toLowerCase().includes(q))||(x.genre&&x.genre.toLowerCase().includes(q))); let s=document.getElementById('sort-select').value; if(s==='rating') data.sort((a,b)=>b.rating-a.rating); else if(s==='title') data.sort((a,b)=>a.title.localeCompare(b.title)); else if(s==='year') data.sort((a,b)=>b.year-a.year); else data.sort((a,b)=>b.added-a.added); return data; }
-function updateStats(){ document.getElementById('stat-total').textContent=mediaData.length; document.getElementById('stat-watching').textContent=mediaData.filter(x=>x.status==='watching').length; document.getElementById('stat-completed').textContent=mediaData.filter(x=>x.status==='completed').length; document.getElementById('stat-plan').textContent=mediaData.filter(x=>x.status==='plan').length; }
-function updateCounts(){ let c={all:mediaData.length,watching:mediaData.filter(x=>x.status==='watching').length,completed:mediaData.filter(x=>x.status==='completed').length,plan:mediaData.filter(x=>x.status==='plan').length,dropped:mediaData.filter(x=>x.status==='dropped').length,movie:mediaData.filter(x=>x.type==='Movie').length,series:mediaData.filter(x=>x.type==='Series').length,'anime-movie':mediaData.filter(x=>x.type==='Anime Movie').length,'anime-series':mediaData.filter(x=>x.type==='Anime Series').length}; Object.keys(c).forEach(k=>{ let el=document.getElementById('cnt-'+k); if(el)el.textContent=c[k];}); }
-function updateDirectorCastLists(){ let dirs=new Set(),casts=new Set(); mediaData.forEach(m=>{ if(m.director) dirs.add(m.director.trim()); if(m.mainCast) casts.add(m.mainCast.trim()); }); let dirList=[...dirs].sort(), castList=[...casts].sort(); document.getElementById('director-list').innerHTML=dirList.map(d=>`<div class="nav-item" onclick="filterDirector('${d.replace(/'/g,"\\'")}',this)"><span>🎭</span>${d}</div>`).join('')||'<div style="color:var(--text-dim);font-size:.7rem">—</div>'; document.getElementById('cast-list').innerHTML=castList.map(c=>`<div class="nav-item" onclick="filterCast('${c.replace(/'/g,"\\'")}',this)"><span>⭐</span>${c}</div>`).join('')||'<div style="color:var(--text-dim);font-size:.7rem">—</div>'; }
-function renderStars(r){ return [1,2,3,4,5].map(i=>`<span class="star${i<=r?' filled':''}">★</span>`).join(''); }
-function cardHTML(m){ let hasPoster=m.poster&&m.poster.trim(); let letter=m.title.charAt(0); let statusLabel={watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status]; let statusClass={watching:'badge-watching',completed:'badge-completed',plan:'badge-plan',dropped:'badge-dropped'}[m.status]; let posterHTML=hasPoster?`<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${letter}</div>`:`<div class="poster-placeholder">${letter}</div>`; return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta" style="font-size:.7rem;color:var(--text-dim)">${m.year} · ${m.type}</div>${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}<div class="last-edit-badge">✎ ${new Date(m.lastEdit).toLocaleDateString()}</div></div></div>`; }
-function renderMedia(){ updateStats(); updateCounts(); updateDirectorCastLists(); updateGenreCloud(); let data=getFiltered(); let c=document.getElementById('media-container'); if(!data.length) c.innerHTML='<div class="empty"><div class="empty-icon">🎌</div><div class="empty-title">No titles</div></div>'; else c.innerHTML=viewMode==='grid'?`<div class="media-grid">${data.map(cardHTML).join('')}</div>`:`<div class="media-list">${data.map(m=>`<div class="list-item" onclick="showDetail(${m.id})"><div>${m.title}</div><div>⭐ ${m.rating||'-'}</div></div>`).join('')}</div>`; document.getElementById('section-title').innerHTML=`${filterSt==='all'?'All':filterSt} Titles ${filterDirector!=='all'?`· ${filterDirector}`:''} ${filterCast!=='all'?`· ${filterCast}`:''}`; }
-function updateGenreCloud(){ let g=new Set(); mediaData.forEach(m=>{ if(m.genre) m.genre.split(',').forEach(x=>g.add(x.trim())); }); document.getElementById('genre-cloud').innerHTML=[...g].map(x=>`<button class="genre-tag${filterGenre===x?' active':''}" onclick="toggleGenreFilter('${x.replace(/'/g,"\\'")}')">${x}</button>`).join('')||'<span style="color:var(--text-dim)">None</span>'; }
-function filterStatus(s,el){ filterSt=s; renderMedia(); }
-function filterType(t){ filterTy=t; renderMedia(); }
-function filterDirector(d){ filterDirector=d; filterCast='all'; renderMedia(); }
-function filterCast(c){ filterCast=c; filterDirector='all'; renderMedia(); }
-function toggleGenreFilter(g){ filterGenre=filterGenre===g?'all':g; renderMedia(); }
-function setView(v){ viewMode=v; renderMedia(); }
-function setRating(v){ currentRating=v; document.querySelectorAll('#star-rating .star-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.v)<=v)); }
-function openModal(id){ editingId=id; let m=id?mediaData.find(x=>x.id===id):null; document.getElementById('modal-heading').textContent=m?'Edit':'Add'; document.getElementById('f-title').value=m?.title||''; document.getElementById('f-type').value=m?.type||'Movie'; document.getElementById('f-year').value=m?.year||''; document.getElementById('f-status').value=m?.status||'plan'; document.getElementById('f-director').value=m?.director||''; document.getElementById('f-cast').value=m?.mainCast||''; document.getElementById('f-genre').value=m?.genre||''; document.getElementById('f-episodes').value=m?.episodes||''; document.getElementById('f-current-episode').value=m?.currentEpisode||''; document.getElementById('f-progress').value=m?.progress||''; document.getElementById('f-notes').value=m?.notes||''; document.getElementById('f-watchdate').value=m?.watchDate||''; document.getElementById('f-poster').value=m?.poster||''; setRating(m?.rating||0); updatePosterPreview(m?.poster,m?.title); document.getElementById('modal-overlay').classList.add('open'); }
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); editingId=null; }
-function updatePosterPreview(url,title){ let box=document.getElementById('poster-box'); let letter=(title||'?').charAt(0); if(url&&url!=='null') box.innerHTML=`<img class="poster-ph" src="${url}" style="width:90px;height:135px;object-fit:cover">`; else box.innerHTML=`<div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center">${letter}</div>`; }
-async function saveEntry(){ if(isSaving)return; let entry={ id:editingId||Date.now(), title:document.getElementById('f-title').value.trim(), type:document.getElementById('f-type').value, year:parseInt(document.getElementById('f-year').value)||new Date().getFullYear(), status:document.getElementById('f-status').value, director:document.getElementById('f-director').value.trim(), mainCast:document.getElementById('f-cast').value.trim(), genre:document.getElementById('f-genre').value.trim(), episodes:document.getElementById('f-episodes').value.trim(), currentEpisode:parseInt(document.getElementById('f-current-episode').value)||0, progress:parseInt(document.getElementById('f-progress').value)||0, rating:currentRating, notes:document.getElementById('f-notes').value.trim(), poster:document.getElementById('f-poster').value, tmdbId:document.getElementById('f-tmdbid').value, watchDate:document.getElementById('f-watchdate').value, added:editingId?(mediaData.find(x=>x.id===editingId)?.added||Date.now()):Date.now(), lastEdit:Date.now() }; if(!entry.title){ showToast('Title required',true); return; } isSaving=true; let btn=document.getElementById('btn-save'); btn.disabled=true; btn.textContent='Saving...'; try{ await apiSheets({action:'save',movie:entry}); if(editingId){ let idx=mediaData.findIndex(x=>x.id===editingId); if(idx>-1) mediaData[idx]=entry; } else mediaData.push(entry); renderMedia(); closeModal(); showToast('Saved!'); }catch(e){ showToast('Error: '+e.message,true); }finally{ isSaving=false; btn.disabled=false; btn.textContent='Save Title'; } }
-function showDetail(id){ let m=mediaData.find(x=>x.id===id); if(!m)return; document.getElementById('d-title').innerHTML=m.title; document.getElementById('d-meta').innerHTML=`${m.type} · ${m.year} · ${m.director||'—'} · ${m.mainCast?'⭐ '+m.mainCast:''}`; document.getElementById('d-poster').innerHTML=m.poster?`<img class="detail-poster" src="${m.poster}" style="width:100px;height:150px;object-fit:cover">`:`<div class="detail-poster-ph">${m.title.charAt(0)}</div>`; document.getElementById('detail-body').innerHTML=`<div>⭐ ${m.rating||'Not rated'}</div><div>📅 Watched: ${m.watchDate||'Not set'}</div><div>✎ Last edited: ${new Date(m.lastEdit).toLocaleString()}</div><div>${m.notes?`📝 ${m.notes}`:''}</div><div style="margin-top:1rem"><button class="btn btn-primary" onclick="closeDetail();openModal(${m.id})">Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="color:var(--red)">Delete</button></div>`; document.getElementById('detail-overlay').classList.add('open'); }
-function closeDetail(){ document.getElementById('detail-overlay').classList.remove('open'); }
-async function deleteEntry(id){ if(!confirm('Delete?'))return; try{ await apiSheets({action:'delete',id:id}); mediaData=mediaData.filter(x=>x.id!==id); renderMedia(); closeDetail(); showToast('Deleted'); }catch(e){ showToast('Delete failed',true); } }
-function filterByStatus(s){ filterSt=s; renderMedia(); }
-function resetAllFilters(){ filterSt='all'; filterTy='all'; filterGenre='all'; filterDirector='all'; filterCast='all'; document.getElementById('sort-select').value='added'; renderMedia(); closeDrawer(); }
-function openDrawer(){ document.getElementById('filter-drawer').classList.add('open'); updateDrawerContent(); }
-function closeDrawer(){ document.getElementById('filter-drawer').classList.remove('open'); }
-function updateDrawerContent(){ let dirs=[...new Set(mediaData.map(m=>m.director).filter(Boolean))]; let casts=[...new Set(mediaData.map(m=>m.mainCast).filter(Boolean))]; let statusDiv=document.getElementById('drawer-status'); statusDiv.innerHTML=`<button class="dchip ${filterSt==='all'?'active':''}" onclick="filterStatus('all')">All</button><button class="dchip ${filterSt==='watching'?'active':''}" onclick="filterStatus('watching')">Watching</button><button class="dchip ${filterSt==='completed'?'active':''}" onclick="filterStatus('completed')">Completed</button><button class="dchip ${filterSt==='plan'?'active':''}" onclick="filterStatus('plan')">Plan</button>`; document.getElementById('drawer-director').innerHTML=dirs.map(d=>`<button class="dchip ${filterDirector===d?'active':''}" onclick="filterDirector('${d.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${d}</button>`).join('')||'<span>No data</span>'; document.getElementById('drawer-cast').innerHTML=casts.map(c=>`<button class="dchip ${filterCast===c?'active':''}" onclick="filterCast('${c.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${c}</button>`).join('')||'<span>No data</span>'; }
-async function searchTmdb(q){ if(q.length<2)return; try{ let res=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`); let data=await res.json(); let items=(data.results||[]).filter(x=>x.media_type==='movie'||x.media_type==='tv').slice(0,5); let dd=document.getElementById('tmdb-dd'); if(!items.length){dd.style.display='none';return;} dd.innerHTML=items.map(item=>{ let title=item.title||item.name; let year=(item.release_date||item.first_air_date||'').slice(0,4); let type=item.media_type==='tv'?'Series':'Movie'; let poster=item.poster_path?TMDB_IMG_BASE+item.poster_path:''; return `<div class="tmdb-item" onclick="selectTmdb('${title.replace(/'/g,"\\'")}','${type}','${year}','${poster}')">${poster?`<img src="${poster}" width="30">`:''}<div>${title} (${year})</div></div>`; }).join(''); dd.style.display='block'; }catch(e){} }
-function onTmdbType(val){ clearTimeout(window.tmdbTimer); if(val.length<2)return; window.tmdbTimer=setTimeout(()=>searchTmdb(val),400); }
-function selectTmdb(title,type,year,poster){ document.getElementById('f-title').value=title; document.getElementById('f-type').value=type; document.getElementById('f-year').value=year; document.getElementById('f-poster').value=poster; updatePosterPreview(poster,title); document.getElementById('tmdb-dd').style.display='none'; }
-function clearTmdb(){ document.getElementById('tmdb-q').value=''; document.getElementById('tmdb-dd').style.display='none'; }
-setInterval(loadFromSheets,120000); loadFromSheets();
-document.addEventListener('click',e=>{ if(!e.target.closest('.tmdb-wrap')) document.getElementById('tmdb-dd').style.display='none'; });
+// ============ VARIABEL GLOBAL ============
+let mediaData = [];
+let currentRating = 0;
+let editingId = null;
+
+// Filter variables
+let currentStatusFilter = 'all';
+let currentTypeFilter = 'all';
+let currentGenreFilter = 'all';
+let currentDirectorFilter = 'all';
+let currentCastFilter = 'all';
+let currentViewMode = 'grid';
+let isSaving = false;
+
+// ============ UTILITY FUNCTIONS ============
+function setSyncStatus(status, msg) {
+    const dot = document.getElementById('sync-dot');
+    const text = document.getElementById('sync-status');
+    if (dot) dot.className = 'sync-dot ' + status;
+    if (text) text.textContent = msg;
+}
+
+function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============ DATABASE OPERATIONS ============
+async function apiSheets(body) {
+    const response = await fetch(API_SHEETS, {
+        method: 'POST',
+        body: JSON.stringify(body)
+    });
+    return await response.json();
+}
+
+async function loadFromSheets() {
+    setSyncStatus('syncing', 'Loading...');
+    try {
+        const response = await fetch(API_SHEETS + '?action=getAll');
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        
+        mediaData = (data.movies || []).map(m => ({
+            id: Number(m.id || 0),
+            title: String(m.title || ''),
+            type: String(m.type || 'Movie'),
+            year: Number(m.year || 0),
+            status: String(m.status || 'plan'),
+            genre: String(m.genre || ''),
+            director: String(m.director || ''),
+            mainCast: String(m.mainCast || ''),
+            episodes: String(m.episodes || ''),
+            currentEpisode: Number(m.currentEpisode || m.currentepisode || 0),
+            progress: Number(m.progress || 0),
+            rating: Number(m.rating || 0),
+            notes: String(m.notes || ''),
+            added: Number(m.added || 0),
+            poster: String(m.poster || ''),
+            tmdbId: String(m.tmdbId || m.tmdbid || ''),
+            watchDate: String(m.watchDate || ''),
+            lastEdit: Number(m.lastEdit || Date.now())
+        }));
+        
+        setSyncStatus('online', 'Synced');
+        renderMedia();
+    } catch (err) {
+        setSyncStatus('error', 'Error');
+        showToast('Failed to load: ' + err.message, true);
+    }
+}
+
+async function saveEntry() {
+    if (isSaving) return;
+    
+    const title = document.getElementById('f-title').value.trim();
+    if (!title) {
+        showToast('Please enter a title', true);
+        return;
+    }
+    
+    const entry = {
+        id: editingId || Date.now(),
+        title: title,
+        type: document.getElementById('f-type').value,
+        year: parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
+        status: document.getElementById('f-status').value,
+        director: document.getElementById('f-director').value.trim(),
+        mainCast: document.getElementById('f-cast').value.trim(),
+        genre: document.getElementById('f-genre').value.trim(),
+        episodes: document.getElementById('f-episodes').value.trim(),
+        currentEpisode: parseInt(document.getElementById('f-current-episode').value) || 0,
+        progress: parseInt(document.getElementById('f-progress').value) || 0,
+        rating: currentRating,
+        notes: document.getElementById('f-notes').value.trim(),
+        poster: document.getElementById('f-poster').value,
+        tmdbId: document.getElementById('f-tmdbid').value,
+        watchDate: document.getElementById('f-watchdate').value,
+        added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
+        lastEdit: Date.now()
+    };
+    
+    isSaving = true;
+    const btn = document.getElementById('btn-save');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+    setSyncStatus('syncing', 'Saving...');
+    
+    try {
+        const result = await apiSheets({ action: 'save', movie: entry });
+        
+        if (editingId) {
+            const idx = mediaData.findIndex(x => x.id === editingId);
+            if (idx > -1) mediaData[idx] = entry;
+        } else {
+            mediaData.push(entry);
+        }
+        
+        renderMedia();
+        closeModal();
+        setSyncStatus('online', 'Saved!');
+        showToast(editingId ? 'Updated!' : 'Saved!');
+    } catch (err) {
+        setSyncStatus('error', 'Save failed');
+        showToast('Error: ' + err.message, true);
+    } finally {
+        isSaving = false;
+        btn.disabled = false;
+        btn.textContent = 'Save Title';
+    }
+}
+
+async function deleteEntry(id) {
+    if (!confirm('Remove this title?')) return;
+    setSyncStatus('syncing', 'Deleting...');
+    try {
+        await apiSheets({ action: 'delete', id: id });
+        mediaData = mediaData.filter(x => x.id !== id);
+        renderMedia();
+        closeDetail();
+        setSyncStatus('online', 'Deleted');
+        showToast('Removed');
+    } catch (err) {
+        showToast('Delete failed', true);
+    }
+}
+
+// ============ FILTER FUNCTIONS ============
+function getFilteredData() {
+    let data = [...mediaData];
+    
+    if (currentStatusFilter !== 'all') data = data.filter(x => x.status === currentStatusFilter);
+    if (currentTypeFilter !== 'all') data = data.filter(x => x.type === currentTypeFilter);
+    if (currentGenreFilter !== 'all') data = data.filter(x => x.genre && x.genre.toLowerCase().includes(currentGenreFilter.toLowerCase()));
+    if (currentDirectorFilter !== 'all') data = data.filter(x => x.director && x.director.toLowerCase().includes(currentDirectorFilter.toLowerCase()));
+    if (currentCastFilter !== 'all') data = data.filter(x => x.mainCast && x.mainCast.toLowerCase().includes(currentCastFilter.toLowerCase()));
+    
+    const query = document.getElementById('search-input').value.toLowerCase().trim();
+    if (query) {
+        data = data.filter(x => 
+            x.title.toLowerCase().includes(query) ||
+            (x.director && x.director.toLowerCase().includes(query)) ||
+            (x.mainCast && x.mainCast.toLowerCase().includes(query)) ||
+            (x.genre && x.genre.toLowerCase().includes(query))
+        );
+    }
+    
+    const sortBy = document.getElementById('sort-select').value;
+    if (sortBy === 'rating') data.sort((a, b) => b.rating - a.rating);
+    else if (sortBy === 'title') data.sort((a, b) => a.title.localeCompare(b.title));
+    else if (sortBy === 'year') data.sort((a, b) => b.year - a.year);
+    else data.sort((a, b) => b.added - a.added);
+    
+    return data;
+}
+
+function setStatusFilter(status, el) {
+    currentStatusFilter = status;
+    renderMedia();
+}
+
+function setTypeFilter(type, el) {
+    currentTypeFilter = type;
+    renderMedia();
+}
+
+function setDirectorFilter(director) {
+    currentDirectorFilter = director;
+    currentCastFilter = 'all';
+    renderMedia();
+}
+
+function setCastFilter(cast) {
+    currentCastFilter = cast;
+    currentDirectorFilter = 'all';
+    renderMedia();
+}
+
+function setGenreFilter(genre) {
+    currentGenreFilter = currentGenreFilter === genre ? 'all' : genre;
+    renderMedia();
+}
+
+function applyStatusFilter(status) {
+    currentStatusFilter = status;
+    renderMedia();
+}
+
+function resetAllFilters() {
+    currentStatusFilter = 'all';
+    currentTypeFilter = 'all';
+    currentGenreFilter = 'all';
+    currentDirectorFilter = 'all';
+    currentCastFilter = 'all';
+    document.getElementById('sort-select').value = 'added';
+    renderMedia();
+    closeDrawer();
+}
+
+// ============ RENDER FUNCTIONS ============
+function renderStars(rating) {
+    return [1, 2, 3, 4, 5].map(i => `<span class="star${i <= rating ? ' filled' : ''}">★</span>`).join('');
+}
+
+function renderMedia() {
+    updateStats();
+    updateCounts();
+    updateDirectorCastLists();
+    updateGenreCloud();
+    
+    const data = getFilteredData();
+    const container = document.getElementById('media-container');
+    
+    if (!data.length) {
+        container.innerHTML = '<div class="empty"><div class="empty-icon">🎌</div><div class="empty-title">No titles found</div></div>';
+        return;
+    }
+    
+    if (currentViewMode === 'grid') {
+        container.innerHTML = `<div class="media-grid">${data.map(m => {
+            const statusClass = {watching:'badge-watching',completed:'badge-completed',plan:'badge-plan',dropped:'badge-dropped'}[m.status];
+            const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
+            const hasPoster = m.poster && m.poster.trim();
+            const posterHTML = hasPoster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
+            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta" style="font-size:.7rem;color:var(--text-dim)">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge">✎ ${new Date(m.lastEdit).toLocaleDateString()}</div></div></div>`;
+        }).join('')}</div>`;
+    } else {
+        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:.75rem;margin-bottom:.5rem;border:1px solid var(--border);border-radius:2px;cursor:pointer" onclick="showDetail(${m.id})"><div><strong>${m.title}</strong> (${m.year})</div><div style="font-size:.75rem;color:var(--text-dim)">${m.director || '—'} | ${m.mainCast || '—'}</div>${m.rating ? `<div>${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
+    }
+    
+    document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
+    document.getElementById('btn-list').className = 'view-btn' + (currentViewMode === 'list' ? ' active' : '');
+    
+    let titleText = {all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All';
+    titleText += ' Titles';
+    if (currentDirectorFilter !== 'all') titleText += ` · ${currentDirectorFilter}`;
+    if (currentCastFilter !== 'all') titleText += ` · ${currentCastFilter}`;
+    document.getElementById('section-title').innerHTML = titleText;
+}
+
+function updateStats() {
+    document.getElementById('stat-total').textContent = mediaData.length;
+    document.getElementById('stat-watching').textContent = mediaData.filter(x => x.status === 'watching').length;
+    document.getElementById('stat-completed').textContent = mediaData.filter(x => x.status === 'completed').length;
+    document.getElementById('stat-plan').textContent = mediaData.filter(x => x.status === 'plan').length;
+}
+
+function updateCounts() {
+    const counts = {
+        all: mediaData.length,
+        watching: mediaData.filter(x => x.status === 'watching').length,
+        completed: mediaData.filter(x => x.status === 'completed').length,
+        plan: mediaData.filter(x => x.status === 'plan').length,
+        dropped: mediaData.filter(x => x.status === 'dropped').length,
+        movie: mediaData.filter(x => x.type === 'Movie').length,
+        series: mediaData.filter(x => x.type === 'Series').length,
+        'anime-movie': mediaData.filter(x => x.type === 'Anime Movie').length,
+        'anime-series': mediaData.filter(x => x.type === 'Anime Series').length
+    };
+    
+    document.getElementById('cnt-all').textContent = counts.all;
+    document.getElementById('cnt-watching-nav').textContent = counts.watching;
+    document.getElementById('cnt-completed-nav').textContent = counts.completed;
+    document.getElementById('cnt-plan-nav').textContent = counts.plan;
+    document.getElementById('cnt-dropped-nav').textContent = counts.dropped;
+    document.getElementById('cnt-movie').textContent = counts.movie;
+    document.getElementById('cnt-series').textContent = counts.series;
+    document.getElementById('cnt-anime-movie').textContent = counts['anime-movie'];
+    document.getElementById('cnt-anime-series').textContent = counts['anime-series'];
+}
+
+function updateDirectorCastLists() {
+    const directors = [...new Set(mediaData.map(m => m.director).filter(Boolean))].sort();
+    const casts = [...new Set(mediaData.map(m => m.mainCast).filter(Boolean))].sort();
+    
+    document.getElementById('director-list').innerHTML = directors.map(d => 
+        `<div class="nav-item" onclick="setDirectorFilter('${d.replace(/'/g, "\\'")}')"><span>🎭</span>${d}</div>`
+    ).join('') || '<div style="color:var(--text-dim);font-size:.7rem">—</div>';
+    
+    document.getElementById('cast-list').innerHTML = casts.map(c => 
+        `<div class="nav-item" onclick="setCastFilter('${c.replace(/'/g, "\\'")}')"><span>⭐</span>${c}</div>`
+    ).join('') || '<div style="color:var(--text-dim);font-size:.7rem">—</div>';
+}
+
+function updateGenreCloud() {
+    const genres = new Set();
+    mediaData.forEach(m => { if (m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
+    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => 
+        `<button class="genre-tag${currentGenreFilter === g ? ' active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}')">${g}</button>`
+    ).join('') || '<span style="color:var(--text-dim)">No genres</span>';
+}
+
+function setViewMode(mode) {
+    currentViewMode = mode;
+    renderMedia();
+}
+
+// ============ MODAL FUNCTIONS ============
+function openModal(id) {
+    editingId = id || null;
+    const m = id ? mediaData.find(x => x.id === id) : null;
+    
+    document.getElementById('modal-heading').textContent = m ? 'Edit Title' : 'Add New Title';
+    document.getElementById('f-title').value = m ? m.title : '';
+    document.getElementById('f-type').value = m ? m.type : 'Movie';
+    document.getElementById('f-year').value = m ? m.year : '';
+    document.getElementById('f-status').value = m ? m.status : 'plan';
+    document.getElementById('f-director').value = m ? m.director : '';
+    document.getElementById('f-cast').value = m ? m.mainCast : '';
+    document.getElementById('f-genre').value = m ? m.genre : '';
+    document.getElementById('f-episodes').value = m ? m.episodes : '';
+    document.getElementById('f-current-episode').value = m ? m.currentEpisode : '';
+    document.getElementById('f-progress').value = m ? m.progress : '';
+    document.getElementById('f-notes').value = m ? m.notes : '';
+    document.getElementById('f-watchdate').value = m ? m.watchDate : '';
+    document.getElementById('f-poster').value = m ? m.poster : '';
+    document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
+    document.getElementById('tmdb-q').value = m ? m.title : '';
+    
+    setRating(m ? m.rating : 0);
+    updatePosterPreview(m ? m.poster : '', m ? m.title : '');
+    document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    editingId = null;
+}
+
+function closeModalOutside(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function setRating(v) {
+    currentRating = v;
+    document.querySelectorAll('#star-rating .star-btn').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.v) <= v);
+    });
+}
+
+function updatePosterPreview(url, title) {
+    const box = document.getElementById('poster-box');
+    const letter = (title || '?').charAt(0).toUpperCase();
+    if (url && url !== 'null' && url !== 'undefined' && url !== '') {
+        box.innerHTML = `<img src="${url}" style="width:90px;height:135px;object-fit:cover;border-radius:2px">`;
+    } else {
+        box.innerHTML = `<div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:2px">${letter}</div>`;
+    }
+}
+
+// ============ DETAIL FUNCTIONS ============
+function showDetail(id) {
+    const m = mediaData.find(x => x.id === id);
+    if (!m) return;
+    
+    const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
+    document.getElementById('d-title').innerHTML = m.title;
+    document.getElementById('d-meta').innerHTML = `${m.type} · ${m.year} · ${m.director || '—'} · ${m.mainCast ? '⭐ ' + m.mainCast : ''}`;
+    document.getElementById('d-poster').innerHTML = m.poster ? 
+        `<img src="${m.poster}" style="width:100px;height:150px;object-fit:cover;border-radius:2px">` : 
+        `<div style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2)">${m.title.charAt(0)}</div>`;
+    
+    document.getElementById('detail-body').innerHTML = `
+        <div style="margin-bottom:1rem"><strong>Rating:</strong> ${m.rating ? '★'.repeat(m.rating) + '☆'.repeat(5-m.rating) : 'Not rated'}</div>
+        <div style="margin-bottom:.5rem"><strong>Watch Date:</strong> ${m.watchDate || 'Not set'}</div>
+        <div style="margin-bottom:.5rem"><strong>Last Edited:</strong> ${new Date(m.lastEdit).toLocaleString()}</div>
+        <div style="margin-bottom:.5rem"><strong>Status:</strong> <span class="card-badge" style="position:static;display:inline-block">${statusLabel}</span></div>
+        <div style="margin-bottom:.5rem"><strong>Progress:</strong> ${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</div>
+        ${m.notes ? `<div style="margin-top:1rem;padding:.75rem;background:var(--surface2);border-left:2px solid var(--gold)"><em>"${m.notes}"</em></div>` : ''}
+        <div style="margin-top:1.5rem;display:flex;gap:.75rem">
+            <button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})">Edit</button>
+            <button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,85,85,.4);color:var(--red)">Delete</button>
+        </div>
+    `;
+    document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+    document.getElementById('detail-overlay').classList.remove('open');
+}
+
+function closeDetailOutside(e) {
+    if (e.target === document.getElementById('detail-overlay')) closeDetail();
+}
+
+// ============ TMDB FUNCTIONS ============
+let tmdbTimer = null;
+
+function onTmdbType(value) {
+    clearTimeout(tmdbTimer);
+    if (value.length < 2) {
+        document.getElementById('tmdb-dd').style.display = 'none';
+        return;
+    }
+    tmdbTimer = setTimeout(() => searchTmdb(value), 400);
+}
+
+async function searchTmdb(query) {
+    try {
+        const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        const items = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv').slice(0, 5);
+        const dd = document.getElementById('tmdb-dd');
+        if (!items.length) {
+            dd.style.display = 'none';
+            return;
+        }
+        dd.innerHTML = items.map(item => {
+            const title = item.title || item.name;
+            const year = (item.release_date || item.first_air_date || '').slice(0, 4);
+            const type = item.media_type === 'tv' ? 'Series' : 'Movie';
+            const poster = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
+            return `<div class="tmdb-item" onclick="selectTmdb('${title.replace(/'/g, "\\'")}', '${type}', '${year}', '${poster}')"><div>${title} (${year})</div></div>`;
+        }).join('');
+        dd.style.display = 'block';
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function selectTmdb(title, type, year, poster) {
+    document.getElementById('f-title').value = title;
+    document.getElementById('f-type').value = type;
+    document.getElementById('f-year').value = year;
+    document.getElementById('f-poster').value = poster;
+    updatePosterPreview(poster, title);
+    document.getElementById('tmdb-dd').style.display = 'none';
+}
+
+function clearTmdb() {
+    document.getElementById('tmdb-q').value = '';
+    document.getElementById('tmdb-dd').style.display = 'none';
+}
+
+// ============ DRAWER FUNCTIONS ============
+function openDrawer() {
+    const drawer = document.getElementById('filter-drawer');
+    if (drawer) drawer.classList.add('open');
+    updateDrawerContent();
+}
+
+function closeDrawer() {
+    const drawer = document.getElementById('filter-drawer');
+    if (drawer) drawer.classList.remove('open');
+}
+
+function updateDrawerContent() {
+    const directors = [...new Set(mediaData.map(m => m.director).filter(Boolean))];
+    const casts = [...new Set(mediaData.map(m => m.mainCast).filter(Boolean))];
+    
+    const statusDiv = document.getElementById('drawer-status');
+    if (statusDiv) {
+        statusDiv.innerHTML = `
+            <button class="dchip ${currentStatusFilter === 'all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();">All</button>
+            <button class="dchip ${currentStatusFilter === 'watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();">Watching</button>
+            <button class="dchip ${currentStatusFilter === 'completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();">Completed</button>
+            <button class="dchip ${currentStatusFilter === 'plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();">Plan</button>
+        `;
+    }
+    
+    const directorDiv = document.getElementById('drawer-director');
+    if (directorDiv) {
+        directorDiv.innerHTML = directors.map(d => 
+            `<button class="dchip ${currentDirectorFilter === d ? 'active' : ''}" onclick="setDirectorFilter('${d.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${d}</button>`
+        ).join('') || '<span>No data</span>';
+    }
+    
+    const castDiv = document.getElementById('drawer-cast');
+    if (castDiv) {
+        castDiv.innerHTML = casts.map(c => 
+            `<button class="dchip ${currentCastFilter === c ? 'active' : ''}" onclick="setCastFilter('${c.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${c}</button>`
+        ).join('') || '<span>No data</span>';
+    }
+}
+
+// ============ INITIALIZATION ============
+document.addEventListener('click', e => {
+    if (!e.target.closest('.tmdb-wrap')) {
+        const dd = document.getElementById('tmdb-dd');
+        if (dd) dd.style.display = 'none';
+    }
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closeModal();
+        closeDetail();
+    }
+});
+
+setInterval(loadFromSheets, 120000);
+loadFromSheets();
 </script>
 </body>
 </html>
