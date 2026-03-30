@@ -727,7 +727,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbwUp53lkWeFTEasA6O3tvQt4Q3fEJBAIyqz3vB-8LwLTMFd3I-wspBgyHIKqnkG4kEY7w/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycby4VFMm7UjdGADEHGbxWMVAHAV7xKK01MhO7u5iCNyvsWWO5_3YXjwWsvp9ADZvudVLIA/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -792,7 +792,6 @@ function formatWatchDate(dateValue) {
 function calculateProgress(type, episodesText, currentText) {
     if (!currentText || currentText === '') return 0;
     
-    // Parse current value (supports "4" or "4/12" or "60" for minutes)
     let currentValue = 0;
     let totalValue = 0;
     
@@ -869,17 +868,35 @@ async function loadFromSheets() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         
+        console.log("Raw data from sheets:", data.movies);
+        
         mediaData = (data.movies || []).map(m => {
+            // CRITICAL: Get watchDate from multiple possible property names
             let watchDateValue = '';
-            for (let key in m) {
-                const lowerKey = key.toLowerCase();
-                if (lowerKey === 'watchdate' || lowerKey === 'watch_date') {
-                    watchDateValue = m[key] || '';
-                    break;
+            
+            // Log all keys to debug
+            console.log("Movie keys:", Object.keys(m), "Title:", m.title);
+            
+            // Check all possible property names (case sensitive)
+            if (m.watchDate && m.watchDate !== '') {
+                watchDateValue = m.watchDate;
+                console.log(`Found watchDate in "watchDate":`, watchDateValue);
+            } else if (m.watchdate && m.watchdate !== '') {
+                watchDateValue = m.watchdate;
+                console.log(`Found watchDate in "watchdate":`, watchDateValue);
+            } else if (m.WatchDate && m.WatchDate !== '') {
+                watchDateValue = m.WatchDate;
+                console.log(`Found watchDate in "WatchDate":`, watchDateValue);
+            } else {
+                // Try to find any key that contains 'watch'
+                for (let key in m) {
+                    if (key.toLowerCase().includes('watch') && m[key] && m[key] !== '') {
+                        watchDateValue = m[key];
+                        console.log(`Found watchDate in key "${key}":`, watchDateValue);
+                        break;
+                    }
                 }
             }
-            if (!watchDateValue && m.watchDate) watchDateValue = m.watchDate;
-            if (!watchDateValue && m.watchdate) watchDateValue = m.watchdate;
             
             return {
                 id: Number(m.id || 0),
@@ -902,11 +919,14 @@ async function loadFromSheets() {
             };
         });
         
+        console.log("Processed mediaData:", mediaData.map(m => ({ title: m.title, watchDate: m.watchDate })));
+        
         setSyncStatus('online', 'Synced');
         renderMedia();
     } catch (err) {
         setSyncStatus('error', 'Error');
         showToast('Failed to load: ' + err.message, true);
+        console.error('Load error:', err);
     }
 }
 
@@ -923,6 +943,8 @@ async function saveEntry() {
     // Calculate progress automatically
     const calculatedProgress = calculateProgress(type, episodes, currentEpisodeValue);
     const progress = calculatedProgress > 0 ? calculatedProgress : parseInt(document.getElementById('f-progress').value) || 0;
+    
+    console.log("Saving entry with watchDate:", watchDateValue);
     
     const entry = {
         id: editingId || Date.now(),
@@ -1121,6 +1143,8 @@ function openModal(id) {
     editingId = id || null;
     const m = id ? mediaData.find(x => x.id === id) : null;
     
+    console.log("Opening modal for:", m?.title, "watchDate from mediaData:", m?.watchDate);
+    
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit"></i> Edit Title' : '<i class="fas fa-plus-circle"></i> Add New Title';
     document.getElementById('f-title').value = m ? m.title : '';
     document.getElementById('f-type').value = m ? m.type : 'Movie';
@@ -1136,8 +1160,9 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
     
-    // Set watchDate value correctly
+    // CRITICAL: Set watchDate value correctly from mediaData
     const watchDateValue = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
+    console.log("Setting watchDate input to:", watchDateValue);
     document.getElementById('f-watchdate').value = watchDateValue;
     
     setRating(m ? m.rating : 0);
