@@ -48,13 +48,11 @@
     overflow-x: hidden;
   }
   
-  /* Scrollbar */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--surface); }
   ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
   
-  /* Sync Bar */
   .sync-bar {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -75,7 +73,6 @@
   .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
   
-  /* Header */
   header {
     position: sticky;
     top: 0;
@@ -130,7 +127,6 @@
   }
   .btn-primary:hover { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(201,168,76,0.3); }
   
-  /* Stats Bar */
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -163,10 +159,8 @@
   .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 500; color: var(--gold); line-height: 1; }
   .stat-sub { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem; }
   
-  /* Main Layout */
   main { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 130px); }
   
-  /* Sidebar */
   aside {
     background: var(--surface);
     border-right: 1px solid var(--border);
@@ -213,7 +207,6 @@
   }
   .genre-tag:hover, .genre-tag.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
   
-  /* Content */
   .content { padding: 2rem 2.5rem; background: var(--bg); }
   .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
   .section-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; }
@@ -230,7 +223,6 @@
   }
   .view-btn.active, .view-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
   
-  /* Search */
   .search-row { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
   .search-wrap {
     flex: 1;
@@ -259,7 +251,6 @@
     font-size: 0.875rem;
   }
   
-  /* Media Cards */
   .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
   .media-card {
     background: var(--surface);
@@ -308,7 +299,6 @@
   .star.filled { color: var(--gold); }
   .last-edit-badge { font-size: 0.6rem; color: var(--text-dim); margin-top: 0.5rem; opacity: 0.6; }
   
-  /* Modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -379,7 +369,6 @@
   }
   .star-btn.active { color: var(--gold); text-shadow: 0 0 8px rgba(201,168,76,0.5); }
   
-  /* Detail Modal */
   .detail-hero { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
   .detail-poster {
     width: 140px;
@@ -403,7 +392,6 @@
   .detail-key { color: var(--text-dim); font-weight: 500; }
   .detail-val { color: var(--text); text-align: right; }
   
-  /* Toast */
   .toast {
     position: fixed;
     bottom: 2rem;
@@ -421,7 +409,6 @@
   }
   .toast.show { opacity: 1; transform: translateY(0); }
   
-  /* TMDB Dropdown */
   .tmdb-dropdown {
     position: absolute;
     top: 100%;
@@ -430,7 +417,7 @@
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 12px;
-    max-height: 280px;
+    max-height: 320px;
     overflow-y: auto;
     z-index: 50;
     margin-top: 4px;
@@ -441,11 +428,24 @@
     border-bottom: 1px solid var(--border);
     transition: background 0.2s;
     color: var(--text);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
   }
   .tmdb-item:hover { background: var(--surface3); }
-  .tmdb-item strong { color: var(--gold); }
+  .tmdb-item-img {
+    width: 45px;
+    height: 67px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background: var(--surface);
+  }
+  .tmdb-item-info { flex: 1; }
+  .tmdb-item-title { font-weight: 600; color: var(--gold); }
+  .tmdb-item-year { color: var(--text-dim); font-size: 0.75rem; }
+  .tmdb-item-genre { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
   
-  /* Mobile Responsive */
   @media (max-width: 900px) {
     main { grid-template-columns: 1fr; }
     aside { display: none; }
@@ -521,8 +521,6 @@
     .detail-val { text-align: center; }
   }
   
-  /* Desktop Filter Drawer - Hidden by default, only shown on mobile */
-  .filter-drawer.desktop-visible { display: none; }
   @media (min-width: 901px) {
     .filter-drawer { display: none; }
   }
@@ -561,9 +559,9 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbx4NF7WHnWfLvregugvxHBjEyijGYJsfzbfQJVM3X1bAOSEypjO76ESmosjjAUcJVlzSA/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbw5l_5kE9xb8s0V2ZkRlq1oZnHc7vSX40tVirTEWhDCqP4EgD8HIjJTS9AZ2_iYhueGHw/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
-const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
+const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92'; // Smaller image for dropdown
 
 // ============ VARIABEL GLOBAL ============
 let mediaData = [];
@@ -706,7 +704,10 @@ function getFilteredData() {
 }
 function setStatusFilter(status, el) { currentStatusFilter = status; renderMedia(); }
 function setTypeFilter(type, el) { currentTypeFilter = type; renderMedia(); }
-function setGenreFilter(genre) { currentGenreFilter = currentGenreFilter === genre ? 'all' : genre; renderMedia(); }
+function setGenreFilter(genre) { 
+    currentGenreFilter = currentGenreFilter === genre ? 'all' : genre; 
+    renderMedia(); 
+}
 function applyStatusFilter(status) { currentStatusFilter = status; renderMedia(); }
 function resetAllFilters() { currentStatusFilter = 'all'; currentTypeFilter = 'all'; currentGenreFilter = 'all'; document.getElementById('sort-select').value = 'added'; renderMedia(); closeDrawer(); }
 
@@ -807,28 +808,37 @@ async function searchTmdb(query) {
         const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`;
         const response = await fetch(url);
         const data = await response.json();
-        const items = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv').slice(0, 5);
+        const items = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv').slice(0, 6);
         const dd = document.getElementById('tmdb-dd');
         if (!items.length) { dd.style.display = 'none'; return; }
         
-        // Fetch genres for each item
-        const itemsWithGenres = await Promise.all(items.map(async (item) => {
+        // Fetch genres for each item with parallel requests
+        const itemsWithDetails = await Promise.all(items.map(async (item) => {
             let genres = '';
+            let posterUrl = '';
             try {
                 const detailUrl = `https://api.themoviedb.org/3/${item.media_type === 'tv' ? 'tv' : 'movie'}/${item.id}?api_key=${TMDB_KEY}`;
                 const detailRes = await fetch(detailUrl);
                 const detailData = await detailRes.json();
                 genres = (detailData.genres || []).map(g => g.name).slice(0, 3).join(', ');
+                posterUrl = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
             } catch(e) {}
-            return { ...item, genres };
+            return { ...item, genres, posterUrl };
         }));
         
-        dd.innerHTML = itemsWithGenres.map(item => {
+        dd.innerHTML = itemsWithDetails.map(item => {
             const title = item.title || item.name;
             const year = (item.release_date || item.first_air_date || '').slice(0, 4);
             const type = item.media_type === 'tv' ? 'Series' : 'Movie';
-            const poster = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
-            return `<div class="tmdb-item" onclick="selectTmdbWithGenre('${title.replace(/'/g, "\\'")}', '${type}', '${year}', '${poster}', '${item.genres.replace(/'/g, "\\'")}')"><div><strong>${title}</strong> <span style="color:var(--text-dim)">(${year})</span><div style="font-size:0.7rem;color:var(--gold);margin-top:4px">${item.genres || 'Click to select'}</div></div></div>`;
+            const posterHtml = item.posterUrl ? `<img class="tmdb-item-img" src="${item.posterUrl}" onerror="this.style.display='none'">` : `<div class="tmdb-item-img" style="display:flex;align-items:center;justify-content:center;background:var(--surface3)"><i class="fas fa-film" style="opacity:0.5"></i></div>`;
+            return `<div class="tmdb-item" onclick="selectTmdbWithGenre('${title.replace(/'/g, "\\'")}', '${type}', '${year}', '${item.posterUrl}', '${item.genres.replace(/'/g, "\\'")}')">
+                        ${posterHtml}
+                        <div class="tmdb-item-info">
+                            <div class="tmdb-item-title">${title}</div>
+                            <div class="tmdb-item-year">${year} · ${type}</div>
+                            <div class="tmdb-item-genre">${item.genres || 'Click to select'}</div>
+                        </div>
+                    </div>`;
         }).join('');
         dd.style.display = 'block';
     } catch (err) { console.error(err); }
