@@ -291,6 +291,7 @@
   .star { font-size: 0.7rem; color: var(--text-dim); }
   .star.filled { color: var(--gold); }
   .rewatch-badge { font-size: 0.6rem; color: var(--purple); margin-top: 0.25rem; display: inline-block; }
+  .watch-date-badge { font-size: 0.6rem; color: var(--text-dim); margin-top: 0.25rem; display: inline-block; width: 100%; }
   
   .modal-overlay {
     position: fixed;
@@ -656,7 +657,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbyvUVYvwSLDHuTz2UhQkiwOuqD5oUqnNcviTCt1gcspsKQ6TREKpXE_MiOSUomAQzrL/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzv2ng0hJfZaDhoWpyqWzGgaKonTXS45C9cyge5h_8IMFBPFnUY6oBEGlad5Ot4zuMBug/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -693,14 +694,43 @@ function resetToHome() {
     renderMedia();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function formatDate(dateStr) {
-    if (!dateStr || dateStr === '' || dateStr === 'null' || dateStr === 'undefined') {
+
+// ============ FORMAT WATCH DATE - FIXED ============
+function formatWatchDate(dateValue) {
+    // Handle various possible inputs
+    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
         return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
     }
+    
     try {
-        const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
-        return `<i class="far fa-calendar-alt"></i> ${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        let date;
+        
+        // Handle different date formats
+        if (typeof dateValue === 'number') {
+            date = new Date(dateValue);
+        } else if (typeof dateValue === 'string') {
+            // Check if it's in YYYY-MM-DD format
+            if (dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                date = new Date(dateValue + 'T00:00:00');
+            } else {
+                date = new Date(dateValue);
+            }
+        } else if (dateValue instanceof Date) {
+            date = dateValue;
+        } else {
+            return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+        }
+        
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+        }
+        
+        // Format date nicely
+        const day = date.getDate();
+        const month = date.toLocaleDateString('id-ID', { month: 'long' });
+        const year = date.getFullYear();
+        return `<i class="far fa-calendar-alt"></i> ${day} ${month} ${year}`;
     } catch(e) {
         return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
     }
@@ -711,31 +741,45 @@ async function apiSheets(body) {
     const response = await fetch(API_SHEETS, { method: 'POST', body: JSON.stringify(body) });
     return await response.json();
 }
+
 async function loadFromSheets() {
     setSyncStatus('syncing', 'Loading...');
     try {
         const response = await fetch(API_SHEETS + '?action=getAll');
         const data = await response.json();
         if (data.error) throw new Error(data.error);
-        mediaData = (data.movies || []).map(m => ({
-            id: Number(m.id || 0),
-            title: String(m.title || ''),
-            type: String(m.type || 'Movie'),
-            year: Number(m.year || 0),
-            status: String(m.status || 'plan'),
-            genre: String(m.genre || ''),
-            episodes: String(m.episodes || ''),
-            currentEpisode: Number(m.currentEpisode || m.currentepisode || 0),
-            progress: Number(m.progress || 0),
-            rating: Number(m.rating || 0),
-            notes: String(m.notes || ''),
-            added: Number(m.added || 0),
-            poster: String(m.poster || ''),
-            tmdbId: String(m.tmdbId || m.tmdbid || ''),
-            rewatch: Number(m.rewatch || 0),
-            watchDate: String(m.watchDate || ''),
-            lastEdit: Number(m.lastEdit || Date.now())
-        }));
+        
+        mediaData = (data.movies || []).map(m => {
+            // Try to get watchDate from various possible property names
+            let watchDateValue = '';
+            
+            // Check all possible property names
+            if (m.watchDate && m.watchDate !== '') watchDateValue = m.watchDate;
+            else if (m.watchdate && m.watchdate !== '') watchDateValue = m.watchdate;
+            else if (m.watch_date && m.watch_date !== '') watchDateValue = m.watch_date;
+            else if (m['watchDate'] && m['watchDate'] !== '') watchDateValue = m['watchDate'];
+            
+            return {
+                id: Number(m.id || 0),
+                title: String(m.title || ''),
+                type: String(m.type || 'Movie'),
+                year: Number(m.year || 0),
+                status: String(m.status || 'plan'),
+                genre: String(m.genre || ''),
+                episodes: String(m.episodes || ''),
+                currentEpisode: Number(m.currentEpisode || m.currentepisode || 0),
+                progress: Number(m.progress || 0),
+                rating: Number(m.rating || 0),
+                notes: String(m.notes || ''),
+                added: Number(m.added || 0),
+                poster: String(m.poster || ''),
+                tmdbId: String(m.tmdbId || m.tmdbid || ''),
+                rewatch: Number(m.rewatch || 0),
+                watchDate: watchDateValue,
+                lastEdit: Number(m.lastEdit || m.lastedit || Date.now())
+            };
+        });
+        
         setSyncStatus('online', 'Synced');
         renderMedia();
     } catch (err) {
@@ -743,10 +787,13 @@ async function loadFromSheets() {
         showToast('Failed to load: ' + err.message, true);
     }
 }
+
 async function saveEntry() {
     if (isSaving) return;
     const title = document.getElementById('f-title').value.trim();
     if (!title) { showToast('Please enter a title', true); return; }
+    
+    const watchDateValue = document.getElementById('f-watchdate').value || '';
     
     const entry = {
         id: editingId || Date.now(),
@@ -764,7 +811,7 @@ async function saveEntry() {
         poster: document.getElementById('f-poster').value,
         tmdbId: document.getElementById('f-tmdbid').value,
         rewatch: parseInt(document.getElementById('f-rewatch').value) || 0,
-        watchDate: document.getElementById('f-watchdate').value || '',
+        watchDate: watchDateValue,
         lastEdit: Date.now()
     };
     
@@ -789,6 +836,7 @@ async function saveEntry() {
         btn.innerHTML = '<i class="fas fa-save"></i> Save Title';
     }
 }
+
 async function deleteEntry(id) {
     if (!confirm('Remove this title?')) return;
     try {
@@ -815,14 +863,30 @@ function getFilteredData() {
     else data.sort((a, b) => b.added - a.added);
     return data;
 }
-function setStatusFilter(status, el) { currentStatusFilter = status; renderMedia(); }
-function setTypeFilter(type, el) { currentTypeFilter = type; renderMedia(); }
+function setStatusFilter(status, el) { 
+    currentStatusFilter = status; 
+    renderMedia(); 
+}
+function setTypeFilter(type, el) { 
+    currentTypeFilter = type; 
+    renderMedia(); 
+}
 function setGenreFilter(genre) { 
     currentGenreFilter = currentGenreFilter === genre ? 'all' : genre; 
     renderMedia(); 
 }
-function applyStatusFilter(status) { currentStatusFilter = status; renderMedia(); }
-function resetAllFilters() { currentStatusFilter = 'all'; currentTypeFilter = 'all'; currentGenreFilter = 'all'; document.getElementById('sort-select').value = 'added'; renderMedia(); closeDrawer(); }
+function applyStatusFilter(status) { 
+    currentStatusFilter = status; 
+    renderMedia(); 
+}
+function resetAllFilters() { 
+    currentStatusFilter = 'all'; 
+    currentTypeFilter = 'all'; 
+    currentGenreFilter = 'all'; 
+    document.getElementById('sort-select').value = 'added'; 
+    renderMedia(); 
+    closeDrawer(); 
+}
 
 // ============ RENDER ============
 function renderStars(rating) {
@@ -830,48 +894,99 @@ function renderStars(rating) {
     for (let i = 1; i <= 10; i++) stars += `<span class="star${i <= rating ? ' filled' : ''}">★</span>`;
     return stars;
 }
+
 function renderMedia() {
-    updateStats(); updateCounts(); updateGenreCloud();
+    updateStats(); 
+    updateCounts(); 
+    updateGenreCloud();
+    
     const data = getFilteredData();
     const container = document.getElementById('media-container');
-    if (!data.length) { container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-film"></i></div><div class="empty-title">No titles found</div><div class="empty-sub">Add your first film or anime</div></div>'; return; }
+    
+    if (!data.length) { 
+        container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-film"></i></div><div class="empty-title">No titles found</div><div class="empty-sub">Add your first film or anime</div></div>'; 
+        return; 
+    }
+    
     if (currentViewMode === 'grid') {
         container.innerHTML = `<div class="media-grid">${data.map(m => {
             const statusClass = {watching:'badge-watching',completed:'badge-completed',plan:'badge-plan',dropped:'badge-dropped'}[m.status];
             const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             const hasPoster = m.poster && m.poster.trim();
             const posterHTML = hasPoster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
-            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge">${formatDate(m.watchDate)}</div>${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}</div></div>`;
+            return `<div class="media-card" onclick="showDetail(${m.id})">
+                        ${posterHTML}
+                        <span class="card-badge ${statusClass}">${statusLabel}</span>
+                        <div class="card-info">
+                            <div class="card-title">${m.title}</div>
+                            <div class="card-meta">${m.year} · ${m.type}</div>
+                            ${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}
+                            <div class="watch-date-badge">${formatWatchDate(m.watchDate)}</div>
+                            ${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}
+                        </div>
+                    </div>`;
         }).join('')}</div>`;
     } else {
-        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all 0.2s" onclick="showDetail(${m.id})"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem"><div><strong>${m.title}</strong> <span style="color:var(--text-dim)">(${m.year})</span></div><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${m.status}</span></div><div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.25rem">${m.type} ${m.genre ? '· ' + m.genre : ''}</div><div style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem">${formatDate(m.watchDate)}</div>${m.rewatch > 0 ? `<div style="font-size:0.7rem;color:var(--purple);margin-top:0.25rem"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}${m.rating ? `<div class="star-row" style="margin-top:0.5rem">${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
+        container.innerHTML = `<div class="media-list">${data.map(m => `
+            <div class="list-item" style="background:var(--surface);padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all 0.2s" onclick="showDetail(${m.id})">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
+                    <div><strong>${m.title}</strong> <span style="color:var(--text-dim)">(${m.year})</span></div>
+                    <span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${m.status}</span>
+                </div>
+                <div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.25rem">${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
+                <div style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem">${formatWatchDate(m.watchDate)}</div>
+                ${m.rewatch > 0 ? `<div style="font-size:0.7rem;color:var(--purple);margin-top:0.25rem"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}
+                ${m.rating ? `<div class="star-row" style="margin-top:0.5rem">${renderStars(m.rating)}</div>` : ''}
+            </div>`).join('')}</div>`;
     }
+    
     document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
     document.getElementById('btn-list').className = 'view-btn' + (currentViewMode === 'list' ? ' active' : '');
+    
     let titleText = {all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All';
     document.getElementById('section-title').innerHTML = titleText + ' <em>Titles</em>';
 }
+
 function updateStats() {
     document.getElementById('stat-total').textContent = mediaData.length;
     document.getElementById('stat-watching').textContent = mediaData.filter(x => x.status === 'watching').length;
     document.getElementById('stat-completed').textContent = mediaData.filter(x => x.status === 'completed').length;
     document.getElementById('stat-plan').textContent = mediaData.filter(x => x.status === 'plan').length;
 }
+
 function updateCounts() {
-    const counts = { all: mediaData.length, watching: mediaData.filter(x => x.status === 'watching').length, completed: mediaData.filter(x => x.status === 'completed').length, plan: mediaData.filter(x => x.status === 'plan').length, dropped: mediaData.filter(x => x.status === 'dropped').length, movie: mediaData.filter(x => x.type === 'Movie').length, series: mediaData.filter(x => x.type === 'Series').length, 'anime-movie': mediaData.filter(x => x.type === 'Anime Movie').length, 'anime-series': mediaData.filter(x => x.type === 'Anime Series').length };
+    const counts = { 
+        all: mediaData.length, 
+        watching: mediaData.filter(x => x.status === 'watching').length, 
+        completed: mediaData.filter(x => x.status === 'completed').length, 
+        plan: mediaData.filter(x => x.status === 'plan').length, 
+        dropped: mediaData.filter(x => x.status === 'dropped').length, 
+        movie: mediaData.filter(x => x.type === 'Movie').length, 
+        series: mediaData.filter(x => x.type === 'Series').length, 
+        'anime-movie': mediaData.filter(x => x.type === 'Anime Movie').length, 
+        'anime-series': mediaData.filter(x => x.type === 'Anime Series').length 
+    };
     Object.keys(counts).forEach(k => { let el = document.getElementById('cnt-' + k); if (el) el.textContent = counts[k]; });
 }
+
 function updateGenreCloud() {
     const genres = new Set();
     mediaData.forEach(m => { if (m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
-    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => `<button class="genre-tag${currentGenreFilter === g ? ' active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}')">${g}</button>`).join('') || '<span style="color:var(--text-dim)">No genres</span>';
+    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => 
+        `<button class="genre-tag${currentGenreFilter === g ? ' active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}')">${g}</button>`
+    ).join('') || '<span style="color:var(--text-dim)">No genres</span>';
 }
-function setViewMode(mode) { currentViewMode = mode; renderMedia(); }
+
+function setViewMode(mode) { 
+    currentViewMode = mode; 
+    renderMedia(); 
+}
 
 // ============ MODAL ============
 function openModal(id) {
     editingId = id || null;
     const m = id ? mediaData.find(x => x.id === id) : null;
+    
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit"></i> Edit Title' : '<i class="fas fa-plus-circle"></i> Add New Title';
     document.getElementById('f-title').value = m ? m.title : '';
     document.getElementById('f-type').value = m ? m.type : 'Movie';
@@ -887,36 +1002,102 @@ function openModal(id) {
     document.getElementById('f-poster').value = m ? m.poster : '';
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
+    
     setRating(m ? m.rating : 0);
     updatePosterPreview(m ? m.poster : '', m ? m.title : '');
     document.getElementById('modal-overlay').classList.add('open');
 }
-function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); editingId = null; }
-function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
-function setRating(v) { currentRating = v; document.querySelectorAll('#star-rating .star-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) <= v)); }
+
+function closeModal() { 
+    document.getElementById('modal-overlay').classList.remove('open'); 
+    editingId = null; 
+}
+
+function closeModalOutside(e) { 
+    if (e.target === document.getElementById('modal-overlay')) closeModal(); 
+}
+
+function setRating(v) { 
+    currentRating = v; 
+    document.querySelectorAll('#star-rating .star-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) <= v)); 
+}
+
 function updatePosterPreview(url, title) {
     const box = document.getElementById('poster-box');
-    if (url && url !== 'null' && url !== 'undefined' && url !== '') box.innerHTML = `<img src="${url}" style="width:100px;height:150px;object-fit:cover;border-radius:12px">`;
-    else box.innerHTML = `<div class="poster-ph" style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>`;
+    if (url && url !== 'null' && url !== 'undefined' && url !== '') {
+        box.innerHTML = `<img src="${url}" style="width:100px;height:150px;object-fit:cover;border-radius:12px">`;
+    } else {
+        box.innerHTML = `<div class="poster-ph" style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>`;
+    }
 }
 
 // ============ DETAIL ============
 function showDetail(id) {
     const m = mediaData.find(x => x.id === id);
     if (!m) return;
+    
     const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
-    document.getElementById('detail-body').innerHTML = `<div class="detail-hero"><img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div><div class="detail-rating">${renderStars(m.rating)}</div></div></div><div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '<span style="opacity:0.6">Not set</span>'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch Count</span><span class="detail-val">${m.rewatch} ${m.rewatch === 1 ? 'time' : 'times'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}<div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>`;
+    
+    document.getElementById('detail-body').innerHTML = `
+        <div class="detail-hero">
+            <img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'">
+            <div class="detail-info">
+                <div class="detail-title">${m.title}</div>
+                <div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div>
+                <div class="detail-rating">${renderStars(m.rating)}</div>
+            </div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span>
+            <span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span>
+            <span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '<span style="opacity:0.6">Not set</span>'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch Count</span>
+            <span class="detail-val">${m.rewatch} ${m.rewatch === 1 ? 'time' : 'times'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span>
+            <span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span>
+            <span class="detail-val">${m.episodes || '-'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span>
+            <span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span>
+        </div>
+        ${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}
+        <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button>
+            <button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+    `;
     document.getElementById('detail-overlay').classList.add('open');
 }
-function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
-function closeDetailOutside(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
+
+function closeDetail() { 
+    document.getElementById('detail-overlay').classList.remove('open'); 
+}
+
+function closeDetailOutside(e) { 
+    if (e.target === document.getElementById('detail-overlay')) closeDetail(); 
+}
 
 // ============ TMDB ============
 function onTmdbType(value) {
     clearTimeout(tmdbTimer);
-    if (value.length < 2) { document.getElementById('tmdb-dd').style.display = 'none'; return; }
+    if (value.length < 2) { 
+        document.getElementById('tmdb-dd').style.display = 'none'; 
+        return; 
+    }
     tmdbTimer = setTimeout(() => searchTmdb(value), 400);
 }
+
 async function searchTmdb(query) {
     try {
         const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`;
@@ -924,7 +1105,10 @@ async function searchTmdb(query) {
         const data = await response.json();
         const items = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv').slice(0, 6);
         const dd = document.getElementById('tmdb-dd');
-        if (!items.length) { dd.style.display = 'none'; return; }
+        if (!items.length) { 
+            dd.style.display = 'none'; 
+            return; 
+        }
         
         const itemsWithDetails = await Promise.all(items.map(async (item) => {
             let genres = '';
@@ -960,8 +1144,11 @@ async function searchTmdb(query) {
                     </div>`;
         }).join('');
         dd.style.display = 'block';
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+        console.error(err); 
+    }
 }
+
 function selectTmdbWithData(title, type, year, poster, genres, runtime) {
     document.getElementById('f-title').value = title;
     document.getElementById('f-type').value = type;
@@ -972,22 +1159,48 @@ function selectTmdbWithData(title, type, year, poster, genres, runtime) {
     updatePosterPreview(poster, title);
     document.getElementById('tmdb-dd').style.display = 'none';
 }
-function clearTmdb() { document.getElementById('tmdb-q').value = ''; document.getElementById('tmdb-dd').style.display = 'none'; }
+
+function clearTmdb() { 
+    document.getElementById('tmdb-q').value = ''; 
+    document.getElementById('tmdb-dd').style.display = 'none'; 
+}
 
 // ============ DRAWER ============
-function openDrawer() { document.getElementById('filter-drawer').classList.add('open'); updateDrawerContent(); }
-function closeDrawer() { document.getElementById('filter-drawer').classList.remove('open'); }
+function openDrawer() { 
+    document.getElementById('filter-drawer').classList.add('open'); 
+    updateDrawerContent(); 
+}
+
+function closeDrawer() { 
+    document.getElementById('filter-drawer').classList.remove('open'); 
+}
+
 function updateDrawerContent() {
     const genres = [...new Set(mediaData.map(m => m.genre).filter(Boolean).flatMap(g => g.split(',').map(s => s.trim())))];
     const statusDiv = document.getElementById('drawer-status');
-    if (statusDiv) statusDiv.innerHTML = `<button class="dchip ${currentStatusFilter === 'all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();"><i class="fas fa-list"></i> All</button><button class="dchip ${currentStatusFilter === 'watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();"><i class="fas fa-eye"></i> Watching</button><button class="dchip ${currentStatusFilter === 'completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();"><i class="fas fa-check"></i> Completed</button><button class="dchip ${currentStatusFilter === 'plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();"><i class="fas fa-clock"></i> Plan</button>`;
+    if (statusDiv) {
+        statusDiv.innerHTML = `
+            <button class="dchip ${currentStatusFilter === 'all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();"><i class="fas fa-list"></i> All</button>
+            <button class="dchip ${currentStatusFilter === 'watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();"><i class="fas fa-eye"></i> Watching</button>
+            <button class="dchip ${currentStatusFilter === 'completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();"><i class="fas fa-check"></i> Completed</button>
+            <button class="dchip ${currentStatusFilter === 'plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();"><i class="fas fa-clock"></i> Plan</button>
+        `;
+    }
     const genreDiv = document.getElementById('drawer-genre');
-    if (genreDiv) genreDiv.innerHTML = genres.map(g => `<button class="dchip ${currentGenreFilter === g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span>No genres</span>';
+    if (genreDiv) {
+        genreDiv.innerHTML = genres.map(g => 
+            `<button class="dchip ${currentGenreFilter === g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${g}</button>`
+        ).join('') || '<span>No genres</span>';
+    }
 }
 
 // ============ INIT ============
-document.addEventListener('click', e => { if (!e.target.closest('.tmdb-wrap')) document.getElementById('tmdb-dd').style.display = 'none'; });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeDetail(); } });
+document.addEventListener('click', e => { 
+    if (!e.target.closest('.tmdb-wrap')) document.getElementById('tmdb-dd').style.display = 'none'; 
+});
+document.addEventListener('keydown', e => { 
+    if (e.key === 'Escape') { closeModal(); closeDetail(); } 
+});
 setInterval(loadFromSheets, 120000);
 loadFromSheets();
 </script>
