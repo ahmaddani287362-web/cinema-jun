@@ -293,7 +293,6 @@
   .rewatch-badge { font-size: 0.6rem; color: var(--purple); margin-top: 0.25rem; display: inline-block; }
   .watch-date-badge { font-size: 0.6rem; color: var(--text-dim); margin-top: 0.25rem; display: inline-block; width: 100%; }
   
-  /* List View with Images */
   .media-list { display: flex; flex-direction: column; gap: 0.75rem; }
   .list-item {
     background: var(--surface);
@@ -680,12 +679,13 @@
       <input type="text" id="f-episodes" placeholder="12 eps / 120 min">
     </div>
     <div class="form-group">
-      <label><i class="fas fa-play-circle"></i> Current Episode</label>
-      <input type="number" id="f-current-episode" min="0" value="0">
+      <label><i class="fas fa-play-circle"></i> Current Episode / Minutes</label>
+      <input type="text" id="f-current-episode" placeholder="4 / 60 min">
     </div>
     <div class="form-group">
       <label><i class="fas fa-chart-line"></i> Progress (%)</label>
-      <input type="number" id="f-progress" min="0" max="100" value="0">
+      <input type="number" id="f-progress" min="0" max="100" value="0" step="1">
+      <div class="info-note"><i class="fas fa-calculator"></i> Otomatis terisi dari current episode/runtime</div>
     </div>
     <div class="form-group">
       <label><i class="fas fa-star"></i> Rating (1-10)</label>
@@ -727,7 +727,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycby8Nl1jlFnUm4qZDSnQhQ934KJFebyC7KKmpmjMWNLi5srY1HBqvgs-sOKjkXdxcWECpA/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbwUp53lkWeFTEasA6O3tvQt4Q3fEJBAIyqz3vB-8LwLTMFd3I-wspBgyHIKqnkG4kEY7w/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -788,6 +788,74 @@ function formatWatchDate(dateValue) {
     }
 }
 
+// ============ PROGRESS CALCULATION ============
+function calculateProgress(type, episodesText, currentText) {
+    if (!currentText || currentText === '') return 0;
+    
+    // Parse current value (supports "4" or "4/12" or "60" for minutes)
+    let currentValue = 0;
+    let totalValue = 0;
+    
+    // Check if it's a fraction format (e.g., "4/12")
+    if (currentText.includes('/')) {
+        const parts = currentText.split('/');
+        currentValue = parseFloat(parts[0]) || 0;
+        totalValue = parseFloat(parts[1]) || 0;
+    } else {
+        currentValue = parseFloat(currentText) || 0;
+        
+        // For series, need total episodes from episodes field
+        if (type === 'Series' || type === 'Anime Series') {
+            if (episodesText) {
+                const epMatch = episodesText.match(/(\d+)\s*eps?/i);
+                if (epMatch) totalValue = parseFloat(epMatch[1]);
+            }
+        } 
+        // For movies, need total minutes from episodes field
+        else if (type === 'Movie' || type === 'Anime Movie') {
+            if (episodesText) {
+                const minMatch = episodesText.match(/(\d+)\s*min/i);
+                if (minMatch) totalValue = parseFloat(minMatch[1]);
+            }
+        }
+    }
+    
+    // Calculate percentage
+    if (totalValue > 0 && currentValue > 0) {
+        let percentage = Math.round((currentValue / totalValue) * 100);
+        return Math.min(100, Math.max(0, percentage));
+    }
+    return 0;
+}
+
+function updateProgressAutomatically() {
+    const type = document.getElementById('f-type').value;
+    const episodes = document.getElementById('f-episodes').value;
+    const currentValue = document.getElementById('f-current-episode').value;
+    
+    const progress = calculateProgress(type, episodes, currentValue);
+    if (progress > 0) {
+        document.getElementById('f-progress').value = progress;
+    }
+}
+
+// Attach event listeners for auto progress
+document.addEventListener('DOMContentLoaded', () => {
+    const currentEpisodeInput = document.getElementById('f-current-episode');
+    const episodesInput = document.getElementById('f-episodes');
+    const typeSelect = document.getElementById('f-type');
+    
+    if (currentEpisodeInput) {
+        currentEpisodeInput.addEventListener('input', () => updateProgressAutomatically());
+    }
+    if (episodesInput) {
+        episodesInput.addEventListener('input', () => updateProgressAutomatically());
+    }
+    if (typeSelect) {
+        typeSelect.addEventListener('change', () => updateProgressAutomatically());
+    }
+});
+
 // ============ DATABASE ============
 async function apiSheets(body) {
     const response = await fetch(API_SHEETS, { method: 'POST', body: JSON.stringify(body) });
@@ -801,27 +869,17 @@ async function loadFromSheets() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         
-        console.log("Raw data from sheets:", data.movies);
-        
         mediaData = (data.movies || []).map(m => {
-            // CRITICAL: Get watchDate from multiple possible property names
             let watchDateValue = '';
-            
-            // Check all possible property names (case insensitive)
             for (let key in m) {
                 const lowerKey = key.toLowerCase();
                 if (lowerKey === 'watchdate' || lowerKey === 'watch_date') {
                     watchDateValue = m[key] || '';
-                    console.log(`Found watchDate in property "${key}":`, watchDateValue);
                     break;
                 }
             }
-            
-            // Also check direct properties
             if (!watchDateValue && m.watchDate) watchDateValue = m.watchDate;
             if (!watchDateValue && m.watchdate) watchDateValue = m.watchdate;
-            
-            console.log(`Processing "${m.title}" - watchDate:`, watchDateValue);
             
             return {
                 id: Number(m.id || 0),
@@ -831,7 +889,7 @@ async function loadFromSheets() {
                 status: String(m.status || 'plan'),
                 genre: String(m.genre || ''),
                 episodes: String(m.episodes || ''),
-                currentEpisode: Number(m.currentEpisode || m.currentepisode || 0),
+                currentEpisode: String(m.currentEpisode || m.currentepisode || ''),
                 progress: Number(m.progress || 0),
                 rating: Number(m.rating || 0),
                 notes: String(m.notes || ''),
@@ -844,14 +902,11 @@ async function loadFromSheets() {
             };
         });
         
-        console.log("Processed mediaData:", mediaData.map(m => ({ title: m.title, watchDate: m.watchDate })));
-        
         setSyncStatus('online', 'Synced');
         renderMedia();
     } catch (err) {
         setSyncStatus('error', 'Error');
         showToast('Failed to load: ' + err.message, true);
-        console.error('Load error:', err);
     }
 }
 
@@ -861,18 +916,24 @@ async function saveEntry() {
     if (!title) { showToast('Please enter a title', true); return; }
     
     const watchDateValue = document.getElementById('f-watchdate').value || '';
-    console.log("Saving watchDate:", watchDateValue);
+    const type = document.getElementById('f-type').value;
+    const episodes = document.getElementById('f-episodes').value;
+    const currentEpisodeValue = document.getElementById('f-current-episode').value;
+    
+    // Calculate progress automatically
+    const calculatedProgress = calculateProgress(type, episodes, currentEpisodeValue);
+    const progress = calculatedProgress > 0 ? calculatedProgress : parseInt(document.getElementById('f-progress').value) || 0;
     
     const entry = {
         id: editingId || Date.now(),
         title: title,
-        type: document.getElementById('f-type').value,
+        type: type,
         year: parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
         status: document.getElementById('f-status').value,
         genre: document.getElementById('f-genre').value.trim(),
-        episodes: document.getElementById('f-episodes').value.trim(),
-        currentEpisode: parseInt(document.getElementById('f-current-episode').value) || 0,
-        progress: parseInt(document.getElementById('f-progress').value) || 0,
+        episodes: episodes,
+        currentEpisode: currentEpisodeValue,
+        progress: progress,
         rating: currentRating,
         notes: document.getElementById('f-notes').value.trim(),
         added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
@@ -944,6 +1005,20 @@ function renderStars(rating) {
     return stars;
 }
 
+function formatEpisodeDisplay(current, total) {
+    if (!current) return '';
+    if (current.includes('/')) return current;
+    if (total && total.match(/\d+\s*eps?/i)) {
+        const totalNum = total.match(/\d+/)[0];
+        return `${current}/${totalNum} eps`;
+    }
+    if (total && total.match(/\d+\s*min/i)) {
+        const totalMin = total.match(/\d+/)[0];
+        return `${current}/${totalMin} min`;
+    }
+    return `${current}`;
+}
+
 function renderMedia() {
     updateStats(); updateCounts(); updateGenreCloud();
     const data = getFilteredData();
@@ -960,15 +1035,18 @@ function renderMedia() {
             const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             const hasPoster = m.poster && m.poster.trim();
             const posterHTML = hasPoster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
+            const episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
             return `<div class="media-card" onclick="showDetail(${m.id})">
                         ${posterHTML}
                         <span class="card-badge ${statusClass}">${statusLabel}</span>
                         <div class="card-info">
                             <div class="card-title">${m.title}</div>
                             <div class="card-meta">${m.year} · ${m.type}</div>
+                            ${episodeDisplay ? `<div style="font-size:0.65rem;color:var(--gold);margin-top:0.25rem">${episodeDisplay}</div>` : ''}
                             ${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}
                             <div class="watch-date-badge">${formatWatchDate(m.watchDate)}</div>
                             ${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}
+                            ${m.progress > 0 ? `<div class="progress-bar" style="margin-top:0.5rem;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${m.progress}%;height:100%;background:var(--gold)"></div></div>` : ''}
                         </div>
                     </div>`;
         }).join('')}</div>`;
@@ -979,6 +1057,7 @@ function renderMedia() {
             const thumbHTML = hasPoster ? 
                 `<div class="list-thumb"><img src="${m.poster}" onerror="this.parentElement.innerHTML='<div class=list-thumb-placeholder>${m.title.charAt(0)}</div>'"></div>` : 
                 `<div class="list-thumb"><div class="list-thumb-placeholder">${m.title.charAt(0)}</div></div>`;
+            const episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
             
             return `<div class="list-item" onclick="showDetail(${m.id})">
                         ${thumbHTML}
@@ -988,9 +1067,11 @@ function renderMedia() {
                                 <span class="list-badge">${statusLabel}</span>
                             </div>
                             <div class="list-meta">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
+                            ${episodeDisplay ? `<div class="list-meta" style="color:var(--gold)">📺 ${episodeDisplay}</div>` : ''}
                             <div class="list-watch-date">${formatWatchDate(m.watchDate)}</div>
                             ${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}
                             ${m.rating ? `<div class="star-row" style="margin-top:0.25rem">${renderStars(m.rating)}</div>` : ''}
+                            ${m.progress > 0 ? `<div class="progress-bar" style="margin-top:0.5rem;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${m.progress}%;height:100%;background:var(--gold)"></div></div>` : ''}
                         </div>
                     </div>`;
         }).join('')}</div>`;
@@ -1035,12 +1116,10 @@ function updateGenreCloud() {
 
 function setViewMode(mode) { currentViewMode = mode; renderMedia(); }
 
-// ============ MODAL - FIXED WATCH DATE ============
+// ============ MODAL ============
 function openModal(id) {
     editingId = id || null;
     const m = id ? mediaData.find(x => x.id === id) : null;
-    
-    console.log("Opening modal for:", m?.title, "watchDate:", m?.watchDate);
     
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit"></i> Edit Title' : '<i class="fas fa-plus-circle"></i> Add New Title';
     document.getElementById('f-title').value = m ? m.title : '';
@@ -1049,7 +1128,7 @@ function openModal(id) {
     document.getElementById('f-status').value = m ? m.status : 'plan';
     document.getElementById('f-genre').value = m ? m.genre : '';
     document.getElementById('f-episodes').value = m ? m.episodes : '';
-    document.getElementById('f-current-episode').value = m ? m.currentEpisode : 0;
+    document.getElementById('f-current-episode').value = m ? m.currentEpisode : '';
     document.getElementById('f-progress').value = m ? m.progress : 0;
     document.getElementById('f-notes').value = m ? m.notes : '';
     document.getElementById('f-rewatch').value = m ? m.rewatch : 0;
@@ -1057,9 +1136,8 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
     
-    // CRITICAL: Set watchDate value correctly
+    // Set watchDate value correctly
     const watchDateValue = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
-    console.log("Setting watchDate input to:", watchDateValue);
     document.getElementById('f-watchdate').value = watchDateValue;
     
     setRating(m ? m.rating : 0);
@@ -1092,20 +1170,23 @@ function showDetail(id) {
     const m = mediaData.find(x => x.id === id);
     if (!m) return;
     const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
+    const episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
     document.getElementById('detail-body').innerHTML = `
         <div class="detail-hero">
             <img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'">
             <div class="detail-info">
                 <div class="detail-title">${m.title}</div>
                 <div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div>
+                ${episodeDisplay ? `<div class="detail-meta" style="color:var(--gold)">📺 ${episodeDisplay}</div>` : ''}
                 <div class="detail-rating">${renderStars(m.rating)}</div>
             </div>
         </div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '<span style="opacity:0.6">Not set</span>'}</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch Count</span><span class="detail-val">${m.rewatch} ${m.rewatch === 1 ? 'time' : 'times'}</span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}%</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-play-circle"></i> Current Episode/Minutes</span><span class="detail-val">${m.currentEpisode || '-'}</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>
         ${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}
         <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>
@@ -1139,8 +1220,11 @@ async function searchTmdb(query) {
                 const detailRes = await fetch(detailUrl);
                 const detailData = await detailRes.json();
                 genres = (detailData.genres || []).map(g => g.name).slice(0, 3).join(', ');
-                if (item.media_type === 'movie') runtime = detailData.runtime ? `${detailData.runtime} min` : '';
-                else runtime = detailData.number_of_episodes ? `${detailData.number_of_episodes} eps` : '';
+                if (item.media_type === 'movie') {
+                    runtime = detailData.runtime ? `${detailData.runtime} min` : '';
+                } else {
+                    runtime = detailData.number_of_episodes ? `${detailData.number_of_episodes} eps` : '';
+                }
                 posterUrl = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
             } catch(e) {}
             return { ...item, genres, runtime, posterUrl };
