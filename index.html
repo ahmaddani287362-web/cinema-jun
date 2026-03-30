@@ -31,7 +31,7 @@
   .stat-item:hover{background:var(--surface2)}
   .stat-label{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim)}
   .stat-value{font-family:var(--serif);font-size:2.2rem;font-weight:300}
-  main{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 130px)}
+  main{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 130px)}
   aside{background:var(--surface);border-right:1px solid var(--border-soft);padding:2rem 0;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto}
   .sidebar-section{padding:0 1.5rem;margin-bottom:2rem}
   .sidebar-title{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.75rem;border-bottom:1px solid var(--border-soft)}
@@ -41,7 +41,7 @@
   .nav-dot{width:6px;height:6px;border-radius:50%}
   .nav-count{margin-left:auto;font-size:.7rem;background:var(--surface2);padding:.15rem .5rem;border-radius:20px}
   .genre-cloud{display:flex;flex-wrap:wrap;gap:.4rem}
-  .genre-tag{font-size:.7rem;padding:.25rem .6rem;border-radius:1px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer}
+  .genre-tag{font-size:.7rem;padding:.25rem .6rem;border-radius:1px;border:1px solid var(--border);color:var(--text-dim);cursor:pointer;background:transparent}
   .genre-tag.active{border-color:var(--gold-dim);color:var(--gold)}
   .content{padding:2rem 2.5rem;background:var(--bg)}
   .content-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem}
@@ -100,19 +100,17 @@
 <main><aside>
   <div class="sidebar-section"><div class="sidebar-title">Status</div><div class="nav-item active" id="nav-all" onclick="setStatusFilter('all',this)"><span class="nav-dot"></span>All<span class="nav-count" id="cnt-all">0</span></div><div class="nav-item" id="nav-watching" onclick="setStatusFilter('watching',this)"><span class="nav-dot"></span>Watching<span class="nav-count" id="cnt-watching-nav">0</span></div><div class="nav-item" id="nav-completed" onclick="setStatusFilter('completed',this)"><span class="nav-dot"></span>Completed<span class="nav-count" id="cnt-completed-nav">0</span></div><div class="nav-item" id="nav-plan" onclick="setStatusFilter('plan',this)"><span class="nav-dot"></span>Plan to Watch<span class="nav-count" id="cnt-plan-nav">0</span></div><div class="nav-item" id="nav-dropped" onclick="setStatusFilter('dropped',this)"><span class="nav-dot"></span>Dropped<span class="nav-count" id="cnt-dropped-nav">0</span></div></div>
   <div class="sidebar-section"><div class="sidebar-title">Type</div><div class="nav-item" onclick="setTypeFilter('all',this)"><span>◈</span>All Types</div><div class="nav-item" onclick="setTypeFilter('Movie',this)"><span>🎬</span>Movie<span class="nav-count" id="cnt-movie">0</span></div><div class="nav-item" onclick="setTypeFilter('Series',this)"><span>📺</span>Series<span class="nav-count" id="cnt-series">0</span></div><div class="nav-item" onclick="setTypeFilter('Anime Movie',this)"><span>🎌🎬</span>Anime Movie<span class="nav-count" id="cnt-anime-movie">0</span></div><div class="nav-item" onclick="setTypeFilter('Anime Series',this)"><span>🎌📺</span>Anime Series<span class="nav-count" id="cnt-anime-series">0</span></div></div>
-  <div class="sidebar-section"><div class="sidebar-title">Director / Studio</div><div id="director-list"></div></div>
-  <div class="sidebar-section"><div class="sidebar-title">Main Cast</div><div id="cast-list"></div></div>
   <div class="sidebar-section"><div class="sidebar-title">Genres</div><div class="genre-cloud" id="genre-cloud"></div></div>
 </aside>
 <div class="content"><div class="content-header"><div class="section-title" id="section-title">All <em>Titles</em></div><div class="view-controls"><button class="view-btn active" id="btn-grid" onclick="setViewMode('grid')">⊞</button><button class="view-btn" id="btn-list" onclick="setViewMode('list')">☰</button></div></div>
-<div class="search-row"><div class="search-wrap"><span class="search-icon">⌕</span><input class="search-input" type="text" placeholder="Search title, director, cast, genre…" id="search-input" oninput="renderMedia()"></div><select class="filter-select" id="sort-select" onchange="renderMedia()"><option value="added">Recently Added</option><option value="rating">Highest Rated</option><option value="title">A → Z</option><option value="year">Year</option></select></div>
+<div class="search-row"><div class="search-wrap"><span class="search-icon">⌕</span><input class="search-input" type="text" placeholder="Search title, genre…" id="search-input" oninput="renderMedia()"></div><select class="filter-select" id="sort-select" onchange="renderMedia()"><option value="added">Recently Added</option><option value="rating">Highest Rated</option><option value="title">A → Z</option><option value="year">Year</option></select></div>
 <div id="media-container"></div></div></main>
 <div class="mob-fab"><button class="fab-filter" id="fab-filter-btn" onclick="openDrawer()">⊟ Filter</button><button class="fab-add" onclick="openModal()">+</button></div>
-<div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title">Filter</div><button class="drawer-reset" onclick="resetAllFilters()">Reset</button></div><div class="drawer-section"><div class="drawer-section-title">Status</div><div id="drawer-status" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title">Director</div><div id="drawer-director" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title">Main Cast</div><div id="drawer-cast" class="drawer-chips"></div></div><button class="drawer-apply" onclick="closeDrawer()">Apply</button></div>
+<div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title">Filter</div><button class="drawer-reset" onclick="resetAllFilters()">Reset</button></div><div class="drawer-section"><div class="drawer-section-title">Status</div><div id="drawer-status" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title">Genre</div><div id="drawer-genre" class="drawer-chips"></div></div><button class="drawer-apply" onclick="closeDrawer()">Apply</button></div>
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title" id="modal-heading">Add New Title</div><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">
   <div style="margin-bottom:1rem"><label>Search TMDB</label><div class="tmdb-wrap" style="position:relative"><div class="tmdb-row" style="display:flex;gap:.5rem"><input class="tmdb-input" id="tmdb-q" placeholder="Title..." style="flex:1" oninput="onTmdbType(this.value)"><button class="btn" onclick="clearTmdb()">✕</button></div><div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div></div></div>
   <div style="display:flex;gap:1rem;margin-bottom:1rem"><div class="poster-box" id="poster-box"><div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center;background:var(--surface2)">?</div></div><div style="flex:1"><div class="form-group full"><label>Title</label><input type="text" id="f-title"></div><div class="form-grid"><div class="form-group"><label>Type</label><select id="f-type"><option value="Movie">Movie</option><option value="Series">Series</option><option value="Anime Movie">Anime Movie</option><option value="Anime Series">Anime Series</option></select></div><div class="form-group"><label>Year</label><input type="number" id="f-year"></div></div></div></div>
-  <div class="form-grid"><div class="form-group"><label>Status</label><select id="f-status"><option value="plan">Plan to Watch</option><option value="watching">Watching</option><option value="completed">Completed</option><option value="dropped">Dropped</option></select></div><div class="form-group"><label>Watch Date (manual)</label><input type="date" id="f-watchdate"></div><div class="form-group"><label>Director / Studio</label><input type="text" id="f-director"></div><div class="form-group"><label>Main Cast (1 lead)</label><input type="text" id="f-cast"></div><div class="form-group"><label>Genre</label><input type="text" id="f-genre"></div><div class="form-group"><label>Episodes / Runtime</label><input type="text" id="f-episodes"></div><div class="form-group"><label>Current Episode</label><input type="number" id="f-current-episode" min="0"></div><div class="form-group"><label>Progress (%)</label><input type="number" id="f-progress" min="0" max="100"></div><div class="form-group"><label>Rating</label><div class="star-rating" id="star-rating"><button class="star-btn" data-v="1" onclick="setRating(1)">★</button><button class="star-btn" data-v="2" onclick="setRating(2)">★</button><button class="star-btn" data-v="3" onclick="setRating(3)">★</button><button class="star-btn" data-v="4" onclick="setRating(4)">★</button><button class="star-btn" data-v="5" onclick="setRating(5)">★</button></div></div><div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div></div>
+  <div class="form-grid"><div class="form-group"><label>Status</label><select id="f-status"><option value="plan">Plan to Watch</option><option value="watching">Watching</option><option value="completed">Completed</option><option value="dropped">Dropped</option></select></div><div class="form-group"><label>Watch Date (manual)</label><input type="date" id="f-watchdate"></div><div class="form-group"><label>Genre</label><input type="text" id="f-genre"></div><div class="form-group"><label>Episodes / Runtime</label><input type="text" id="f-episodes"></div><div class="form-group"><label>Current Episode</label><input type="number" id="f-current-episode" min="0"></div><div class="form-group"><label>Progress (%)</label><input type="number" id="f-progress" min="0" max="100"></div><div class="form-group"><label>Rating</label><div class="star-rating" id="star-rating"><button class="star-btn" data-v="1" onclick="setRating(1)">★</button><button class="star-btn" data-v="2" onclick="setRating(2)">★</button><button class="star-btn" data-v="3" onclick="setRating(3)">★</button><button class="star-btn" data-v="4" onclick="setRating(4)">★</button><button class="star-btn" data-v="5" onclick="setRating(5)">★</button></div></div><div class="form-group full"><label>Notes</label><textarea id="f-notes" rows="3"></textarea></div></div>
   <input type="hidden" id="f-poster"><input type="hidden" id="f-tmdbid"><div class="modal-footer" style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border-soft)"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" id="btn-save" onclick="saveEntry()">Save Title</button></div>
 </div></div></div>
 <div class="modal-overlay" id="detail-overlay" onclick="closeDetailOutside(event)"><div class="modal"><div class="modal-header"><div id="d-poster"></div><div><div class="modal-title" id="d-title"></div><div id="d-meta"></div></div><button class="modal-close" onclick="closeDetail()">✕</button></div><div class="modal-body" id="detail-body"></div></div></div>
@@ -121,7 +119,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzc8oI-e19Xtcn0-W357E9yHgHg6S3NY6TTN0gRiQ_rcVwak4ZnEnd0gNktoxMoF1YYDQ/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbyMIfUjbzTutmHbwcvKH123OYEbB7XBRgAxkL8zD7-5AdxahZ1zR-5mUPDCXqYcikBfWg/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -134,8 +132,6 @@ let editingId = null;
 let currentStatusFilter = 'all';
 let currentTypeFilter = 'all';
 let currentGenreFilter = 'all';
-let currentDirectorFilter = 'all';
-let currentCastFilter = 'all';
 let currentViewMode = 'grid';
 let isSaving = false;
 
@@ -177,8 +173,6 @@ async function loadFromSheets() {
             year: Number(m.year || 0),
             status: String(m.status || 'plan'),
             genre: String(m.genre || ''),
-            director: String(m.director || ''),
-            mainCast: String(m.mainCast || ''),
             episodes: String(m.episodes || ''),
             currentEpisode: Number(m.currentEpisode || m.currentepisode || 0),
             progress: Number(m.progress || 0),
@@ -214,8 +208,6 @@ async function saveEntry() {
         type: document.getElementById('f-type').value,
         year: parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
         status: document.getElementById('f-status').value,
-        director: document.getElementById('f-director').value.trim(),
-        mainCast: document.getElementById('f-cast').value.trim(),
         genre: document.getElementById('f-genre').value.trim(),
         episodes: document.getElementById('f-episodes').value.trim(),
         currentEpisode: parseInt(document.getElementById('f-current-episode').value) || 0,
@@ -281,15 +273,11 @@ function getFilteredData() {
     if (currentStatusFilter !== 'all') data = data.filter(x => x.status === currentStatusFilter);
     if (currentTypeFilter !== 'all') data = data.filter(x => x.type === currentTypeFilter);
     if (currentGenreFilter !== 'all') data = data.filter(x => x.genre && x.genre.toLowerCase().includes(currentGenreFilter.toLowerCase()));
-    if (currentDirectorFilter !== 'all') data = data.filter(x => x.director && x.director.toLowerCase().includes(currentDirectorFilter.toLowerCase()));
-    if (currentCastFilter !== 'all') data = data.filter(x => x.mainCast && x.mainCast.toLowerCase().includes(currentCastFilter.toLowerCase()));
     
     const query = document.getElementById('search-input').value.toLowerCase().trim();
     if (query) {
         data = data.filter(x => 
             x.title.toLowerCase().includes(query) ||
-            (x.director && x.director.toLowerCase().includes(query)) ||
-            (x.mainCast && x.mainCast.toLowerCase().includes(query)) ||
             (x.genre && x.genre.toLowerCase().includes(query))
         );
     }
@@ -313,18 +301,6 @@ function setTypeFilter(type, el) {
     renderMedia();
 }
 
-function setDirectorFilter(director) {
-    currentDirectorFilter = director;
-    currentCastFilter = 'all';
-    renderMedia();
-}
-
-function setCastFilter(cast) {
-    currentCastFilter = cast;
-    currentDirectorFilter = 'all';
-    renderMedia();
-}
-
 function setGenreFilter(genre) {
     currentGenreFilter = currentGenreFilter === genre ? 'all' : genre;
     renderMedia();
@@ -339,8 +315,6 @@ function resetAllFilters() {
     currentStatusFilter = 'all';
     currentTypeFilter = 'all';
     currentGenreFilter = 'all';
-    currentDirectorFilter = 'all';
-    currentCastFilter = 'all';
     document.getElementById('sort-select').value = 'added';
     renderMedia();
     closeDrawer();
@@ -354,7 +328,6 @@ function renderStars(rating) {
 function renderMedia() {
     updateStats();
     updateCounts();
-    updateDirectorCastLists();
     updateGenreCloud();
     
     const data = getFilteredData();
@@ -374,7 +347,7 @@ function renderMedia() {
             return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta" style="font-size:.7rem;color:var(--text-dim)">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge">✎ ${new Date(m.lastEdit).toLocaleDateString()}</div></div></div>`;
         }).join('')}</div>`;
     } else {
-        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:.75rem;margin-bottom:.5rem;border:1px solid var(--border);border-radius:2px;cursor:pointer" onclick="showDetail(${m.id})"><div><strong>${m.title}</strong> (${m.year})</div><div style="font-size:.75rem;color:var(--text-dim)">${m.director || '—'} | ${m.mainCast || '—'}</div>${m.rating ? `<div>${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
+        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:.75rem;margin-bottom:.5rem;border:1px solid var(--border);border-radius:2px;cursor:pointer" onclick="showDetail(${m.id})"><div><strong>${m.title}</strong> (${m.year})</div><div style="font-size:.75rem;color:var(--text-dim)">${m.type} ${m.genre ? '· ' + m.genre : ''}</div>${m.rating ? `<div>${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
     }
     
     document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
@@ -382,8 +355,6 @@ function renderMedia() {
     
     let titleText = {all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All';
     titleText += ' Titles';
-    if (currentDirectorFilter !== 'all') titleText += ` · ${currentDirectorFilter}`;
-    if (currentCastFilter !== 'all') titleText += ` · ${currentCastFilter}`;
     document.getElementById('section-title').innerHTML = titleText;
 }
 
@@ -418,19 +389,6 @@ function updateCounts() {
     document.getElementById('cnt-anime-series').textContent = counts['anime-series'];
 }
 
-function updateDirectorCastLists() {
-    const directors = [...new Set(mediaData.map(m => m.director).filter(Boolean))].sort();
-    const casts = [...new Set(mediaData.map(m => m.mainCast).filter(Boolean))].sort();
-    
-    document.getElementById('director-list').innerHTML = directors.map(d => 
-        `<div class="nav-item" onclick="setDirectorFilter('${d.replace(/'/g, "\\'")}')"><span>🎭</span>${d}</div>`
-    ).join('') || '<div style="color:var(--text-dim);font-size:.7rem">—</div>';
-    
-    document.getElementById('cast-list').innerHTML = casts.map(c => 
-        `<div class="nav-item" onclick="setCastFilter('${c.replace(/'/g, "\\'")}')"><span>⭐</span>${c}</div>`
-    ).join('') || '<div style="color:var(--text-dim);font-size:.7rem">—</div>';
-}
-
 function updateGenreCloud() {
     const genres = new Set();
     mediaData.forEach(m => { if (m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
@@ -454,8 +412,6 @@ function openModal(id) {
     document.getElementById('f-type').value = m ? m.type : 'Movie';
     document.getElementById('f-year').value = m ? m.year : '';
     document.getElementById('f-status').value = m ? m.status : 'plan';
-    document.getElementById('f-director').value = m ? m.director : '';
-    document.getElementById('f-cast').value = m ? m.mainCast : '';
     document.getElementById('f-genre').value = m ? m.genre : '';
     document.getElementById('f-episodes').value = m ? m.episodes : '';
     document.getElementById('f-current-episode').value = m ? m.currentEpisode : '';
@@ -504,7 +460,7 @@ function showDetail(id) {
     
     const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
     document.getElementById('d-title').innerHTML = m.title;
-    document.getElementById('d-meta').innerHTML = `${m.type} · ${m.year} · ${m.director || '—'} · ${m.mainCast ? '⭐ ' + m.mainCast : ''}`;
+    document.getElementById('d-meta').innerHTML = `${m.type} · ${m.year} · ${m.genre || 'No genre'}`;
     document.getElementById('d-poster').innerHTML = m.poster ? 
         `<img src="${m.poster}" style="width:100px;height:150px;object-fit:cover;border-radius:2px">` : 
         `<div style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2)">${m.title.charAt(0)}</div>`;
@@ -515,6 +471,8 @@ function showDetail(id) {
         <div style="margin-bottom:.5rem"><strong>Last Edited:</strong> ${new Date(m.lastEdit).toLocaleString()}</div>
         <div style="margin-bottom:.5rem"><strong>Status:</strong> <span class="card-badge" style="position:static;display:inline-block">${statusLabel}</span></div>
         <div style="margin-bottom:.5rem"><strong>Progress:</strong> ${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</div>
+        <div style="margin-bottom:.5rem"><strong>Genre:</strong> ${m.genre || '-'}</div>
+        <div style="margin-bottom:.5rem"><strong>Episodes/Runtime:</strong> ${m.episodes || '-'}</div>
         ${m.notes ? `<div style="margin-top:1rem;padding:.75rem;background:var(--surface2);border-left:2px solid var(--gold)"><em>"${m.notes}"</em></div>` : ''}
         <div style="margin-top:1.5rem;display:flex;gap:.75rem">
             <button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})">Edit</button>
@@ -595,8 +553,7 @@ function closeDrawer() {
 }
 
 function updateDrawerContent() {
-    const directors = [...new Set(mediaData.map(m => m.director).filter(Boolean))];
-    const casts = [...new Set(mediaData.map(m => m.mainCast).filter(Boolean))];
+    const genres = [...new Set(mediaData.map(m => m.genre).filter(Boolean).flatMap(g => g.split(',').map(s => s.trim())))];
     
     const statusDiv = document.getElementById('drawer-status');
     if (statusDiv) {
@@ -608,18 +565,11 @@ function updateDrawerContent() {
         `;
     }
     
-    const directorDiv = document.getElementById('drawer-director');
-    if (directorDiv) {
-        directorDiv.innerHTML = directors.map(d => 
-            `<button class="dchip ${currentDirectorFilter === d ? 'active' : ''}" onclick="setDirectorFilter('${d.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${d}</button>`
-        ).join('') || '<span>No data</span>';
-    }
-    
-    const castDiv = document.getElementById('drawer-cast');
-    if (castDiv) {
-        castDiv.innerHTML = casts.map(c => 
-            `<button class="dchip ${currentCastFilter === c ? 'active' : ''}" onclick="setCastFilter('${c.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${c}</button>`
-        ).join('') || '<span>No data</span>';
+    const genreDiv = document.getElementById('drawer-genre');
+    if (genreDiv) {
+        genreDiv.innerHTML = genres.map(g => 
+            `<button class="dchip ${currentGenreFilter === g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${g}</button>`
+        ).join('') || '<span>No genres</span>';
     }
 }
 
