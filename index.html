@@ -727,7 +727,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycby4VFMm7UjdGADEHGbxWMVAHAV7xKK01MhO7u5iCNyvsWWO5_3YXjwWsvp9ADZvudVLIA/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzp_5962CvDFLTsP8P1lWv5BhRZzzobzLv3MV5XHjUE8AR58OOwjywcITiypOx17xpO5g/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -771,14 +771,26 @@ function formatWatchDate(dateValue) {
     }
     try {
         let date;
-        if (typeof dateValue === 'number') {
+        
+        // Handle ISO format: "2026-03-26T17:00:00.000Z"
+        if (typeof dateValue === 'string' && dateValue.includes('T')) {
             date = new Date(dateValue);
-        } else if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        } 
+        // Handle YYYY-MM-DD format
+        else if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
             date = new Date(dateValue + 'T00:00:00');
-        } else {
+        }
+        // Handle timestamp number
+        else if (typeof dateValue === 'number') {
             date = new Date(dateValue);
         }
+        // Handle other formats
+        else {
+            date = new Date(dateValue);
+        }
+        
         if (isNaN(date.getTime())) return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+        
         const day = date.getDate();
         const month = date.toLocaleDateString('id-ID', { month: 'long' });
         const year = date.getFullYear();
