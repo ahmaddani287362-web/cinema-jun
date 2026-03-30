@@ -536,6 +536,16 @@
   .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
   .empty-title { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; }
   .tmdb-wrap { position: relative; }
+  
+  .info-note {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .info-note i { font-size: 0.65rem; }
 </style>
 </head>
 <body>
@@ -552,16 +562,114 @@
 <div id="media-container"></div></div></main>
 <div class="mob-fab"><button class="fab-filter" id="fab-filter-btn" onclick="openDrawer()"><i class="fas fa-sliders-h"></i> Filter</button><button class="fab-add" onclick="openModal()"><i class="fas fa-plus"></i></button></div>
 <div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title" style="font-family:'Cormorant Garamond';font-size:1.4rem">Filter & Sort</div><button class="drawer-reset" onclick="resetAllFilters()" style="background:none;border:none;color:var(--gold);cursor:pointer"><i class="fas fa-undo"></i> Reset</button></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Status</div><div id="drawer-status" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Genre</div><div id="drawer-genre" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Sort By</div><div class="drawer-chips"><button class="dchip" onclick="document.getElementById('sort-select').value='added';renderMedia();closeDrawer()">Recently Added</button><button class="dchip" onclick="document.getElementById('sort-select').value='rating';renderMedia();closeDrawer()">Highest Rated</button><button class="dchip" onclick="document.getElementById('sort-select').value='title';renderMedia();closeDrawer()">A → Z</button><button class="dchip" onclick="document.getElementById('sort-select').value='year';renderMedia();closeDrawer()">Year</button></div></div><button class="drawer-apply" onclick="closeDrawer()"><i class="fas fa-check"></i> Apply Filters</button></div>
-<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title" id="modal-heading"><i class="fas fa-plus-circle"></i> Add New Title</div><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><div class="modal-body"><div style="margin-bottom:1.2rem"><label><i class="fas fa-search"></i> Search TMDB</label><div class="tmdb-wrap"><div style="display:flex;gap:0.5rem"><input class="tmdb-input" id="tmdb-q" placeholder="Type movie or series title..." style="flex:1" oninput="onTmdbType(this.value)"><button class="btn" type="button" onclick="clearTmdb()"><i class="fas fa-times"></i></button></div><div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div></div></div><div style="display:flex;gap:1.2rem;margin-bottom:1.2rem;flex-wrap:wrap"><div class="poster-box" id="poster-box"><div class="poster-ph" style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div></div><div style="flex:1;min-width:200px"><div class="form-group full"><label><i class="fas fa-heading"></i> Title *</label><input type="text" id="f-title" placeholder="Enter title..."></div><div class="form-grid"><div class="form-group"><label><i class="fas fa-layer-group"></i> Type</label><select id="f-type"><option value="Movie">🎬 Movie</option><option value="Series">📺 Series</option><option value="Anime Movie">🎬 Anime Movie</option><option value="Anime Series">📺 Anime Series</option></select></div><div class="form-group"><label><i class="fas fa-calendar"></i> Year</label><input type="number" id="f-year" placeholder="2024"></div></div></div></div><div class="form-grid"><div class="form-group"><label><i class="fas fa-flag-checkered"></i> Status</label><select id="f-status"><option value="plan">📋 Plan to Watch</option><option value="watching">👀 Watching</option><option value="completed">✅ Completed</option><option value="dropped">❌ Dropped</option></select></div><div class="form-group"><label><i class="fas fa-calendar-day"></i> Watch Date</label><input type="date" id="f-watchdate"></div><div class="form-group"><label><i class="fas fa-tags"></i> Genre</label><input type="text" id="f-genre" placeholder="Drama, Action, Comedy..."></div><div class="form-group"><label><i class="fas fa-hourglass-half"></i> Episodes / Runtime</label><input type="text" id="f-episodes" placeholder="12 eps / 120 min"></div><div class="form-group"><label><i class="fas fa-play-circle"></i> Current Episode</label><input type="number" id="f-current-episode" min="0"></div><div class="form-group"><label><i class="fas fa-chart-line"></i> Progress (%)</label><input type="number" id="f-progress" min="0" max="100"></div><div class="form-group"><label><i class="fas fa-star"></i> Rating (1-10)</label><div class="star-rating" id="star-rating"><button class="star-btn" data-v="1" onclick="setRating(1)">★</button><button class="star-btn" data-v="2" onclick="setRating(2)">★</button><button class="star-btn" data-v="3" onclick="setRating(3)">★</button><button class="star-btn" data-v="4" onclick="setRating(4)">★</button><button class="star-btn" data-v="5" onclick="setRating(5)">★</button><button class="star-btn" data-v="6" onclick="setRating(6)">★</button><button class="star-btn" data-v="7" onclick="setRating(7)">★</button><button class="star-btn" data-v="8" onclick="setRating(8)">★</button><button class="star-btn" data-v="9" onclick="setRating(9)">★</button><button class="star-btn" data-v="10" onclick="setRating(10)">★</button></div></div><div class="form-group full"><label><i class="fas fa-pen"></i> Notes</label><textarea id="f-notes" rows="3" placeholder="Your personal thoughts..."></textarea></div></div><input type="hidden" id="f-poster"><input type="hidden" id="f-tmdbid"><div class="modal-footer" style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)"><button class="btn" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button><button class="btn btn-primary" id="btn-save" onclick="saveEntry()"><i class="fas fa-save"></i> Save Title</button></div></div></div></div>
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title" id="modal-heading"><i class="fas fa-plus-circle"></i> Add New Title</div><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><div class="modal-body">
+  <div style="margin-bottom:1.2rem">
+    <label><i class="fas fa-search"></i> Search TMDB</label>
+    <div class="tmdb-wrap">
+      <div style="display:flex;gap:0.5rem">
+        <input class="tmdb-input" id="tmdb-q" placeholder="Type movie or series title..." style="flex:1" oninput="onTmdbType(this.value)">
+        <button class="btn" type="button" onclick="clearTmdb()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div>
+    </div>
+  </div>
+  
+  <div style="display:flex;gap:1.2rem;margin-bottom:1.2rem;flex-wrap:wrap">
+    <div class="poster-box" id="poster-box">
+      <div class="poster-ph" style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>
+    </div>
+    <div style="flex:1;min-width:200px">
+      <div class="form-group full">
+        <label><i class="fas fa-heading"></i> Title *</label>
+        <input type="text" id="f-title" placeholder="Enter title...">
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label><i class="fas fa-layer-group"></i> Type</label>
+          <select id="f-type">
+            <option value="Movie">🎬 Movie</option>
+            <option value="Series">📺 Series</option>
+            <option value="Anime Movie">🎬 Anime Movie</option>
+            <option value="Anime Series">📺 Anime Series</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-calendar"></i> Year</label>
+          <input type="number" id="f-year" placeholder="2024">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="form-grid">
+    <div class="form-group">
+      <label><i class="fas fa-flag-checkered"></i> Status</label>
+      <select id="f-status">
+        <option value="plan">📋 Plan to Watch</option>
+        <option value="watching">👀 Watching</option>
+        <option value="completed">✅ Completed</option>
+        <option value="dropped">❌ Dropped</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-calendar-day"></i> Watch Date</label>
+      <input type="date" id="f-watchdate">
+      <div class="info-note"><i class="fas fa-info-circle"></i> Leave empty if not watched yet</div>
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-tags"></i> Genre</label>
+      <input type="text" id="f-genre" placeholder="Drama, Action, Comedy...">
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-hourglass-half"></i> Episodes / Runtime</label>
+      <input type="text" id="f-episodes" placeholder="12 eps / 120 min">
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-play-circle"></i> Current Episode</label>
+      <input type="number" id="f-current-episode" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-chart-line"></i> Progress (%)</label>
+      <input type="number" id="f-progress" min="0" max="100" value="0">
+    </div>
+    <div class="form-group">
+      <label><i class="fas fa-star"></i> Rating (1-10)</label>
+      <div class="star-rating" id="star-rating">
+        <button class="star-btn" data-v="1" onclick="setRating(1)">★</button>
+        <button class="star-btn" data-v="2" onclick="setRating(2)">★</button>
+        <button class="star-btn" data-v="3" onclick="setRating(3)">★</button>
+        <button class="star-btn" data-v="4" onclick="setRating(4)">★</button>
+        <button class="star-btn" data-v="5" onclick="setRating(5)">★</button>
+        <button class="star-btn" data-v="6" onclick="setRating(6)">★</button>
+        <button class="star-btn" data-v="7" onclick="setRating(7)">★</button>
+        <button class="star-btn" data-v="8" onclick="setRating(8)">★</button>
+        <button class="star-btn" data-v="9" onclick="setRating(9)">★</button>
+        <button class="star-btn" data-v="10" onclick="setRating(10)">★</button>
+      </div>
+    </div>
+    <div class="form-group full">
+      <label><i class="fas fa-pen"></i> Notes</label>
+      <textarea id="f-notes" rows="3" placeholder="Your personal thoughts..."></textarea>
+    </div>
+  </div>
+  
+  <input type="hidden" id="f-poster">
+  <input type="hidden" id="f-tmdbid">
+  
+  <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
+    <button class="btn" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button>
+    <button class="btn btn-primary" id="btn-save" onclick="saveEntry()"><i class="fas fa-save"></i> Save Title</button>
+  </div>
+</div></div></div>
 <div class="modal-overlay" id="detail-overlay" onclick="closeDetailOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title"><i class="fas fa-info-circle"></i> Title Details</div><button class="modal-close" onclick="closeDetail()"><i class="fas fa-times"></i></button></div><div class="modal-body" id="detail-body"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbw5l_5kE9xb8s0V2ZkRlq1oZnHc7vSX40tVirTEWhDCqP4EgD8HIjJTS9AZ2_iYhueGHw/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbyAL3wjwPjSOldQaBCC0U5EqC9prPKzzEgcKC8gsvX75x5ecGVgJ-w_DSTDYkcNYDKEzQ/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
-const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92'; // Smaller image for dropdown
+const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
 // ============ VARIABEL GLOBAL ============
 let mediaData = [];
@@ -623,6 +731,7 @@ async function loadFromSheets() {
             added: Number(m.added || 0),
             poster: String(m.poster || ''),
             tmdbId: String(m.tmdbId || m.tmdbid || ''),
+            rewatch: Number(m.rewatch || 0),
             watchDate: String(m.watchDate || ''),
             lastEdit: Number(m.lastEdit || Date.now())
         }));
@@ -637,6 +746,7 @@ async function saveEntry() {
     if (isSaving) return;
     const title = document.getElementById('f-title').value.trim();
     if (!title) { showToast('Please enter a title', true); return; }
+    
     const entry = {
         id: editingId || Date.now(),
         title: title,
@@ -649,12 +759,14 @@ async function saveEntry() {
         progress: parseInt(document.getElementById('f-progress').value) || 0,
         rating: currentRating,
         notes: document.getElementById('f-notes').value.trim(),
+        added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
         poster: document.getElementById('f-poster').value,
         tmdbId: document.getElementById('f-tmdbid').value,
-        watchDate: document.getElementById('f-watchdate').value,
-        added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
+        rewatch: editingId ? (mediaData.find(x => x.id === editingId)?.rewatch || 0) : 0,
+        watchDate: document.getElementById('f-watchdate').value || '',
         lastEdit: Date.now()
     };
+    
     isSaving = true;
     const btn = document.getElementById('btn-save');
     btn.disabled = true;
@@ -717,6 +829,10 @@ function renderStars(rating) {
     for (let i = 1; i <= 10; i++) stars += `<span class="star${i <= rating ? ' filled' : ''}">★</span>`;
     return stars;
 }
+function formatWatchDate(dateStr) {
+    if (!dateStr || dateStr === '') return '<span style="opacity:0.6">Not set</span>';
+    return new Date(dateStr).toLocaleDateString('id-ID');
+}
 function renderMedia() {
     updateStats(); updateCounts(); updateGenreCloud();
     const data = getFilteredData();
@@ -728,10 +844,10 @@ function renderMedia() {
             const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             const hasPoster = m.poster && m.poster.trim();
             const posterHTML = hasPoster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
-            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge"><i class="far fa-clock"></i> ${new Date(m.lastEdit).toLocaleDateString()}</div></div></div>`;
+            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge"><i class="far fa-calendar-alt"></i> ${formatWatchDate(m.watchDate)}</div></div></div>`;
         }).join('')}</div>`;
     } else {
-        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all 0.2s" onclick="showDetail(${m.id})"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem"><div><strong>${m.title}</strong> <span style="color:var(--text-dim)">(${m.year})</span></div><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${m.status}</span></div><div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.25rem">${m.type} ${m.genre ? '· ' + m.genre : ''}</div>${m.rating ? `<div class="star-row" style="margin-top:0.5rem">${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
+        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all 0.2s" onclick="showDetail(${m.id})"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem"><div><strong>${m.title}</strong> <span style="color:var(--text-dim)">(${m.year})</span></div><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${m.status}</span></div><div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.25rem">${m.type} ${m.genre ? '· ' + m.genre : ''}</div><div style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem"><i class="far fa-calendar-alt"></i> ${formatWatchDate(m.watchDate)}</div>${m.rating ? `<div class="star-row" style="margin-top:0.5rem">${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
     }
     document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
     document.getElementById('btn-list').className = 'view-btn' + (currentViewMode === 'list' ? ' active' : '');
@@ -766,8 +882,8 @@ function openModal(id) {
     document.getElementById('f-status').value = m ? m.status : 'plan';
     document.getElementById('f-genre').value = m ? m.genre : '';
     document.getElementById('f-episodes').value = m ? m.episodes : '';
-    document.getElementById('f-current-episode').value = m ? m.currentEpisode : '';
-    document.getElementById('f-progress').value = m ? m.progress : '';
+    document.getElementById('f-current-episode').value = m ? m.currentEpisode : 0;
+    document.getElementById('f-progress').value = m ? m.progress : 0;
     document.getElementById('f-notes').value = m ? m.notes : '';
     document.getElementById('f-watchdate').value = m ? m.watchDate : '';
     document.getElementById('f-poster').value = m ? m.poster : '';
@@ -791,7 +907,7 @@ function showDetail(id) {
     const m = mediaData.find(x => x.id === id);
     if (!m) return;
     const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
-    document.getElementById('detail-body').innerHTML = `<div class="detail-hero"><img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div><div class="detail-rating">${renderStars(m.rating)}</div></div></div><div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate || 'Not set'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}<div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>`;
+    document.getElementById('detail-body').innerHTML = `<div class="detail-hero"><img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div><div class="detail-rating">${renderStars(m.rating)}</div></div></div><div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID') : '<span style="opacity:0.6">Not set</span>'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}<div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>`;
     document.getElementById('detail-overlay').classList.add('open');
 }
 function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
@@ -812,18 +928,23 @@ async function searchTmdb(query) {
         const dd = document.getElementById('tmdb-dd');
         if (!items.length) { dd.style.display = 'none'; return; }
         
-        // Fetch genres for each item with parallel requests
         const itemsWithDetails = await Promise.all(items.map(async (item) => {
             let genres = '';
+            let runtime = '';
             let posterUrl = '';
             try {
                 const detailUrl = `https://api.themoviedb.org/3/${item.media_type === 'tv' ? 'tv' : 'movie'}/${item.id}?api_key=${TMDB_KEY}`;
                 const detailRes = await fetch(detailUrl);
                 const detailData = await detailRes.json();
                 genres = (detailData.genres || []).map(g => g.name).slice(0, 3).join(', ');
+                if (item.media_type === 'movie') {
+                    runtime = detailData.runtime ? `${detailData.runtime} min` : '';
+                } else {
+                    runtime = detailData.number_of_episodes ? `${detailData.number_of_episodes} eps` : '';
+                }
                 posterUrl = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
             } catch(e) {}
-            return { ...item, genres, posterUrl };
+            return { ...item, genres, runtime, posterUrl };
         }));
         
         dd.innerHTML = itemsWithDetails.map(item => {
@@ -831,11 +952,11 @@ async function searchTmdb(query) {
             const year = (item.release_date || item.first_air_date || '').slice(0, 4);
             const type = item.media_type === 'tv' ? 'Series' : 'Movie';
             const posterHtml = item.posterUrl ? `<img class="tmdb-item-img" src="${item.posterUrl}" onerror="this.style.display='none'">` : `<div class="tmdb-item-img" style="display:flex;align-items:center;justify-content:center;background:var(--surface3)"><i class="fas fa-film" style="opacity:0.5"></i></div>`;
-            return `<div class="tmdb-item" onclick="selectTmdbWithGenre('${title.replace(/'/g, "\\'")}', '${type}', '${year}', '${item.posterUrl}', '${item.genres.replace(/'/g, "\\'")}')">
+            return `<div class="tmdb-item" onclick="selectTmdbWithData('${title.replace(/'/g, "\\'")}', '${type}', '${year}', '${item.posterUrl}', '${item.genres.replace(/'/g, "\\'")}', '${item.runtime}')">
                         ${posterHtml}
                         <div class="tmdb-item-info">
                             <div class="tmdb-item-title">${title}</div>
-                            <div class="tmdb-item-year">${year} · ${type}</div>
+                            <div class="tmdb-item-year">${year} · ${type} ${item.runtime ? '· ' + item.runtime : ''}</div>
                             <div class="tmdb-item-genre">${item.genres || 'Click to select'}</div>
                         </div>
                     </div>`;
@@ -843,12 +964,13 @@ async function searchTmdb(query) {
         dd.style.display = 'block';
     } catch (err) { console.error(err); }
 }
-function selectTmdbWithGenre(title, type, year, poster, genres) {
+function selectTmdbWithData(title, type, year, poster, genres, runtime) {
     document.getElementById('f-title').value = title;
     document.getElementById('f-type').value = type;
     document.getElementById('f-year').value = year;
     document.getElementById('f-poster').value = poster;
     if (genres) document.getElementById('f-genre').value = genres;
+    if (runtime) document.getElementById('f-episodes').value = runtime;
     updatePosterPreview(poster, title);
     document.getElementById('tmdb-dd').style.display = 'none';
 }
