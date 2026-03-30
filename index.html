@@ -20,12 +20,10 @@
     --gold-light: #E8C97A;
     --gold-dim: #9B7E3A;
     --bg: #0A0A0F;
-    --bg-card: #111117;
     --surface: #15151E;
     --surface2: #1C1C26;
     --surface3: #23232F;
     --border: #2A2A35;
-    --border-light: #32323F;
     --text: #F5F3F0;
     --text-muted: #9A98A8;
     --text-dim: #6A6878;
@@ -33,11 +31,8 @@
     --green: #6BCB7A;
     --blue: #6B9BEF;
     --purple: #AA7BEF;
-    --pink: #EF7B9B;
-    --orange: #EFB57B;
     --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
     --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
-    --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
   }
   
   body {
@@ -51,7 +46,6 @@
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: var(--surface); }
   ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
   
   .sync-bar {
     background: var(--surface);
@@ -265,8 +259,7 @@
     transform: translateY(-6px);
     box-shadow: var(--shadow-md);
   }
-  .card-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; transition: transform 0.3s; }
-  .media-card:hover .card-poster { transform: scale(1.02); }
+  .card-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
   .poster-placeholder {
     width: 100%;
     aspect-ratio: 2/3;
@@ -297,7 +290,7 @@
   .star-row { display: flex; gap: 0.15rem; margin-top: 0.5rem; flex-wrap: wrap; }
   .star { font-size: 0.7rem; color: var(--text-dim); }
   .star.filled { color: var(--gold); }
-  .last-edit-badge { font-size: 0.6rem; color: var(--text-dim); margin-top: 0.5rem; opacity: 0.6; }
+  .rewatch-badge { font-size: 0.6rem; color: var(--purple); margin-top: 0.25rem; display: inline-block; }
   
   .modal-overlay {
     position: fixed;
@@ -319,10 +312,10 @@
     border: 1px solid rgba(201,168,76,0.2);
     border-radius: 24px;
     width: 100%;
-    max-width: 750px;
+    max-width: 800px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
   }
   .modal-header {
     padding: 1.5rem 2rem;
@@ -536,16 +529,7 @@
   .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
   .empty-title { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; }
   .tmdb-wrap { position: relative; }
-  
-  .info-note {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    margin-top: 0.25rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  .info-note i { font-size: 0.65rem; }
+  .info-note { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem; display: flex; align-items: center; gap: 0.25rem; }
 </style>
 </head>
 <body>
@@ -614,7 +598,7 @@
     <div class="form-group">
       <label><i class="fas fa-calendar-day"></i> Watch Date</label>
       <input type="date" id="f-watchdate">
-      <div class="info-note"><i class="fas fa-info-circle"></i> Leave empty if not watched yet</div>
+      <div class="info-note"><i class="fas fa-info-circle"></i> Tanggal saat menonton</div>
     </div>
     <div class="form-group">
       <label><i class="fas fa-tags"></i> Genre</label>
@@ -647,6 +631,11 @@
         <button class="star-btn" data-v="10" onclick="setRating(10)">★</button>
       </div>
     </div>
+    <div class="form-group">
+      <label><i class="fas fa-redo-alt"></i> Rewatch Count</label>
+      <input type="number" id="f-rewatch" min="0" value="0">
+      <div class="info-note"><i class="fas fa-info-circle"></i> Jumlah kali ditonton ulang</div>
+    </div>
     <div class="form-group full">
       <label><i class="fas fa-pen"></i> Notes</label>
       <textarea id="f-notes" rows="3" placeholder="Your personal thoughts..."></textarea>
@@ -667,7 +656,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbyAL3wjwPjSOldQaBCC0U5EqC9prPKzzEgcKC8gsvX75x5ecGVgJ-w_DSTDYkcNYDKEzQ/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbyvUVYvwSLDHuTz2UhQkiwOuqD5oUqnNcviTCt1gcspsKQ6TREKpXE_MiOSUomAQzrL/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -703,6 +692,18 @@ function resetToHome() {
     document.getElementById('search-input').value = '';
     renderMedia();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function formatDate(dateStr) {
+    if (!dateStr || dateStr === '' || dateStr === 'null' || dateStr === 'undefined') {
+        return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+    }
+    try {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+        return `<i class="far fa-calendar-alt"></i> ${date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    } catch(e) {
+        return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+    }
 }
 
 // ============ DATABASE ============
@@ -762,7 +763,7 @@ async function saveEntry() {
         added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
         poster: document.getElementById('f-poster').value,
         tmdbId: document.getElementById('f-tmdbid').value,
-        rewatch: editingId ? (mediaData.find(x => x.id === editingId)?.rewatch || 0) : 0,
+        rewatch: parseInt(document.getElementById('f-rewatch').value) || 0,
         watchDate: document.getElementById('f-watchdate').value || '',
         lastEdit: Date.now()
     };
@@ -829,10 +830,6 @@ function renderStars(rating) {
     for (let i = 1; i <= 10; i++) stars += `<span class="star${i <= rating ? ' filled' : ''}">★</span>`;
     return stars;
 }
-function formatWatchDate(dateStr) {
-    if (!dateStr || dateStr === '') return '<span style="opacity:0.6">Not set</span>';
-    return new Date(dateStr).toLocaleDateString('id-ID');
-}
 function renderMedia() {
     updateStats(); updateCounts(); updateGenreCloud();
     const data = getFilteredData();
@@ -844,10 +841,10 @@ function renderMedia() {
             const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             const hasPoster = m.poster && m.poster.trim();
             const posterHTML = hasPoster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
-            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge"><i class="far fa-calendar-alt"></i> ${formatWatchDate(m.watchDate)}</div></div></div>`;
+            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHTML}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}<div class="last-edit-badge">${formatDate(m.watchDate)}</div>${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}</div></div>`;
         }).join('')}</div>`;
     } else {
-        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all 0.2s" onclick="showDetail(${m.id})"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem"><div><strong>${m.title}</strong> <span style="color:var(--text-dim)">(${m.year})</span></div><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${m.status}</span></div><div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.25rem">${m.type} ${m.genre ? '· ' + m.genre : ''}</div><div style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem"><i class="far fa-calendar-alt"></i> ${formatWatchDate(m.watchDate)}</div>${m.rating ? `<div class="star-row" style="margin-top:0.5rem">${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
+        container.innerHTML = `<div class="media-list">${data.map(m => `<div class="list-item" style="background:var(--surface);padding:1rem;margin-bottom:0.75rem;border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all 0.2s" onclick="showDetail(${m.id})"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem"><div><strong>${m.title}</strong> <span style="color:var(--text-dim)">(${m.year})</span></div><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${m.status}</span></div><div style="font-size:0.8rem;color:var(--text-dim);margin-top:0.25rem">${m.type} ${m.genre ? '· ' + m.genre : ''}</div><div style="font-size:0.7rem;color:var(--text-dim);margin-top:0.25rem">${formatDate(m.watchDate)}</div>${m.rewatch > 0 ? `<div style="font-size:0.7rem;color:var(--purple);margin-top:0.25rem"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}${m.rating ? `<div class="star-row" style="margin-top:0.5rem">${renderStars(m.rating)}</div>` : ''}</div>`).join('')}</div>`;
     }
     document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
     document.getElementById('btn-list').className = 'view-btn' + (currentViewMode === 'list' ? ' active' : '');
@@ -885,7 +882,8 @@ function openModal(id) {
     document.getElementById('f-current-episode').value = m ? m.currentEpisode : 0;
     document.getElementById('f-progress').value = m ? m.progress : 0;
     document.getElementById('f-notes').value = m ? m.notes : '';
-    document.getElementById('f-watchdate').value = m ? m.watchDate : '';
+    document.getElementById('f-watchdate').value = m && m.watchDate && m.watchDate !== '' ? m.watchDate : '';
+    document.getElementById('f-rewatch').value = m ? m.rewatch : 0;
     document.getElementById('f-poster').value = m ? m.poster : '';
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
@@ -907,7 +905,7 @@ function showDetail(id) {
     const m = mediaData.find(x => x.id === id);
     if (!m) return;
     const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
-    document.getElementById('detail-body').innerHTML = `<div class="detail-hero"><img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div><div class="detail-rating">${renderStars(m.rating)}</div></div></div><div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID') : '<span style="opacity:0.6">Not set</span>'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}<div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>`;
+    document.getElementById('detail-body').innerHTML = `<div class="detail-hero"><img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div><div class="detail-rating">${renderStars(m.rating)}</div></div></div><div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '<span style="opacity:0.6">Not set</span>'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch Count</span><span class="detail-val">${m.rewatch} ${m.rewatch === 1 ? 'time' : 'times'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}% ${m.currentEpisode ? `(Ep ${m.currentEpisode})` : ''}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div><div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}<div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>`;
     document.getElementById('detail-overlay').classList.add('open');
 }
 function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
