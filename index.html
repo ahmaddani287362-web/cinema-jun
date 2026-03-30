@@ -727,7 +727,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbwVYHWDSjD0Qq7KgP0YhpltzBJu-_r06WoSC-3TKOLCdq1vNYWDtGraqk4_EvRpubx8lw/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycby8Nl1jlFnUm4qZDSnQhQ934KJFebyC7KKmpmjMWNLi5srY1HBqvgs-sOKjkXdxcWECpA/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -801,10 +801,27 @@ async function loadFromSheets() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         
+        console.log("Raw data from sheets:", data.movies);
+        
         mediaData = (data.movies || []).map(m => {
+            // CRITICAL: Get watchDate from multiple possible property names
             let watchDateValue = '';
-            if (m.watchDate && m.watchDate !== '') watchDateValue = m.watchDate;
-            else if (m.watchdate && m.watchdate !== '') watchDateValue = m.watchdate;
+            
+            // Check all possible property names (case insensitive)
+            for (let key in m) {
+                const lowerKey = key.toLowerCase();
+                if (lowerKey === 'watchdate' || lowerKey === 'watch_date') {
+                    watchDateValue = m[key] || '';
+                    console.log(`Found watchDate in property "${key}":`, watchDateValue);
+                    break;
+                }
+            }
+            
+            // Also check direct properties
+            if (!watchDateValue && m.watchDate) watchDateValue = m.watchDate;
+            if (!watchDateValue && m.watchdate) watchDateValue = m.watchdate;
+            
+            console.log(`Processing "${m.title}" - watchDate:`, watchDateValue);
             
             return {
                 id: Number(m.id || 0),
@@ -827,11 +844,14 @@ async function loadFromSheets() {
             };
         });
         
+        console.log("Processed mediaData:", mediaData.map(m => ({ title: m.title, watchDate: m.watchDate })));
+        
         setSyncStatus('online', 'Synced');
         renderMedia();
     } catch (err) {
         setSyncStatus('error', 'Error');
         showToast('Failed to load: ' + err.message, true);
+        console.error('Load error:', err);
     }
 }
 
@@ -841,6 +861,7 @@ async function saveEntry() {
     if (!title) { showToast('Please enter a title', true); return; }
     
     const watchDateValue = document.getElementById('f-watchdate').value || '';
+    console.log("Saving watchDate:", watchDateValue);
     
     const entry = {
         id: editingId || Date.now(),
@@ -952,7 +973,6 @@ function renderMedia() {
                     </div>`;
         }).join('')}</div>`;
     } else {
-        // LIST VIEW WITH IMAGES
         container.innerHTML = `<div class="media-list">${data.map(m => {
             const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             const hasPoster = m.poster && m.poster.trim();
@@ -1015,10 +1035,12 @@ function updateGenreCloud() {
 
 function setViewMode(mode) { currentViewMode = mode; renderMedia(); }
 
-// ============ MODAL ============
+// ============ MODAL - FIXED WATCH DATE ============
 function openModal(id) {
     editingId = id || null;
     const m = id ? mediaData.find(x => x.id === id) : null;
+    
+    console.log("Opening modal for:", m?.title, "watchDate:", m?.watchDate);
     
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit"></i> Edit Title' : '<i class="fas fa-plus-circle"></i> Add New Title';
     document.getElementById('f-title').value = m ? m.title : '';
@@ -1030,21 +1052,32 @@ function openModal(id) {
     document.getElementById('f-current-episode').value = m ? m.currentEpisode : 0;
     document.getElementById('f-progress').value = m ? m.progress : 0;
     document.getElementById('f-notes').value = m ? m.notes : '';
-    // IMPORTANT: Preserve watchDate when editing
-    document.getElementById('f-watchdate').value = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
     document.getElementById('f-rewatch').value = m ? m.rewatch : 0;
     document.getElementById('f-poster').value = m ? m.poster : '';
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
+    
+    // CRITICAL: Set watchDate value correctly
+    const watchDateValue = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
+    console.log("Setting watchDate input to:", watchDateValue);
+    document.getElementById('f-watchdate').value = watchDateValue;
     
     setRating(m ? m.rating : 0);
     updatePosterPreview(m ? m.poster : '', m ? m.title : '');
     document.getElementById('modal-overlay').classList.add('open');
 }
 
-function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); editingId = null; }
-function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
-function setRating(v) { currentRating = v; document.querySelectorAll('#star-rating .star-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) <= v)); }
+function closeModal() { 
+    document.getElementById('modal-overlay').classList.remove('open'); 
+    editingId = null; 
+}
+function closeModalOutside(e) { 
+    if (e.target === document.getElementById('modal-overlay')) closeModal(); 
+}
+function setRating(v) { 
+    currentRating = v; 
+    document.querySelectorAll('#star-rating .star-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) <= v)); 
+}
 function updatePosterPreview(url, title) {
     const box = document.getElementById('poster-box');
     if (url && url !== 'null' && url !== 'undefined' && url !== '') {
