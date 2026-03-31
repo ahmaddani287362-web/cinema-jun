@@ -727,7 +727,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzp_5962CvDFLTsP8P1lWv5BhRZzzobzLv3MV5XHjUE8AR58OOwjywcITiypOx17xpO5g/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzLHQS07Yugq-ORfAqJlU__DYq59D8he5rcTcFBmD0p3aznzh1g-BCb6SNgyPm55sCJyQ/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
 
@@ -765,6 +765,7 @@ function resetToHome() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ============ FORMAT WATCH DATE UNTUK TAMPILAN ============
 function formatWatchDate(dateValue) {
     if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
         return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
@@ -797,6 +798,43 @@ function formatWatchDate(dateValue) {
         return `<i class="far fa-calendar-alt"></i> ${day} ${month} ${year}`;
     } catch(e) {
         return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+    }
+}
+
+// ============ KONVERSI KE YYYY-MM-DD UNTUK INPUT DATE ============
+function convertToYYYYMMDD(dateValue) {
+    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
+        return '';
+    }
+    try {
+        let date;
+        
+        // Jika sudah dalam format YYYY-MM-DD
+        if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            return dateValue;
+        }
+        
+        // Jika dalam format ISO: "2026-03-26T17:00:00.000Z"
+        if (typeof dateValue === 'string' && dateValue.includes('T')) {
+            date = new Date(dateValue);
+        } 
+        // Handle timestamp number
+        else if (typeof dateValue === 'number') {
+            date = new Date(dateValue);
+        }
+        // Handle other string formats
+        else {
+            date = new Date(dateValue);
+        }
+        
+        if (isNaN(date.getTime())) return '';
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    } catch(e) {
+        return '';
     }
 }
 
@@ -880,35 +918,19 @@ async function loadFromSheets() {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         
-        console.log("Raw data from sheets:", data.movies);
-        
         mediaData = (data.movies || []).map(m => {
-            // CRITICAL: Get watchDate from multiple possible property names
+            // Get watchDate from various possible property names
             let watchDateValue = '';
-            
-            // Log all keys to debug
-            console.log("Movie keys:", Object.keys(m), "Title:", m.title);
-            
-            // Check all possible property names (case sensitive)
             if (m.watchDate && m.watchDate !== '') {
                 watchDateValue = m.watchDate;
-                console.log(`Found watchDate in "watchDate":`, watchDateValue);
             } else if (m.watchdate && m.watchdate !== '') {
                 watchDateValue = m.watchdate;
-                console.log(`Found watchDate in "watchdate":`, watchDateValue);
             } else if (m.WatchDate && m.WatchDate !== '') {
                 watchDateValue = m.WatchDate;
-                console.log(`Found watchDate in "WatchDate":`, watchDateValue);
-            } else {
-                // Try to find any key that contains 'watch'
-                for (let key in m) {
-                    if (key.toLowerCase().includes('watch') && m[key] && m[key] !== '') {
-                        watchDateValue = m[key];
-                        console.log(`Found watchDate in key "${key}":`, watchDateValue);
-                        break;
-                    }
-                }
             }
+            
+            // Konversi ke YYYY-MM-DD saat load
+            const formattedWatchDate = convertToYYYYMMDD(watchDateValue);
             
             return {
                 id: Number(m.id || 0),
@@ -926,19 +948,16 @@ async function loadFromSheets() {
                 poster: String(m.poster || ''),
                 tmdbId: String(m.tmdbId || m.tmdbid || ''),
                 rewatch: Number(m.rewatch || 0),
-                watchDate: watchDateValue,
+                watchDate: formattedWatchDate,
                 lastEdit: Number(m.lastEdit || m.lastedit || Date.now())
             };
         });
-        
-        console.log("Processed mediaData:", mediaData.map(m => ({ title: m.title, watchDate: m.watchDate })));
         
         setSyncStatus('online', 'Synced');
         renderMedia();
     } catch (err) {
         setSyncStatus('error', 'Error');
         showToast('Failed to load: ' + err.message, true);
-        console.error('Load error:', err);
     }
 }
 
@@ -947,7 +966,7 @@ async function saveEntry() {
     const title = document.getElementById('f-title').value.trim();
     if (!title) { showToast('Please enter a title', true); return; }
     
-    const watchDateValue = document.getElementById('f-watchdate').value || '';
+    let watchDateValue = document.getElementById('f-watchdate').value || '';
     const type = document.getElementById('f-type').value;
     const episodes = document.getElementById('f-episodes').value;
     const currentEpisodeValue = document.getElementById('f-current-episode').value;
@@ -955,8 +974,6 @@ async function saveEntry() {
     // Calculate progress automatically
     const calculatedProgress = calculateProgress(type, episodes, currentEpisodeValue);
     const progress = calculatedProgress > 0 ? calculatedProgress : parseInt(document.getElementById('f-progress').value) || 0;
-    
-    console.log("Saving entry with watchDate:", watchDateValue);
     
     const entry = {
         id: editingId || Date.now(),
@@ -1155,8 +1172,6 @@ function openModal(id) {
     editingId = id || null;
     const m = id ? mediaData.find(x => x.id === id) : null;
     
-    console.log("Opening modal for:", m?.title, "watchDate from mediaData:", m?.watchDate);
-    
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit"></i> Edit Title' : '<i class="fas fa-plus-circle"></i> Add New Title';
     document.getElementById('f-title').value = m ? m.title : '';
     document.getElementById('f-type').value = m ? m.type : 'Movie';
@@ -1172,9 +1187,8 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
     
-    // CRITICAL: Set watchDate value correctly from mediaData
+    // Set watchDate - sudah dalam format YYYY-MM-DD dari mediaData
     const watchDateValue = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
-    console.log("Setting watchDate input to:", watchDateValue);
     document.getElementById('f-watchdate').value = watchDateValue;
     
     setRating(m ? m.rating : 0);
