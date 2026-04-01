@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+  /* CSS SAMA SEPERTI SEBELUMNYA - TIDAK BERUBAH */
   * {
     margin: 0;
     padding: 0;
@@ -727,9 +728,11 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzLHQS07Yugq-ORfAqJlU__DYq59D8he5rcTcFBmD0p3aznzh1g-BCb6SNgyPm55sCJyQ/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzyEGOjgckBahpvPdEWl2Eu0NPNq9CZ2oz4SQEHZOO7W1pT6U-MuPuDz_jB5p3mGZJ-vA/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
-const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w92';
+// PERUBAHAN: Gunakan resolusi lebih besar untuk kualitas gambar bagus
+const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';  // w342 untuk poster ukuran sedang
+const TMDB_IMG_BASE_THUMB = 'https://image.tmdb.org/t/p/w92';  // w92 untuk thumbnail di dropdown
 
 // ============ VARIABEL GLOBAL ============
 let mediaData = [];
@@ -765,33 +768,22 @@ function resetToHome() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============ FORMAT WATCH DATE UNTUK TAMPILAN ============
 function formatWatchDate(dateValue) {
     if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
         return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
     }
     try {
         let date;
-        
-        // Handle ISO format: "2026-03-26T17:00:00.000Z"
         if (typeof dateValue === 'string' && dateValue.includes('T')) {
             date = new Date(dateValue);
-        } 
-        // Handle YYYY-MM-DD format
-        else if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        } else if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
             date = new Date(dateValue + 'T00:00:00');
-        }
-        // Handle timestamp number
-        else if (typeof dateValue === 'number') {
+        } else if (typeof dateValue === 'number') {
+            date = new Date(dateValue);
+        } else {
             date = new Date(dateValue);
         }
-        // Handle other formats
-        else {
-            date = new Date(dateValue);
-        }
-        
         if (isNaN(date.getTime())) return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
-        
         const day = date.getDate();
         const month = date.toLocaleDateString('id-ID', { month: 'long' });
         const year = date.getFullYear();
@@ -801,34 +793,23 @@ function formatWatchDate(dateValue) {
     }
 }
 
-// ============ KONVERSI KE YYYY-MM-DD UNTUK INPUT DATE ============
 function convertToYYYYMMDD(dateValue) {
     if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
         return '';
     }
     try {
         let date;
-        
-        // Jika sudah dalam format YYYY-MM-DD
         if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
             return dateValue;
         }
-        
-        // Jika dalam format ISO: "2026-03-26T17:00:00.000Z"
         if (typeof dateValue === 'string' && dateValue.includes('T')) {
             date = new Date(dateValue);
-        } 
-        // Handle timestamp number
-        else if (typeof dateValue === 'number') {
+        } else if (typeof dateValue === 'number') {
+            date = new Date(dateValue);
+        } else {
             date = new Date(dateValue);
         }
-        // Handle other string formats
-        else {
-            date = new Date(dateValue);
-        }
-        
         if (isNaN(date.getTime())) return '';
-        
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
@@ -845,7 +826,6 @@ function calculateProgress(type, episodesText, currentText) {
     let currentValue = 0;
     let totalValue = 0;
     
-    // Check if it's a fraction format (e.g., "4/12")
     if (currentText.includes('/')) {
         const parts = currentText.split('/');
         currentValue = parseFloat(parts[0]) || 0;
@@ -853,15 +833,12 @@ function calculateProgress(type, episodesText, currentText) {
     } else {
         currentValue = parseFloat(currentText) || 0;
         
-        // For series, need total episodes from episodes field
         if (type === 'Series' || type === 'Anime Series') {
             if (episodesText) {
                 const epMatch = episodesText.match(/(\d+)\s*eps?/i);
                 if (epMatch) totalValue = parseFloat(epMatch[1]);
             }
-        } 
-        // For movies, need total minutes from episodes field
-        else if (type === 'Movie' || type === 'Anime Movie') {
+        } else if (type === 'Movie' || type === 'Anime Movie') {
             if (episodesText) {
                 const minMatch = episodesText.match(/(\d+)\s*min/i);
                 if (minMatch) totalValue = parseFloat(minMatch[1]);
@@ -869,7 +846,6 @@ function calculateProgress(type, episodesText, currentText) {
         }
     }
     
-    // Calculate percentage
     if (totalValue > 0 && currentValue > 0) {
         let percentage = Math.round((currentValue / totalValue) * 100);
         return Math.min(100, Math.max(0, percentage));
@@ -881,28 +857,19 @@ function updateProgressAutomatically() {
     const type = document.getElementById('f-type').value;
     const episodes = document.getElementById('f-episodes').value;
     const currentValue = document.getElementById('f-current-episode').value;
-    
     const progress = calculateProgress(type, episodes, currentValue);
     if (progress > 0) {
         document.getElementById('f-progress').value = progress;
     }
 }
 
-// Attach event listeners for auto progress
 document.addEventListener('DOMContentLoaded', () => {
     const currentEpisodeInput = document.getElementById('f-current-episode');
     const episodesInput = document.getElementById('f-episodes');
     const typeSelect = document.getElementById('f-type');
-    
-    if (currentEpisodeInput) {
-        currentEpisodeInput.addEventListener('input', () => updateProgressAutomatically());
-    }
-    if (episodesInput) {
-        episodesInput.addEventListener('input', () => updateProgressAutomatically());
-    }
-    if (typeSelect) {
-        typeSelect.addEventListener('change', () => updateProgressAutomatically());
-    }
+    if (currentEpisodeInput) currentEpisodeInput.addEventListener('input', () => updateProgressAutomatically());
+    if (episodesInput) episodesInput.addEventListener('input', () => updateProgressAutomatically());
+    if (typeSelect) typeSelect.addEventListener('change', () => updateProgressAutomatically());
 });
 
 // ============ DATABASE ============
@@ -919,17 +886,11 @@ async function loadFromSheets() {
         if (data.error) throw new Error(data.error);
         
         mediaData = (data.movies || []).map(m => {
-            // Get watchDate from various possible property names
             let watchDateValue = '';
-            if (m.watchDate && m.watchDate !== '') {
-                watchDateValue = m.watchDate;
-            } else if (m.watchdate && m.watchdate !== '') {
-                watchDateValue = m.watchdate;
-            } else if (m.WatchDate && m.WatchDate !== '') {
-                watchDateValue = m.WatchDate;
-            }
+            if (m.watchDate && m.watchDate !== '') watchDateValue = m.watchDate;
+            else if (m.watchdate && m.watchdate !== '') watchDateValue = m.watchdate;
+            else if (m.WatchDate && m.WatchDate !== '') watchDateValue = m.WatchDate;
             
-            // Konversi ke YYYY-MM-DD saat load
             const formattedWatchDate = convertToYYYYMMDD(watchDateValue);
             
             return {
@@ -970,8 +931,6 @@ async function saveEntry() {
     const type = document.getElementById('f-type').value;
     const episodes = document.getElementById('f-episodes').value;
     const currentEpisodeValue = document.getElementById('f-current-episode').value;
-    
-    // Calculate progress automatically
     const calculatedProgress = calculateProgress(type, episodes, currentEpisodeValue);
     const progress = calculatedProgress > 0 ? calculatedProgress : parseInt(document.getElementById('f-progress').value) || 0;
     
@@ -1187,7 +1146,6 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
     document.getElementById('tmdb-q').value = m ? m.title : '';
     
-    // Set watchDate - sudah dalam format YYYY-MM-DD dari mediaData
     const watchDateValue = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
     document.getElementById('f-watchdate').value = watchDateValue;
     
@@ -1276,6 +1234,7 @@ async function searchTmdb(query) {
                 } else {
                     runtime = detailData.number_of_episodes ? `${detailData.number_of_episodes} eps` : '';
                 }
+                // Gunakan resolusi w342 untuk poster di dropdown
                 posterUrl = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
             } catch(e) {}
             return { ...item, genres, runtime, posterUrl };
