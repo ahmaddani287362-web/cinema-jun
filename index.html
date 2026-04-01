@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  /* ========== RESET & VARIABLES ========== */
   * {
     margin: 0;
     padding: 0;
@@ -54,20 +53,11 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  /* ========== CUSTOM SCROLLBAR ========== */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg-card); }
   ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 10px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
   
-  /* ========== UTILITY CLASSES ========== */
-  .glass {
-    background: rgba(8, 8, 12, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  
-  /* ========== SYNC BAR ========== */
   .sync-bar {
     background: var(--bg-card);
     border-bottom: 1px solid var(--border-subtle);
@@ -91,7 +81,6 @@
   .sync-dot.error { background: var(--danger); }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
   
-  /* ========== HEADER ========== */
   header {
     position: sticky;
     top: 0;
@@ -159,7 +148,6 @@
     color: #050507;
   }
   
-  /* ========== STATS BAR ========== */
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -191,10 +179,8 @@
   .stat-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 500; color: var(--gold); line-height: 1.2; }
   .stat-sub { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 0.2rem; }
   
-  /* ========== MAIN LAYOUT ========== */
   main { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 124px); }
   
-  /* ========== SIDEBAR ========== */
   aside {
     background: var(--bg-card);
     border-right: 1px solid var(--border-subtle);
@@ -245,7 +231,6 @@
   }
   .genre-tag:hover, .genre-tag.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
   
-  /* ========== CONTENT ========== */
   .content { padding: 1.8rem 2.2rem; background: var(--bg-dark); }
   .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1rem; }
   .section-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
@@ -262,7 +247,6 @@
   }
   .view-btn.active, .view-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
   
-  /* ========== SEARCH ========== */
   .search-row { display: flex; gap: 1rem; margin-bottom: 1.8rem; flex-wrap: wrap; }
   .search-wrap {
     flex: 1;
@@ -291,7 +275,6 @@
     font-size: 0.85rem;
   }
   
-  /* ========== MEDIA CARDS - ELEGANT ========== */
   .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.2rem; }
   .media-card {
     background: var(--bg-card);
@@ -343,8 +326,19 @@
   .star.filled { color: var(--gold); }
   .progress-bar { margin-top: 0.5rem; height: 3px; background: var(--border-light); border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--gold); border-radius: 3px; }
+  /* Info Row untuk Watch Date dan Rewatch */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.4rem;
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+  }
+  .info-row .watch-date i { margin-right: 0.2rem; font-size: 0.6rem; }
+  .info-row .rewatch { color: var(--purple); }
+  .info-row .rewatch i { margin-right: 0.2rem; font-size: 0.6rem; }
   
-  /* ========== LIST VIEW ========== */
   .media-list { display: flex; flex-direction: column; gap: 0.8rem; }
   .list-item {
     background: var(--bg-card);
@@ -365,8 +359,17 @@
   .list-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
   .list-badge { font-size: 0.6rem; padding: 0.2rem 0.6rem; border-radius: 40px; background: rgba(212,175,55,0.15); color: var(--gold); font-weight: 500; }
   .list-meta { font-size: 0.7rem; color: var(--text-tertiary); margin-bottom: 0.2rem; }
+  .list-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.3rem;
+    font-size: 0.65rem;
+    color: var(--text-tertiary);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
   
-  /* ========== MODAL ========== */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -437,7 +440,6 @@
   }
   .star-btn.active { color: var(--gold); text-shadow: 0 0 6px rgba(212,175,55,0.4); }
   
-  /* ========== DETAIL MODAL ========== */
   .detail-hero { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
   .detail-poster {
     width: 140px;
@@ -461,7 +463,6 @@
   .detail-key { color: var(--text-tertiary); font-weight: 500; font-size: 0.8rem; }
   .detail-val { color: var(--text-primary); text-align: right; font-size: 0.85rem; }
   
-  /* ========== TOAST ========== */
   .toast {
     position: fixed;
     bottom: 2rem;
@@ -481,7 +482,6 @@
   }
   .toast.show { opacity: 1; transform: translateY(0); }
   
-  /* ========== DROPDOWN & UTILITIES ========== */
   .tmdb-dropdown {
     position: absolute;
     top: 100%;
@@ -519,7 +519,6 @@
   .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
   .info-note { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 0.2rem; display: flex; align-items: center; gap: 0.3rem; }
   
-  /* ========== MOBILE RESPONSIVE ========== */
   @media (max-width: 900px) {
     main { grid-template-columns: 1fr; }
     aside { display: none; }
@@ -595,6 +594,7 @@
     .detail-hero { flex-direction: column; align-items: center; text-align: center; }
     .detail-row { flex-direction: column; text-align: center; }
     .detail-val { text-align: center; }
+    .info-row { flex-direction: column; gap: 0.2rem; align-items: flex-start; }
   }
   
   @media (min-width: 901px) { .filter-drawer { display: none; } }
@@ -625,7 +625,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbxOJTAn4lfKZqSyAjkpF4taYsEzD5-V8ZmSIRH2bDizr7g6dqfHA9aG7pkLT7QF1E8YbQ/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzNHRZitL8Z5_4Ru-yGzYy_K0tYWKo445IRCCmsoIqHfl5CBkxkB-F1dScvAYoBBZRz/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -661,14 +661,34 @@ function resetToHome() {
     renderMedia();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Format tanggal seperti "27 Maret 2026"
 function formatWatchDate(dateValue) {
-    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
+    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') return 'Not set';
     try {
-        let date = dateValue.includes('T') ? new Date(dateValue) : new Date(dateValue + 'T00:00:00');
-        if (isNaN(date.getTime())) return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
-        return `<i class="far fa-calendar-alt"></i> ${date.getDate()} ${date.toLocaleDateString('id-ID', { month: 'long' })} ${date.getFullYear()}`;
-    } catch(e) { return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>'; }
+        let date;
+        if (dateValue.includes('T')) {
+            date = new Date(dateValue);
+        } else if (dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            date = new Date(dateValue + 'T00:00:00');
+        } else {
+            date = new Date(dateValue);
+        }
+        if (isNaN(date.getTime())) return 'Not set';
+        const day = date.getDate();
+        const month = date.toLocaleDateString('id-ID', { month: 'long' });
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    } catch(e) {
+        return 'Not set';
+    }
 }
+
+function formatRewatch(count) {
+    if (!count || count === 0) return '';
+    return `${count}x rewatch`;
+}
+
 function convertToYYYYMMDD(dateValue) {
     if (!dateValue || dateValue === '') return '';
     try {
@@ -678,6 +698,7 @@ function convertToYYYYMMDD(dateValue) {
         return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     } catch(e) { return ''; }
 }
+
 function calculateProgress(type, episodesText, currentText) {
     if (!currentText) return 0;
     let current = 0, total = 0;
@@ -833,12 +854,16 @@ function renderMedia() {
             let statusClass = {watching:'badge-watching',completed:'badge-completed',plan:'badge-plan',dropped:'badge-dropped'}[m.status];
             let statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             let posterHtml = m.poster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
-            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHtml}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div style="font-size:0.65rem;color:var(--gold);margin-top:0.2rem">${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}<div class="watch-date-badge">${formatWatchDate(m.watchDate)}</div>${m.rewatch>0?`<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x</div>`:''}${m.progress>0?`<div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%"></div></div>`:''}</div></div>`;
+            let watchDateFormatted = formatWatchDate(m.watchDate);
+            let rewatchText = formatRewatch(m.rewatch);
+            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHtml}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div style="font-size:0.65rem;color:var(--gold);margin-top:0.2rem">${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}<div class="info-row"><span class="watch-date"><i class="far fa-calendar-alt"></i> ${watchDateFormatted}</span>${rewatchText?`<span class="rewatch"><i class="fas fa-redo-alt"></i> ${rewatchText}</span>`:''}</div>${m.progress>0?`<div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%"></div></div>`:''}</div></div>`;
         }).join('')}</div>`;
     } else {
         container.innerHTML = `<div class="media-list">${data.map(m => {
             let posterHtml = m.poster ? `<div class="list-thumb"><img src="${m.poster}" onerror="this.parentElement.innerHTML='<div class=list-thumb-placeholder>${m.title.charAt(0)}</div>'"></div>` : `<div class="list-thumb"><div class="list-thumb-placeholder">${m.title.charAt(0)}</div></div>`;
-            return `<div class="list-item" onclick="showDetail(${m.id})">${posterHtml}<div class="list-content"><div class="list-title">${m.title}<span class="list-badge">${m.status}</span></div><div class="list-meta">${m.year} · ${m.type} ${m.genre?'· '+m.genre:''}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div class="list-meta" style="color:var(--gold)">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}<div class="list-watch-date">${formatWatchDate(m.watchDate)}</div>${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}${m.progress>0?`<div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%"></div></div>`:''}</div></div>`;
+            let watchDateFormatted = formatWatchDate(m.watchDate);
+            let rewatchText = formatRewatch(m.rewatch);
+            return `<div class="list-item" onclick="showDetail(${m.id})">${posterHtml}<div class="list-content"><div class="list-title">${m.title}<span class="list-badge">${m.status}</span></div><div class="list-meta">${m.year} · ${m.type} ${m.genre?'· '+m.genre:''}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div class="list-meta" style="color:var(--gold)">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}<div class="list-info-row"><span><i class="far fa-calendar-alt"></i> ${watchDateFormatted}</span>${rewatchText?`<span><i class="fas fa-redo-alt"></i> ${rewatchText}</span>`:''}</div>${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}${m.progress>0?`<div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%"></div></div>`:''}</div></div>`;
         }).join('')}</div>`;
     }
     document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
@@ -852,8 +877,27 @@ function updateStats() {
     document.getElementById('stat-plan').textContent = mediaData.filter(x => x.status === 'plan').length;
 }
 function updateCounts() {
-    let c = { all:mediaData.length, watching:mediaData.filter(x=>x.status==='watching').length, completed:mediaData.filter(x=>x.status==='completed').length, plan:mediaData.filter(x=>x.status==='plan').length, dropped:mediaData.filter(x=>x.status==='dropped').length, movie:mediaData.filter(x=>x.type==='Movie').length, series:mediaData.filter(x=>x.type==='Series').length, 'anime-movie':mediaData.filter(x=>x.type==='Anime Movie').length, 'anime-series':mediaData.filter(x=>x.type==='Anime Series').length };
-    Object.keys(c).forEach(k => { let el = document.getElementById('cnt-'+k); if(el) el.textContent = c[k]; });
+    let c = { 
+        all: mediaData.length, 
+        watching: mediaData.filter(x => x.status === 'watching').length, 
+        completed: mediaData.filter(x => x.status === 'completed').length, 
+        plan: mediaData.filter(x => x.status === 'plan').length, 
+        dropped: mediaData.filter(x => x.status === 'dropped').length,
+        movie: mediaData.filter(x => x.type === 'Movie').length, 
+        series: mediaData.filter(x => x.type === 'Series').length, 
+        'anime-movie': mediaData.filter(x => x.type === 'Anime Movie').length, 
+        'anime-series': mediaData.filter(x => x.type === 'Anime Series').length 
+    };
+    // Update sidebar counters
+    document.getElementById('cnt-all').textContent = c.all;
+    document.getElementById('cnt-watching-nav').textContent = c.watching;
+    document.getElementById('cnt-completed-nav').textContent = c.completed;
+    document.getElementById('cnt-plan-nav').textContent = c.plan;
+    document.getElementById('cnt-dropped-nav').textContent = c.dropped;
+    document.getElementById('cnt-movie').textContent = c.movie;
+    document.getElementById('cnt-series').textContent = c.series;
+    document.getElementById('cnt-anime-movie').textContent = c['anime-movie'];
+    document.getElementById('cnt-anime-series').textContent = c['anime-series'];
 }
 function updateGenreCloud() {
     let genres = new Set();
@@ -898,11 +942,13 @@ function updatePosterPreview(url, title) {
 function showDetail(id) {
     let m = mediaData.find(x => x.id === id);
     if (!m) return;
+    let watchDateFormatted = formatWatchDate(m.watchDate);
+    let rewatchText = formatRewatch(m.rewatch);
     document.getElementById('detail-body').innerHTML = `
         <div class="detail-hero"><img class="detail-poster" src="${m.poster||''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2312121A%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%236B697A%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre||'No genre'}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div class="detail-meta" style="color:var(--gold)">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}<div class="detail-rating">${renderStars(m.rating)}</div></div></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(212,175,55,0.15);color:var(--gold)">${m.status}</span></span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate&&m.watchDate!==''?new Date(m.watchDate).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'<span style="opacity:0.6">Not set</span>'}</span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch</span><span class="detail-val">${m.rewatch} ${m.rewatch===1?'time':'times'}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${watchDateFormatted !== 'Not set' ? watchDateFormatted : '<span style="opacity:0.6">Not set</span>'}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch</span><span class="detail-val">${rewatchText || '0 time'}</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}%</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes||'-'}</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-play-circle"></i> Current Episode</span><span class="detail-val">${m.currentEpisode||'-'}</span></div>
