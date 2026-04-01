@@ -625,7 +625,7 @@
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbxiEIm0trDqLCL8DJ0KW877BDJGBUdR1YHEn0bq8F8wfgjVYQvdswB8cCH_KXgo9wl4hA/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbxOJTAn4lfKZqSyAjkpF4taYsEzD5-V8ZmSIRH2bDizr7g6dqfHA9aG7pkLT7QF1E8YbQ/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -639,7 +639,7 @@ let currentViewMode = 'grid';
 let isSaving = false;
 let tmdbTimer = null;
 
-// ============ UTILITY ============
+// ============ UTILITY ==========
 function setSyncStatus(status, msg) {
     const dot = document.getElementById('sync-dot');
     const text = document.getElementById('sync-status');
@@ -699,17 +699,14 @@ function calculateProgress(type, episodesText, currentText) {
     return 0;
 }
 function updateProgressAutomatically() {
-    let progress = calculateProgress(document.getElementById('f-type').value, document.getElementById('f-episodes').value, document.getElementById('f-current-episode').value);
+    let type = document.getElementById('f-type').value;
+    let episodes = document.getElementById('f-episodes').value;
+    let current = document.getElementById('f-current-episode').value;
+    let progress = calculateProgress(type, episodes, current);
     if (progress > 0) document.getElementById('f-progress').value = progress;
 }
-document.addEventListener('DOMContentLoaded', () => {
-    ['f-current-episode', 'f-episodes', 'f-type'].forEach(id => {
-        let el = document.getElementById(id);
-        if (el) el.addEventListener('input', () => updateProgressAutomatically());
-    });
-});
 
-// ============ DATABASE ============
+// ============ DATABASE ==========
 async function apiSheets(body) {
     let res = await fetch(API_SHEETS, { method: 'POST', body: JSON.stringify(body) });
     return await res.json();
@@ -741,30 +738,53 @@ async function saveEntry() {
     if (isSaving) return;
     let title = document.getElementById('f-title').value.trim();
     if (!title) { showToast('Please enter a title', true); return; }
+    
+    let type = document.getElementById('f-type').value;
+    let episodes = document.getElementById('f-episodes').value;
+    let currentEpisodeValue = document.getElementById('f-current-episode').value;
+    let calcProgress = calculateProgress(type, episodes, currentEpisodeValue);
+    let finalProgress = calcProgress > 0 ? calcProgress : parseInt(document.getElementById('f-progress').value) || 0;
+    let watchDateValue = document.getElementById('f-watchdate').value || '';
+    
     let entry = {
-        id: editingId || Date.now(), title: title, type: document.getElementById('f-type').value,
+        id: editingId || Date.now(),
+        title: title,
+        type: type,
         year: parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
-        status: document.getElementById('f-status').value, genre: document.getElementById('f-genre').value.trim(),
-        episodes: document.getElementById('f-episodes').value.trim(),
-        currentEpisode: document.getElementById('f-current-episode').value,
-        progress: (() => { let p = calculateProgress(entry.type, entry.episodes, entry.currentEpisode); return p > 0 ? p : parseInt(document.getElementById('f-progress').value) || 0; })(),
-        rating: currentRating, notes: document.getElementById('f-notes').value.trim(),
+        status: document.getElementById('f-status').value,
+        genre: document.getElementById('f-genre').value.trim(),
+        episodes: episodes,
+        currentEpisode: currentEpisodeValue,
+        progress: finalProgress,
+        rating: currentRating,
+        notes: document.getElementById('f-notes').value.trim(),
         added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
-        poster: document.getElementById('f-poster').value, tmdbId: document.getElementById('f-tmdbid').value,
+        poster: document.getElementById('f-poster').value,
+        tmdbId: document.getElementById('f-tmdbid').value,
         rewatch: parseInt(document.getElementById('f-rewatch').value) || 0,
-        watchDate: document.getElementById('f-watchdate').value || '', lastEdit: Date.now()
+        watchDate: watchDateValue,
+        lastEdit: Date.now()
     };
+    
     isSaving = true;
     let btn = document.getElementById('btn-save');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
     try {
         await apiSheets({ action: 'save', movie: entry });
         let idx = mediaData.findIndex(x => x.id === entry.id);
         if (idx >= 0) mediaData[idx] = entry;
         else mediaData.push(entry);
-        renderMedia(); closeModal(); showToast(editingId ? 'Updated!' : 'Saved!');
-    } catch(err) { showToast('Error: ' + err.message, true); }
-    finally { isSaving = false; btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Title'; }
+        renderMedia();
+        closeModal();
+        showToast(editingId ? 'Updated!' : 'Saved!');
+    } catch(err) {
+        showToast('Error: ' + err.message, true);
+    } finally {
+        isSaving = false;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Save Title';
+    }
 }
 async function deleteEntry(id) {
     if (!confirm('Remove this title?')) return;
@@ -775,7 +795,7 @@ async function deleteEntry(id) {
     } catch(err) { showToast('Delete failed', true); }
 }
 
-// ============ FILTER & RENDER ============
+// ============ FILTER & RENDER ==========
 function getFilteredData() {
     let data = [...mediaData];
     if (currentStatusFilter !== 'all') data = data.filter(x => x.status === currentStatusFilter);
@@ -842,7 +862,7 @@ function updateGenreCloud() {
 }
 function setViewMode(m) { currentViewMode = m; renderMedia(); }
 
-// ============ MODAL ============
+// ============ MODAL ==========
 function openModal(id) {
     editingId = id || null;
     let m = id ? mediaData.find(x => x.id === id) : null;
@@ -874,7 +894,7 @@ function updatePosterPreview(url, title) {
     else box.innerHTML = `<div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-radius:16px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>`;
 }
 
-// ============ DETAIL ============
+// ============ DETAIL ==========
 function showDetail(id) {
     let m = mediaData.find(x => x.id === id);
     if (!m) return;
@@ -895,7 +915,7 @@ function showDetail(id) {
 function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
 function closeDetailOutside(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
 
-// ============ TMDB ============
+// ============ TMDB ==========
 function onTmdbType(v) {
     clearTimeout(tmdbTimer);
     if (v.length < 2) { document.getElementById('tmdb-dd').style.display = 'none'; return; }
@@ -919,7 +939,7 @@ async function searchTmdb(q) {
             } catch(e) {}
             return {...item, genres, runtime, poster};
         }));
-        dd.innerHTML = itemsWithDetails.map(item => `<div class="tmdb-item" onclick="selectTmdb('${item.title||item.name}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres}','${item.runtime}')"><img class="tmdb-item-img" src="${item.poster||''}" onerror="this.style.display='none'"><div><div class="tmdb-item-title">${item.title||item.name}</div><div class="tmdb-item-year">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div class="tmdb-item-genre">${item.genres||'Click to select'}</div></div></div>`).join('');
+        dd.innerHTML = itemsWithDetails.map(item => `<div class="tmdb-item" onclick="selectTmdb('${(item.title||item.name).replace(/'/g,"\\'")}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres.replace(/'/g,"\\'")}','${item.runtime}')"><img class="tmdb-item-img" src="${item.poster||''}" onerror="this.style.display='none'"><div><div class="tmdb-item-title">${item.title||item.name}</div><div class="tmdb-item-year">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div class="tmdb-item-genre">${item.genres||'Click to select'}</div></div></div>`).join('');
         dd.style.display = 'block';
     } catch(e) { console.error(e); }
 }
@@ -947,6 +967,9 @@ function updateDrawerContent() {
 // ============ INIT ==========
 document.addEventListener('click', e => { if (!e.target.closest('.tmdb-wrap')) document.getElementById('tmdb-dd').style.display = 'none'; });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeDetail(); } });
+document.getElementById('f-current-episode')?.addEventListener('input', updateProgressAutomatically);
+document.getElementById('f-episodes')?.addEventListener('input', updateProgressAutomatically);
+document.getElementById('f-type')?.addEventListener('change', updateProgressAutomatically);
 setInterval(loadFromSheets, 120000);
 loadFromSheets();
 </script>
