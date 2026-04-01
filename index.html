@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="CINÉMA JUN - Track, rate, and remember every film and anime you've watched. A beautiful personal diary for movie and anime enthusiasts.">
+<meta name="theme-color" content="#C9A84C">
 <title>CINÉMA JUN — Film & Anime Diary</title>
 <link rel="icon" type="image/jpeg" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link rel="apple-touch-icon" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  /* CSS SAMA SEPERTI SEBELUMNYA - TIDAK BERUBAH */
+  /* ========== RESET & VARIABLES ========== */
   * {
     margin: 0;
     padding: 0;
@@ -17,76 +19,104 @@
   }
   
   :root {
-    --gold: #C9A84C;
-    --gold-light: #E8C97A;
-    --gold-dim: #9B7E3A;
-    --bg: #0A0A0F;
-    --surface: #15151E;
-    --surface2: #1C1C26;
-    --surface3: #23232F;
-    --border: #2A2A35;
-    --text: #F5F3F0;
-    --text-muted: #9A98A8;
-    --text-dim: #6A6878;
-    --red: #E05A5A;
-    --green: #6BCB7A;
-    --blue: #6B9BEF;
-    --purple: #AA7BEF;
-    --shadow-sm: 0 4px 12px rgba(0,0,0,0.3);
+    --gold: #D4AF37;
+    --gold-light: #F3D572;
+    --gold-dim: #B8942E;
+    --bg-dark: #050507;
+    --bg-card: #0C0C12;
+    --bg-elevated: #12121A;
+    --bg-surface: #181820;
+    --border-subtle: #22222C;
+    --border-light: #2A2A35;
+    --text-primary: #F5F3F0;
+    --text-secondary: #A5A3B0;
+    --text-tertiary: #6B697A;
+    --success: #4CAF7A;
+    --warning: #FFB347;
+    --danger: #E57373;
+    --info: #5D9BEC;
+    --purple: #B77CFF;
+    --gradient-gold: linear-gradient(135deg, #D4AF37 0%, #F3D572 50%, #D4AF37 100%);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
     --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
+    --shadow-glow: 0 0 20px rgba(212,175,55,0.15);
+    --transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
   
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg-dark);
+    color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 3px; }
+  /* ========== CUSTOM SCROLLBAR ========== */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg-card); }
+  ::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
   
+  /* ========== UTILITY CLASSES ========== */
+  .glass {
+    background: rgba(8, 8, 12, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  /* ========== SYNC BAR ========== */
   .sync-bar {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-subtle);
     padding: 0.5rem 2.5rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--text-dim);
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--text-tertiary);
   }
   .sync-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--text-dim);
+    background: var(--text-tertiary);
+    transition: var(--transition);
   }
-  .sync-dot.online { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .sync-dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
   .sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+  .sync-dot.error { background: var(--danger); }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
   
+  /* ========== HEADER ========== */
   header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(10, 10, 15, 0.92);
+    background: rgba(5, 5, 7, 0.92);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
     padding: 0 2.5rem;
-    height: 80px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+  .logo-group {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
   .logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 70%, #F5E6B0 100%);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    background: var(--gradient-gold);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -96,129 +126,144 @@
   .logo:hover { opacity: 0.85; }
   .tagline {
     font-size: 0.7rem;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--text-dim);
-    border-left: 1px solid var(--border);
+    color: var(--text-tertiary);
+    border-left: 1px solid var(--border-subtle);
     padding-left: 1rem;
   }
-  .tagline em { color: var(--gold-light); font-style: normal; }
+  .tagline em { color: var(--gold); font-style: normal; font-weight: 500; }
   .btn {
     font-size: 0.8rem;
     font-weight: 500;
-    padding: 0.6rem 1.4rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    padding: 0.6rem 1.3rem;
+    border-radius: 40px;
+    border: 1px solid var(--border-light);
     background: transparent;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: var(--transition);
+    font-family: inherit;
   }
   .btn:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-1px); }
   .btn-primary {
-    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+    background: var(--gradient-gold);
     border: none;
-    color: #0A0A0F;
+    color: #050507;
+    font-weight: 600;
   }
-  .btn-primary:hover { background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 100%); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(201,168,76,0.3); }
+  .btn-primary:hover { 
+    background: linear-gradient(135deg, #E5C354 0%, #F3D572 100%);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+    color: #050507;
+  }
   
+  /* ========== STATS BAR ========== */
   .stats-bar {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1px;
-    background: var(--border);
-    border-bottom: 1px solid var(--border);
+    background: var(--border-subtle);
   }
   .stat-item {
-    background: var(--surface);
-    padding: 1.5rem 2rem;
+    background: var(--bg-card);
+    padding: 1.2rem 2rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: var(--transition);
     position: relative;
-    overflow: hidden;
+    text-align: center;
   }
-  .stat-item:hover { background: var(--surface2); }
+  .stat-item:hover { background: var(--bg-elevated); }
   .stat-item::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 20%;
-    right: 20%;
+    left: 25%;
+    right: 25%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    background: var(--gradient-gold);
     transform: scaleX(0);
     transition: transform 0.3s;
   }
   .stat-item:hover::after { transform: scaleX(1); }
-  .stat-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.5rem; }
-  .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 500; color: var(--gold); line-height: 1; }
-  .stat-sub { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .stat-label { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 0.3rem; }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 500; color: var(--gold); line-height: 1.2; }
+  .stat-sub { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 0.2rem; }
   
-  main { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 130px); }
+  /* ========== MAIN LAYOUT ========== */
+  main { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 124px); }
   
+  /* ========== SIDEBAR ========== */
   aside {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    padding: 2rem 0;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-subtle);
+    padding: 1.8rem 0;
     position: sticky;
-    top: 80px;
-    height: calc(100vh - 80px);
+    top: 72px;
+    height: calc(100vh - 72px);
     overflow-y: auto;
   }
-  .sidebar-section { padding: 0 1.5rem; margin-bottom: 2rem; }
+  .sidebar-section { padding: 0 1.2rem; margin-bottom: 1.8rem; }
   .sidebar-title {
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--gold);
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
+  .sidebar-title i { font-size: 0.7rem; }
   .nav-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.7rem 1rem;
+    padding: 0.6rem 0.9rem;
     border-radius: 12px;
     cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    transition: all 0.2s;
-    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+    margin-bottom: 0.2rem;
   }
-  .nav-item:hover { background: var(--surface2); color: var(--text); transform: translateX(4px); }
-  .nav-item.active { background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(201,168,76,0.05)); color: var(--gold); border-left: 3px solid var(--gold); }
-  .nav-count { margin-left: auto; font-size: 0.7rem; background: var(--surface2); padding: 0.2rem 0.5rem; border-radius: 20px; }
+  .nav-item:hover { background: var(--bg-elevated); color: var(--text-primary); transform: translateX(4px); }
+  .nav-item.active { background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(212,175,55,0.05)); color: var(--gold); border-left: 3px solid var(--gold); }
+  .nav-count { margin-left: auto; font-size: 0.65rem; background: var(--bg-elevated); padding: 0.2rem 0.5rem; border-radius: 20px; font-weight: 500; }
   .genre-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .genre-tag {
     font-size: 0.7rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 20px;
-    border: 1px solid var(--border);
+    padding: 0.3rem 0.8rem;
+    border-radius: 40px;
+    border: 1px solid var(--border-light);
     background: transparent;
-    color: var(--text-dim);
+    color: var(--text-tertiary);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition);
   }
-  .genre-tag:hover, .genre-tag.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
+  .genre-tag:hover, .genre-tag.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
   
-  .content { padding: 2rem 2.5rem; background: var(--bg); }
-  .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
-  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; }
-  .section-title em { color: var(--gold); font-style: italic; }
+  /* ========== CONTENT ========== */
+  .content { padding: 1.8rem 2.2rem; background: var(--bg-dark); }
+  .content-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.02em; }
+  .section-title em { color: var(--gold); font-style: italic; font-weight: 600; }
   .view-btn {
     width: 36px;
     height: 36px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+    color: var(--text-tertiary);
     cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.2s;
+    border-radius: 10px;
+    transition: var(--transition);
   }
-  .view-btn.active, .view-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
+  .view-btn.active, .view-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.08); }
   
-  .search-row { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  /* ========== SEARCH ========== */
+  .search-row { display: flex; gap: 1rem; margin-bottom: 1.8rem; flex-wrap: wrap; }
   .search-wrap {
     flex: 1;
     position: relative;
@@ -226,146 +271,107 @@
   }
   .search-input {
     width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 0.8rem 1rem 0.8rem 2.8rem;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    transition: all 0.2s;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    padding: 0.75rem 1rem 0.75rem 2.8rem;
+    border-radius: 44px;
+    font-size: 0.85rem;
+    transition: var(--transition);
   }
-  .search-input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 2px rgba(201,168,76,0.2); }
-  .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
+  .search-input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 2px rgba(212,175,55,0.2); }
+  .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); font-size: 0.9rem; }
   .filter-select {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    padding: 0.8rem 1.2rem;
-    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary);
+    padding: 0.75rem 1.2rem;
+    border-radius: 44px;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
   }
   
-  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+  /* ========== MEDIA CARDS - ELEGANT ========== */
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.2rem; }
   .media-card {
-    background: var(--surface);
-    border-radius: 16px;
+    background: var(--bg-card);
+    border-radius: 20px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    transition: var(--transition);
     position: relative;
-    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-subtle);
   }
   .media-card:hover {
     transform: translateY(-6px);
+    border-color: var(--gold-dim);
     box-shadow: var(--shadow-md);
   }
-  .card-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+  .card-poster { width: 100%; aspect-ratio: 2/3; object-fit: cover; transition: transform 0.4s; }
+  .media-card:hover .card-poster { transform: scale(1.02); }
   .poster-placeholder {
     width: 100%;
     aspect-ratio: 2/3;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3rem;
-    background: linear-gradient(135deg, var(--surface2), var(--surface3));
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card));
   }
   .card-badge {
     position: absolute;
     top: 0.8rem;
     right: 0.8rem;
-    font-size: 0.65rem;
-    padding: 0.3rem 0.7rem;
-    border-radius: 20px;
-    font-weight: 500;
-    backdrop-filter: blur(4px);
+    font-size: 0.6rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 40px;
+    font-weight: 600;
+    backdrop-filter: blur(8px);
     z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
-  .badge-watching { background: rgba(107, 155, 239, 0.9); color: white; }
-  .badge-completed { background: rgba(107, 203, 122, 0.9); color: white; }
-  .badge-plan { background: rgba(170, 123, 239, 0.9); color: white; }
-  .badge-dropped { background: rgba(224, 90, 90, 0.9); color: white; }
-  .card-info { padding: 1rem; }
-  .card-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-meta { font-size: 0.7rem; color: var(--text-dim); display: flex; gap: 0.5rem; align-items: center; }
-  .star-row { display: flex; gap: 0.15rem; margin-top: 0.5rem; flex-wrap: wrap; }
-  .star { font-size: 0.7rem; color: var(--text-dim); }
+  .badge-watching { background: rgba(93, 155, 236, 0.9); color: white; }
+  .badge-completed { background: rgba(76, 175, 122, 0.9); color: white; }
+  .badge-plan { background: rgba(183, 124, 255, 0.9); color: white; }
+  .badge-dropped { background: rgba(229, 115, 115, 0.9); color: white; }
+  .card-info { padding: 0.8rem; }
+  .card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-meta { font-size: 0.65rem; color: var(--text-tertiary); display: flex; gap: 0.5rem; align-items: center; }
+  .star-row { display: flex; gap: 0.1rem; margin-top: 0.4rem; flex-wrap: wrap; }
+  .star { font-size: 0.65rem; color: var(--text-tertiary); }
   .star.filled { color: var(--gold); }
-  .rewatch-badge { font-size: 0.6rem; color: var(--purple); margin-top: 0.25rem; display: inline-block; }
-  .watch-date-badge { font-size: 0.6rem; color: var(--text-dim); margin-top: 0.25rem; display: inline-block; width: 100%; }
+  .progress-bar { margin-top: 0.5rem; height: 3px; background: var(--border-light); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 3px; }
   
-  .media-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  /* ========== LIST VIEW ========== */
+  .media-list { display: flex; flex-direction: column; gap: 0.8rem; }
   .list-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
     border-radius: 16px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition);
     display: flex;
     gap: 1rem;
-    padding: 1rem;
+    padding: 0.9rem;
     align-items: center;
   }
-  .list-item:hover {
-    border-color: var(--gold);
-    transform: translateX(4px);
-  }
-  .list-thumb {
-    width: 60px;
-    height: 90px;
-    border-radius: 10px;
-    overflow: hidden;
-    flex-shrink: 0;
-    background: var(--surface2);
-  }
-  .list-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .list-thumb-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    background: linear-gradient(135deg, var(--surface2), var(--surface3));
-  }
-  .list-content {
-    flex: 1;
-    min-width: 0;
-  }
-  .list-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  .list-meta {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-bottom: 0.25rem;
-  }
-  .list-badge {
-    display: inline-block;
-    font-size: 0.65rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 20px;
-    background: rgba(201,168,76,0.2);
-    color: var(--gold);
-    margin-left: 0.5rem;
-  }
-  .list-watch-date {
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    margin-top: 0.25rem;
-  }
+  .list-item:hover { border-color: var(--gold-dim); transform: translateX(4px); background: var(--bg-elevated); }
+  .list-thumb { width: 56px; height: 84px; border-radius: 12px; overflow: hidden; flex-shrink: 0; background: var(--bg-elevated); }
+  .list-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .list-thumb-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: linear-gradient(135deg, var(--bg-elevated), var(--bg-card)); }
+  .list-content { flex: 1; min-width: 0; }
+  .list-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .list-badge { font-size: 0.6rem; padding: 0.2rem 0.6rem; border-radius: 40px; background: rgba(212,175,55,0.15); color: var(--gold); font-weight: 500; }
+  .list-meta { font-size: 0.7rem; color: var(--text-tertiary); margin-bottom: 0.2rem; }
   
+  /* ========== MODAL ========== */
   .modal-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(12px);
     z-index: 200;
     display: flex;
     align-items: center;
@@ -377,161 +383,168 @@
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal {
-    background: linear-gradient(135deg, var(--surface), var(--surface2));
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: 28px;
     width: 100%;
     max-width: 800px;
     max-height: 85vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
   }
   .modal-header {
-    padding: 1.5rem 2rem;
-    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 1.8rem;
+    border-bottom: 1px solid var(--border-subtle);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 500; }
   .modal-close {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-tertiary);
     width: 36px;
     height: 36px;
-    border-radius: 12px;
+    border-radius: 40px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition);
   }
-  .modal-close:hover { border-color: var(--red); color: var(--red); }
-  .modal-body { padding: 2rem; }
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
-  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .modal-close:hover { border-color: var(--danger); color: var(--danger); }
+  .modal-body { padding: 1.5rem 1.8rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
   .form-group.full { grid-column: 1/-1; }
-  label { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+  label { font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
   input, select, textarea {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 0.8rem 1rem;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    transition: all 0.2s;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    color: var(--text-primary);
+    padding: 0.7rem 1rem;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    transition: var(--transition);
   }
-  input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 2px rgba(201,168,76,0.2); }
-  .star-rating { display: flex; gap: 0.3rem; align-items: center; flex-wrap: wrap; }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 2px rgba(212,175,55,0.2); }
+  .star-rating { display: flex; gap: 0.2rem; align-items: center; flex-wrap: wrap; }
   .star-btn {
     background: none;
     border: none;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    color: var(--text-dim);
+    color: var(--text-tertiary);
     transition: color 0.1s;
   }
-  .star-btn.active { color: var(--gold); text-shadow: 0 0 8px rgba(201,168,76,0.5); }
+  .star-btn.active { color: var(--gold); text-shadow: 0 0 6px rgba(212,175,55,0.4); }
   
-  .detail-hero { display: flex; gap: 1.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  /* ========== DETAIL MODAL ========== */
+  .detail-hero { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
   .detail-poster {
     width: 140px;
     height: 210px;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: var(--shadow-md);
   }
   .detail-info { flex: 1; }
-  .detail-title { font-size: 1.8rem; font-weight: 500; margin-bottom: 0.5rem; }
-  .detail-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
-  .detail-rating { font-size: 2rem; font-weight: 600; color: var(--gold); margin-bottom: 0.5rem; }
+  .detail-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 0.3rem; font-family: 'Playfair Display', serif; }
+  .detail-meta { color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: 0.8rem; }
+  .detail-rating { font-size: 1.8rem; font-weight: 600; color: var(--gold); margin-bottom: 0.5rem; }
   .detail-row {
     display: flex;
     justify-content: space-between;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border-subtle);
     flex-wrap: wrap;
     gap: 0.5rem;
   }
-  .detail-key { color: var(--text-dim); font-weight: 500; }
-  .detail-val { color: var(--text); text-align: right; }
+  .detail-key { color: var(--text-tertiary); font-weight: 500; font-size: 0.8rem; }
+  .detail-val { color: var(--text-primary); text-align: right; font-size: 0.85rem; }
   
+  /* ========== TOAST ========== */
   .toast {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: var(--surface);
+    background: var(--bg-elevated);
     border: 1px solid var(--gold);
-    border-radius: 12px;
+    border-radius: 44px;
     color: var(--gold);
-    padding: 0.8rem 1.5rem;
+    padding: 0.7rem 1.3rem;
     z-index: 500;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.3s;
     pointer-events: none;
+    font-size: 0.8rem;
+    font-weight: 500;
   }
   .toast.show { opacity: 1; transform: translateY(0); }
   
+  /* ========== DROPDOWN & UTILITIES ========== */
   .tmdb-dropdown {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    max-height: 320px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    max-height: 300px;
     overflow-y: auto;
     z-index: 50;
-    margin-top: 4px;
+    margin-top: 6px;
   }
   .tmdb-item {
-    padding: 0.8rem 1rem;
+    padding: 0.7rem 1rem;
     cursor: pointer;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-subtle);
     transition: background 0.2s;
-    color: var(--text);
+    color: var(--text-primary);
     display: flex;
-    gap: 1rem;
+    gap: 0.8rem;
     align-items: center;
   }
-  .tmdb-item:hover { background: var(--surface3); }
+  .tmdb-item:hover { background: var(--bg-card); }
   .tmdb-item-img {
-    width: 45px;
-    height: 67px;
+    width: 40px;
+    height: 60px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 8px;
     flex-shrink: 0;
-    background: var(--surface);
+    background: var(--bg-card);
   }
-  .tmdb-item-info { flex: 1; }
   .tmdb-item-title { font-weight: 600; color: var(--gold); }
-  .tmdb-item-year { color: var(--text-dim); font-size: 0.75rem; }
-  .tmdb-item-genre { font-size: 0.7rem; color: var(--text-muted); margin-top: 4px; }
+  .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem; text-align: center; }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
+  .info-note { font-size: 0.65rem; color: var(--text-tertiary); margin-top: 0.2rem; display: flex; align-items: center; gap: 0.3rem; }
   
+  /* ========== MOBILE RESPONSIVE ========== */
   @media (max-width: 900px) {
     main { grid-template-columns: 1fr; }
     aside { display: none; }
     .stats-bar { grid-template-columns: repeat(2, 1fr); }
-    .content { padding: 1.5rem; }
-    header { padding: 0 1.5rem; height: 70px; }
-    .logo { font-size: 1.5rem; letter-spacing: 0.15em; }
+    .content { padding: 1.2rem; }
+    header { padding: 0 1.2rem; height: 64px; }
+    .logo { font-size: 1.4rem; }
     .tagline { display: none; }
-    .mob-fab { display: flex; position: fixed; bottom: 1.5rem; right: 1.5rem; gap: 0.8rem; z-index: 150; }
+    .mob-fab { display: flex; position: fixed; bottom: 1.2rem; right: 1.2rem; gap: 0.8rem; z-index: 150; }
     .fab-filter {
       padding: 0.7rem 1.2rem;
-      border-radius: 30px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+      border-radius: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      color: var(--text-secondary);
       font-size: 0.8rem;
+      backdrop-filter: blur(8px);
     }
     .fab-add {
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      background: var(--gradient-gold);
       border: none;
-      color: #0A0A0F;
+      color: #050507;
       font-size: 1.5rem;
       cursor: pointer;
       box-shadow: var(--shadow-md);
@@ -541,7 +554,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: var(--surface);
+      background: var(--bg-elevated);
       border-radius: 24px 24px 0 0;
       transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
@@ -550,29 +563,29 @@
       overflow-y: auto;
     }
     .filter-drawer.open { transform: translateY(0); }
-    .drawer-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto; }
-    .drawer-header { padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-    .drawer-section { padding: 1rem 1.5rem; }
+    .drawer-handle { width: 40px; height: 4px; background: var(--border-light); border-radius: 2px; margin: 12px auto; }
+    .drawer-header { padding: 1rem 1.2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); }
+    .drawer-section { padding: 1rem 1.2rem; }
     .dchip {
       padding: 0.5rem 1rem;
-      border-radius: 30px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text-muted);
+      border-radius: 40px;
+      border: 1px solid var(--border-light);
+      background: var(--bg-card);
+      color: var(--text-secondary);
       margin: 0.25rem;
       display: inline-block;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
     }
-    .dchip.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
+    .dchip.active { border-color: var(--gold); color: var(--gold); background: rgba(212,175,55,0.1); }
     .drawer-apply {
-      width: calc(100% - 3rem);
-      margin: 1rem 1.5rem 1.5rem;
+      width: calc(100% - 2rem);
+      margin: 1rem 1rem 1.5rem;
       padding: 0.9rem;
-      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      background: var(--gradient-gold);
       border: none;
-      border-radius: 40px;
-      color: #0A0A0F;
+      border-radius: 44px;
+      color: #050507;
       font-weight: 600;
       cursor: pointer;
     }
@@ -580,33 +593,18 @@
     .list-item { flex-direction: column; text-align: center; }
     .list-thumb { width: 80px; height: 120px; margin: 0 auto; }
     .detail-hero { flex-direction: column; align-items: center; text-align: center; }
-    .detail-poster { width: 120px; height: 180px; }
     .detail-row { flex-direction: column; text-align: center; }
     .detail-val { text-align: center; }
   }
   
-  @media (min-width: 901px) {
-    .filter-drawer { display: none; }
-  }
-  
-  .empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 4rem;
-    text-align: center;
-  }
-  .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
-  .empty-title { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+  @media (min-width: 901px) { .filter-drawer { display: none; } }
   .tmdb-wrap { position: relative; }
-  .info-note { font-size: 0.7rem; color: var(--text-dim); margin-top: 0.25rem; display: flex; align-items: center; gap: 0.25rem; }
 </style>
 </head>
 <body>
 <div class="sync-bar"><span class="sync-dot" id="sync-dot"></span><span id="sync-status">Connecting...</span></div>
 <header><div class="logo-group"><div class="logo" onclick="resetToHome()">CINÉMA JUN</div><div class="tagline">a home to <em>track</em>, <em>rate</em>, and <em>remember</em></div></div><div class="header-actions"><button class="btn" onclick="loadFromSheets()"><i class="fas fa-sync-alt"></i> Sync</button><button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Add Title</button></div></header>
-<div class="stats-bar"><div class="stat-item" onclick="applyStatusFilter('all')"><div class="stat-label">Total Tracked</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub">films & series</div></div><div class="stat-item" onclick="applyStatusFilter('watching')"><div class="stat-label">Watching</div><div class="stat-value" id="stat-watching">—</div><div class="stat-sub">currently</div></div><div class="stat-item" onclick="applyStatusFilter('completed')"><div class="stat-label">Completed</div><div class="stat-value" id="stat-completed">—</div><div class="stat-sub">finished</div></div><div class="stat-item" onclick="applyStatusFilter('plan')"><div class="stat-label">Watchlist</div><div class="stat-value" id="stat-plan">—</div><div class="stat-sub">plan to watch</div></div></div>
+<div class="stats-bar"><div class="stat-item" onclick="applyStatusFilter('all')"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">—</div><div class="stat-sub">films & series</div></div><div class="stat-item" onclick="applyStatusFilter('watching')"><div class="stat-label">Watching</div><div class="stat-value" id="stat-watching">—</div><div class="stat-sub">currently</div></div><div class="stat-item" onclick="applyStatusFilter('completed')"><div class="stat-label">Completed</div><div class="stat-value" id="stat-completed">—</div><div class="stat-sub">finished</div></div><div class="stat-item" onclick="applyStatusFilter('plan')"><div class="stat-label">Watchlist</div><div class="stat-value" id="stat-plan">—</div><div class="stat-sub">plan to watch</div></div></div>
 <main><aside>
   <div class="sidebar-section"><div class="sidebar-title"><i class="fas fa-film"></i> Status</div><div class="nav-item active" id="nav-all" onclick="setStatusFilter('all',this)"><i class="fas fa-list-ul"></i>All<span class="nav-count" id="cnt-all">0</span></div><div class="nav-item" id="nav-watching" onclick="setStatusFilter('watching',this)"><i class="fas fa-eye"></i>Watching<span class="nav-count" id="cnt-watching-nav">0</span></div><div class="nav-item" id="nav-completed" onclick="setStatusFilter('completed',this)"><i class="fas fa-check-circle"></i>Completed<span class="nav-count" id="cnt-completed-nav">0</span></div><div class="nav-item" id="nav-plan" onclick="setStatusFilter('plan',this)"><i class="fas fa-clock"></i>Plan to Watch<span class="nav-count" id="cnt-plan-nav">0</span></div><div class="nav-item" id="nav-dropped" onclick="setStatusFilter('dropped',this)"><i class="fas fa-times-circle"></i>Dropped<span class="nav-count" id="cnt-dropped-nav">0</span></div></div>
   <div class="sidebar-section"><div class="sidebar-title"><i class="fas fa-tag"></i> Type</div><div class="nav-item" onclick="setTypeFilter('all',this)"><i class="fas fa-globe"></i>All Types</div><div class="nav-item" onclick="setTypeFilter('Movie',this)"><i class="fas fa-video"></i>Movie<span class="nav-count" id="cnt-movie">0</span></div><div class="nav-item" onclick="setTypeFilter('Series',this)"><i class="fas fa-tv"></i>Series<span class="nav-count" id="cnt-series">0</span></div><div class="nav-item" onclick="setTypeFilter('Anime Movie',this)"><i class="fas fa-video"></i>Anime Movie<span class="nav-count" id="cnt-anime-movie">0</span></div><div class="nav-item" onclick="setTypeFilter('Anime Series',this)"><i class="fas fa-tv"></i>Anime Series<span class="nav-count" id="cnt-anime-series">0</span></div></div>
@@ -616,125 +614,21 @@
 <div class="search-row"><div class="search-wrap"><i class="fas fa-search search-icon"></i><input class="search-input" type="text" placeholder="Search by title, genre..." id="search-input" oninput="renderMedia()"></div><select class="filter-select" id="sort-select" onchange="renderMedia()"><option value="added"><i class="fas fa-clock"></i> Recently Added</option><option value="rating"><i class="fas fa-star"></i> Highest Rated</option><option value="title"><i class="fas fa-sort-alpha-down"></i> A → Z</option><option value="year"><i class="fas fa-calendar"></i> Year</option></select></div>
 <div id="media-container"></div></div></main>
 <div class="mob-fab"><button class="fab-filter" id="fab-filter-btn" onclick="openDrawer()"><i class="fas fa-sliders-h"></i> Filter</button><button class="fab-add" onclick="openModal()"><i class="fas fa-plus"></i></button></div>
-<div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title" style="font-family:'Cormorant Garamond';font-size:1.4rem">Filter & Sort</div><button class="drawer-reset" onclick="resetAllFilters()" style="background:none;border:none;color:var(--gold);cursor:pointer"><i class="fas fa-undo"></i> Reset</button></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Status</div><div id="drawer-status" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Genre</div><div id="drawer-genre" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Sort By</div><div class="drawer-chips"><button class="dchip" onclick="document.getElementById('sort-select').value='added';renderMedia();closeDrawer()">Recently Added</button><button class="dchip" onclick="document.getElementById('sort-select').value='rating';renderMedia();closeDrawer()">Highest Rated</button><button class="dchip" onclick="document.getElementById('sort-select').value='title';renderMedia();closeDrawer()">A → Z</button><button class="dchip" onclick="document.getElementById('sort-select').value='year';renderMedia();closeDrawer()">Year</button></div></div><button class="drawer-apply" onclick="closeDrawer()"><i class="fas fa-check"></i> Apply Filters</button></div>
+<div class="filter-drawer" id="filter-drawer"><div class="drawer-handle"></div><div class="drawer-header"><div class="drawer-title" style="font-family:'Playfair Display';font-size:1.3rem">Filter & Sort</div><button class="drawer-reset" onclick="resetAllFilters()" style="background:none;border:none;color:var(--gold);cursor:pointer"><i class="fas fa-undo"></i> Reset</button></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Status</div><div id="drawer-status" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Genre</div><div id="drawer-genre" class="drawer-chips"></div></div><div class="drawer-section"><div class="drawer-section-title" style="color:var(--gold);font-size:0.7rem;margin-bottom:0.5rem">Sort By</div><div class="drawer-chips"><button class="dchip" onclick="document.getElementById('sort-select').value='added';renderMedia();closeDrawer()"><i class="fas fa-clock"></i> Recently Added</button><button class="dchip" onclick="document.getElementById('sort-select').value='rating';renderMedia();closeDrawer()"><i class="fas fa-star"></i> Highest Rated</button><button class="dchip" onclick="document.getElementById('sort-select').value='title';renderMedia();closeDrawer()"><i class="fas fa-sort-alpha-down"></i> A → Z</button><button class="dchip" onclick="document.getElementById('sort-select').value='year';renderMedia();closeDrawer()"><i class="fas fa-calendar"></i> Year</button></div></div><button class="drawer-apply" onclick="closeDrawer()"><i class="fas fa-check"></i> Apply Filters</button></div>
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title" id="modal-heading"><i class="fas fa-plus-circle"></i> Add New Title</div><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><div class="modal-body">
-  <div style="margin-bottom:1.2rem">
-    <label><i class="fas fa-search"></i> Search TMDB</label>
-    <div class="tmdb-wrap">
-      <div style="display:flex;gap:0.5rem">
-        <input class="tmdb-input" id="tmdb-q" placeholder="Type movie or series title..." style="flex:1" oninput="onTmdbType(this.value)">
-        <button class="btn" type="button" onclick="clearTmdb()"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div>
-    </div>
-  </div>
-  
-  <div style="display:flex;gap:1.2rem;margin-bottom:1.2rem;flex-wrap:wrap">
-    <div class="poster-box" id="poster-box">
-      <div class="poster-ph" style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>
-    </div>
-    <div style="flex:1;min-width:200px">
-      <div class="form-group full">
-        <label><i class="fas fa-heading"></i> Title *</label>
-        <input type="text" id="f-title" placeholder="Enter title...">
-      </div>
-      <div class="form-grid">
-        <div class="form-group">
-          <label><i class="fas fa-layer-group"></i> Type</label>
-          <select id="f-type">
-            <option value="Movie">🎬 Movie</option>
-            <option value="Series">📺 Series</option>
-            <option value="Anime Movie">🎬 Anime Movie</option>
-            <option value="Anime Series">📺 Anime Series</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label><i class="fas fa-calendar"></i> Year</label>
-          <input type="number" id="f-year" placeholder="2024">
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="form-grid">
-    <div class="form-group">
-      <label><i class="fas fa-flag-checkered"></i> Status</label>
-      <select id="f-status">
-        <option value="plan">📋 Plan to Watch</option>
-        <option value="watching">👀 Watching</option>
-        <option value="completed">✅ Completed</option>
-        <option value="dropped">❌ Dropped</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-calendar-day"></i> Watch Date</label>
-      <input type="date" id="f-watchdate">
-      <div class="info-note"><i class="fas fa-info-circle"></i> Tanggal saat menonton</div>
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-tags"></i> Genre</label>
-      <input type="text" id="f-genre" placeholder="Drama, Action, Comedy...">
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-hourglass-half"></i> Episodes / Runtime</label>
-      <input type="text" id="f-episodes" placeholder="12 eps / 120 min">
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-play-circle"></i> Current Episode / Minutes</label>
-      <input type="text" id="f-current-episode" placeholder="4 / 60 min">
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-chart-line"></i> Progress (%)</label>
-      <input type="number" id="f-progress" min="0" max="100" value="0" step="1">
-      <div class="info-note"><i class="fas fa-calculator"></i> Otomatis terisi dari current episode/runtime</div>
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-star"></i> Rating (1-10)</label>
-      <div class="star-rating" id="star-rating">
-        <button class="star-btn" data-v="1" onclick="setRating(1)">★</button>
-        <button class="star-btn" data-v="2" onclick="setRating(2)">★</button>
-        <button class="star-btn" data-v="3" onclick="setRating(3)">★</button>
-        <button class="star-btn" data-v="4" onclick="setRating(4)">★</button>
-        <button class="star-btn" data-v="5" onclick="setRating(5)">★</button>
-        <button class="star-btn" data-v="6" onclick="setRating(6)">★</button>
-        <button class="star-btn" data-v="7" onclick="setRating(7)">★</button>
-        <button class="star-btn" data-v="8" onclick="setRating(8)">★</button>
-        <button class="star-btn" data-v="9" onclick="setRating(9)">★</button>
-        <button class="star-btn" data-v="10" onclick="setRating(10)">★</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label><i class="fas fa-redo-alt"></i> Rewatch Count</label>
-      <input type="number" id="f-rewatch" min="0" value="0">
-      <div class="info-note"><i class="fas fa-info-circle"></i> Jumlah kali ditonton ulang</div>
-    </div>
-    <div class="form-group full">
-      <label><i class="fas fa-pen"></i> Notes</label>
-      <textarea id="f-notes" rows="3" placeholder="Your personal thoughts..."></textarea>
-    </div>
-  </div>
-  
-  <input type="hidden" id="f-poster">
-  <input type="hidden" id="f-tmdbid">
-  
-  <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
-    <button class="btn" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button>
-    <button class="btn btn-primary" id="btn-save" onclick="saveEntry()"><i class="fas fa-save"></i> Save Title</button>
-  </div>
-</div></div></div>
+  <div style="margin-bottom:1rem"><label><i class="fas fa-search"></i> Search TMDB</label><div class="tmdb-wrap"><div style="display:flex;gap:0.5rem"><input class="tmdb-input" id="tmdb-q" placeholder="Type movie or series title..." style="flex:1" oninput="onTmdbType(this.value)"><button class="btn" type="button" onclick="clearTmdb()"><i class="fas fa-times"></i></button></div><div class="tmdb-dropdown" id="tmdb-dd" style="display:none"></div></div></div>
+  <div style="display:flex;gap:1.2rem;margin-bottom:1.2rem;flex-wrap:wrap"><div class="poster-box" id="poster-box"><div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-radius:16px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div></div><div style="flex:1;min-width:200px"><div class="form-group full"><label><i class="fas fa-heading"></i> Title *</label><input type="text" id="f-title" placeholder="Enter title..."></div><div class="form-grid"><div class="form-group"><label><i class="fas fa-layer-group"></i> Type</label><select id="f-type"><option value="Movie">🎬 Movie</option><option value="Series">📺 Series</option><option value="Anime Movie">🎬 Anime Movie</option><option value="Anime Series">📺 Anime Series</option></select></div><div class="form-group"><label><i class="fas fa-calendar"></i> Year</label><input type="number" id="f-year" placeholder="2024"></div></div></div></div>
+  <div class="form-grid"><div class="form-group"><label><i class="fas fa-flag-checkered"></i> Status</label><select id="f-status"><option value="plan">📋 Plan to Watch</option><option value="watching">👀 Watching</option><option value="completed">✅ Completed</option><option value="dropped">❌ Dropped</option></select></div><div class="form-group"><label><i class="fas fa-calendar-day"></i> Watch Date</label><input type="date" id="f-watchdate"><div class="info-note"><i class="fas fa-info-circle"></i> Tanggal saat menonton</div></div><div class="form-group"><label><i class="fas fa-tags"></i> Genre</label><input type="text" id="f-genre" placeholder="Drama, Action, Comedy..."></div><div class="form-group"><label><i class="fas fa-hourglass-half"></i> Episodes / Runtime</label><input type="text" id="f-episodes" placeholder="12 eps / 120 min"></div><div class="form-group"><label><i class="fas fa-play-circle"></i> Current Episode / Minutes</label><input type="text" id="f-current-episode" placeholder="4 / 60 min"></div><div class="form-group"><label><i class="fas fa-chart-line"></i> Progress (%)</label><input type="number" id="f-progress" min="0" max="100" value="0" step="1"><div class="info-note"><i class="fas fa-calculator"></i> Otomatis dari current episode/runtime</div></div><div class="form-group"><label><i class="fas fa-star"></i> Rating (1-10)</label><div class="star-rating" id="star-rating"><button class="star-btn" data-v="1" onclick="setRating(1)">★</button><button class="star-btn" data-v="2" onclick="setRating(2)">★</button><button class="star-btn" data-v="3" onclick="setRating(3)">★</button><button class="star-btn" data-v="4" onclick="setRating(4)">★</button><button class="star-btn" data-v="5" onclick="setRating(5)">★</button><button class="star-btn" data-v="6" onclick="setRating(6)">★</button><button class="star-btn" data-v="7" onclick="setRating(7)">★</button><button class="star-btn" data-v="8" onclick="setRating(8)">★</button><button class="star-btn" data-v="9" onclick="setRating(9)">★</button><button class="star-btn" data-v="10" onclick="setRating(10)">★</button></div></div><div class="form-group"><label><i class="fas fa-redo-alt"></i> Rewatch Count</label><input type="number" id="f-rewatch" min="0" value="0"><div class="info-note"><i class="fas fa-info-circle"></i> Jumlah kali ditonton ulang</div></div><div class="form-group full"><label><i class="fas fa-pen"></i> Notes</label><textarea id="f-notes" rows="3" placeholder="Your personal thoughts..."></textarea></div></div><input type="hidden" id="f-poster"><input type="hidden" id="f-tmdbid"><div class="modal-footer" style="display:flex;justify-content:flex-end;gap:0.8rem;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border-subtle)"><button class="btn" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button><button class="btn btn-primary" id="btn-save" onclick="saveEntry()"><i class="fas fa-save"></i> Save Title</button></div></div></div></div>
 <div class="modal-overlay" id="detail-overlay" onclick="closeDetailOutside(event)"><div class="modal"><div class="modal-header"><div class="modal-title"><i class="fas fa-info-circle"></i> Title Details</div><button class="modal-close" onclick="closeDetail()"><i class="fas fa-times"></i></button></div><div class="modal-body" id="detail-body"></div></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 // ============ KONFIGURASI ============
 // ⚠️ GANTI URL INI DENGAN APPS SCRIPT ANDA ⚠️
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbxW1QoN2yQ4DoxrGjb_aRDsqwSFeVki2B6KBFcRM0KMSt8soiwsvoiGxCrdY_1ZRyR8fA/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbxiEIm0trDqLCL8DJ0KW877BDJGBUdR1YHEn0bq8F8wfgjVYQvdswB8cCH_KXgo9wl4hA/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
-// PERUBAHAN: Gunakan resolusi lebih besar untuk kualitas gambar bagus
-const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';  // w342 untuk poster ukuran sedang
-const TMDB_IMG_BASE_THUMB = 'https://image.tmdb.org/t/p/w92';  // w92 untuk thumbnail di dropdown
+const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
-// ============ VARIABEL GLOBAL ============
 let mediaData = [];
 let currentRating = 0;
 let editingId = null;
@@ -767,438 +661,234 @@ function resetToHome() {
     renderMedia();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 function formatWatchDate(dateValue) {
-    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
-        return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
-    }
+    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
     try {
-        let date;
-        if (typeof dateValue === 'string' && dateValue.includes('T')) {
-            date = new Date(dateValue);
-        } else if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            date = new Date(dateValue + 'T00:00:00');
-        } else if (typeof dateValue === 'number') {
-            date = new Date(dateValue);
-        } else {
-            date = new Date(dateValue);
-        }
+        let date = dateValue.includes('T') ? new Date(dateValue) : new Date(dateValue + 'T00:00:00');
         if (isNaN(date.getTime())) return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
-        const day = date.getDate();
-        const month = date.toLocaleDateString('id-ID', { month: 'long' });
-        const year = date.getFullYear();
-        return `<i class="far fa-calendar-alt"></i> ${day} ${month} ${year}`;
-    } catch(e) {
-        return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>';
-    }
+        return `<i class="far fa-calendar-alt"></i> ${date.getDate()} ${date.toLocaleDateString('id-ID', { month: 'long' })} ${date.getFullYear()}`;
+    } catch(e) { return '<span style="opacity:0.6"><i class="far fa-calendar-alt"></i> Not set</span>'; }
 }
-
 function convertToYYYYMMDD(dateValue) {
-    if (!dateValue || dateValue === '' || dateValue === 'null' || dateValue === 'undefined') {
-        return '';
-    }
+    if (!dateValue || dateValue === '') return '';
     try {
-        let date;
-        if (typeof dateValue === 'string' && dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
-            return dateValue;
-        }
-        if (typeof dateValue === 'string' && dateValue.includes('T')) {
-            date = new Date(dateValue);
-        } else if (typeof dateValue === 'number') {
-            date = new Date(dateValue);
-        } else {
-            date = new Date(dateValue);
-        }
+        if (dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) return dateValue;
+        let date = dateValue.includes('T') ? new Date(dateValue) : new Date(dateValue);
         if (isNaN(date.getTime())) return '';
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    } catch(e) {
-        return '';
-    }
+        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    } catch(e) { return ''; }
 }
-
-// ============ PROGRESS CALCULATION ============
 function calculateProgress(type, episodesText, currentText) {
-    if (!currentText || currentText === '') return 0;
-    
-    let currentValue = 0;
-    let totalValue = 0;
-    
+    if (!currentText) return 0;
+    let current = 0, total = 0;
     if (currentText.includes('/')) {
-        const parts = currentText.split('/');
-        currentValue = parseFloat(parts[0]) || 0;
-        totalValue = parseFloat(parts[1]) || 0;
+        let parts = currentText.split('/');
+        current = parseFloat(parts[0]) || 0;
+        total = parseFloat(parts[1]) || 0;
     } else {
-        currentValue = parseFloat(currentText) || 0;
-        
-        if (type === 'Series' || type === 'Anime Series') {
-            if (episodesText) {
-                const epMatch = episodesText.match(/(\d+)\s*eps?/i);
-                if (epMatch) totalValue = parseFloat(epMatch[1]);
-            }
-        } else if (type === 'Movie' || type === 'Anime Movie') {
-            if (episodesText) {
-                const minMatch = episodesText.match(/(\d+)\s*min/i);
-                if (minMatch) totalValue = parseFloat(minMatch[1]);
-            }
+        current = parseFloat(currentText) || 0;
+        if (type.includes('Series') && episodesText) {
+            let match = episodesText.match(/(\d+)\s*eps?/i);
+            if (match) total = parseFloat(match[1]);
+        } else if (type.includes('Movie') && episodesText) {
+            let match = episodesText.match(/(\d+)\s*min/i);
+            if (match) total = parseFloat(match[1]);
         }
     }
-    
-    if (totalValue > 0 && currentValue > 0) {
-        let percentage = Math.round((currentValue / totalValue) * 100);
-        return Math.min(100, Math.max(0, percentage));
-    }
+    if (total > 0 && current > 0) return Math.min(100, Math.round((current / total) * 100));
     return 0;
 }
-
 function updateProgressAutomatically() {
-    const type = document.getElementById('f-type').value;
-    const episodes = document.getElementById('f-episodes').value;
-    const currentValue = document.getElementById('f-current-episode').value;
-    const progress = calculateProgress(type, episodes, currentValue);
-    if (progress > 0) {
-        document.getElementById('f-progress').value = progress;
-    }
+    let progress = calculateProgress(document.getElementById('f-type').value, document.getElementById('f-episodes').value, document.getElementById('f-current-episode').value);
+    if (progress > 0) document.getElementById('f-progress').value = progress;
 }
-
 document.addEventListener('DOMContentLoaded', () => {
-    const currentEpisodeInput = document.getElementById('f-current-episode');
-    const episodesInput = document.getElementById('f-episodes');
-    const typeSelect = document.getElementById('f-type');
-    if (currentEpisodeInput) currentEpisodeInput.addEventListener('input', () => updateProgressAutomatically());
-    if (episodesInput) episodesInput.addEventListener('input', () => updateProgressAutomatically());
-    if (typeSelect) typeSelect.addEventListener('change', () => updateProgressAutomatically());
+    ['f-current-episode', 'f-episodes', 'f-type'].forEach(id => {
+        let el = document.getElementById(id);
+        if (el) el.addEventListener('input', () => updateProgressAutomatically());
+    });
 });
 
 // ============ DATABASE ============
 async function apiSheets(body) {
-    const response = await fetch(API_SHEETS, { method: 'POST', body: JSON.stringify(body) });
-    return await response.json();
+    let res = await fetch(API_SHEETS, { method: 'POST', body: JSON.stringify(body) });
+    return await res.json();
 }
-
 async function loadFromSheets() {
     setSyncStatus('syncing', 'Loading...');
     try {
-        const response = await fetch(API_SHEETS + '?action=getAll');
-        const data = await response.json();
+        let res = await fetch(API_SHEETS + '?action=getAll');
+        let data = await res.json();
         if (data.error) throw new Error(data.error);
-        
         mediaData = (data.movies || []).map(m => {
-            let watchDateValue = '';
-            if (m.watchDate && m.watchDate !== '') watchDateValue = m.watchDate;
-            else if (m.watchdate && m.watchdate !== '') watchDateValue = m.watchdate;
-            else if (m.WatchDate && m.WatchDate !== '') watchDateValue = m.WatchDate;
-            
-            const formattedWatchDate = convertToYYYYMMDD(watchDateValue);
-            
+            let watchDate = '';
+            if (m.watchDate) watchDate = m.watchDate;
+            else if (m.watchdate) watchDate = m.watchdate;
             return {
-                id: Number(m.id || 0),
-                title: String(m.title || ''),
-                type: String(m.type || 'Movie'),
-                year: Number(m.year || 0),
-                status: String(m.status || 'plan'),
-                genre: String(m.genre || ''),
-                episodes: String(m.episodes || ''),
-                currentEpisode: String(m.currentEpisode || m.currentepisode || ''),
-                progress: Number(m.progress || 0),
-                rating: Number(m.rating || 0),
-                notes: String(m.notes || ''),
-                added: Number(m.added || 0),
-                poster: String(m.poster || ''),
-                tmdbId: String(m.tmdbId || m.tmdbid || ''),
-                rewatch: Number(m.rewatch || 0),
-                watchDate: formattedWatchDate,
-                lastEdit: Number(m.lastEdit || m.lastedit || Date.now())
+                id: Number(m.id || 0), title: String(m.title || ''), type: String(m.type || 'Movie'),
+                year: Number(m.year || 0), status: String(m.status || 'plan'), genre: String(m.genre || ''),
+                episodes: String(m.episodes || ''), currentEpisode: String(m.currentEpisode || m.currentepisode || ''),
+                progress: Number(m.progress || 0), rating: Number(m.rating || 0), notes: String(m.notes || ''),
+                added: Number(m.added || 0), poster: String(m.poster || ''), tmdbId: String(m.tmdbId || m.tmdbid || ''),
+                rewatch: Number(m.rewatch || 0), watchDate: convertToYYYYMMDD(watchDate), lastEdit: Number(m.lastEdit || m.lastedit || Date.now())
             };
         });
-        
         setSyncStatus('online', 'Synced');
         renderMedia();
-    } catch (err) {
-        setSyncStatus('error', 'Error');
-        showToast('Failed to load: ' + err.message, true);
-    }
+    } catch(err) { setSyncStatus('error', 'Error'); showToast(err.message, true); }
 }
-
 async function saveEntry() {
     if (isSaving) return;
-    const title = document.getElementById('f-title').value.trim();
+    let title = document.getElementById('f-title').value.trim();
     if (!title) { showToast('Please enter a title', true); return; }
-    
-    let watchDateValue = document.getElementById('f-watchdate').value || '';
-    const type = document.getElementById('f-type').value;
-    const episodes = document.getElementById('f-episodes').value;
-    const currentEpisodeValue = document.getElementById('f-current-episode').value;
-    const calculatedProgress = calculateProgress(type, episodes, currentEpisodeValue);
-    const progress = calculatedProgress > 0 ? calculatedProgress : parseInt(document.getElementById('f-progress').value) || 0;
-    
-    const entry = {
-        id: editingId || Date.now(),
-        title: title,
-        type: type,
+    let entry = {
+        id: editingId || Date.now(), title: title, type: document.getElementById('f-type').value,
         year: parseInt(document.getElementById('f-year').value) || new Date().getFullYear(),
-        status: document.getElementById('f-status').value,
-        genre: document.getElementById('f-genre').value.trim(),
-        episodes: episodes,
-        currentEpisode: currentEpisodeValue,
-        progress: progress,
-        rating: currentRating,
-        notes: document.getElementById('f-notes').value.trim(),
+        status: document.getElementById('f-status').value, genre: document.getElementById('f-genre').value.trim(),
+        episodes: document.getElementById('f-episodes').value.trim(),
+        currentEpisode: document.getElementById('f-current-episode').value,
+        progress: (() => { let p = calculateProgress(entry.type, entry.episodes, entry.currentEpisode); return p > 0 ? p : parseInt(document.getElementById('f-progress').value) || 0; })(),
+        rating: currentRating, notes: document.getElementById('f-notes').value.trim(),
         added: editingId ? (mediaData.find(x => x.id === editingId)?.added || Date.now()) : Date.now(),
-        poster: document.getElementById('f-poster').value,
-        tmdbId: document.getElementById('f-tmdbid').value,
+        poster: document.getElementById('f-poster').value, tmdbId: document.getElementById('f-tmdbid').value,
         rewatch: parseInt(document.getElementById('f-rewatch').value) || 0,
-        watchDate: watchDateValue,
-        lastEdit: Date.now()
+        watchDate: document.getElementById('f-watchdate').value || '', lastEdit: Date.now()
     };
-    
     isSaving = true;
-    const btn = document.getElementById('btn-save');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    let btn = document.getElementById('btn-save');
+    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
     try {
         await apiSheets({ action: 'save', movie: entry });
-        if (editingId) {
-            const idx = mediaData.findIndex(x => x.id === editingId);
-            if (idx > -1) mediaData[idx] = entry;
-        } else mediaData.push(entry);
-        renderMedia();
-        closeModal();
-        showToast(editingId ? 'Updated!' : 'Saved!');
-    } catch (err) {
-        showToast('Error: ' + err.message, true);
-    } finally {
-        isSaving = false;
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-save"></i> Save Title';
-    }
+        let idx = mediaData.findIndex(x => x.id === entry.id);
+        if (idx >= 0) mediaData[idx] = entry;
+        else mediaData.push(entry);
+        renderMedia(); closeModal(); showToast(editingId ? 'Updated!' : 'Saved!');
+    } catch(err) { showToast('Error: ' + err.message, true); }
+    finally { isSaving = false; btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Title'; }
 }
-
 async function deleteEntry(id) {
     if (!confirm('Remove this title?')) return;
     try {
         await apiSheets({ action: 'delete', id: id });
         mediaData = mediaData.filter(x => x.id !== id);
-        renderMedia();
-        closeDetail();
-        showToast('Removed');
-    } catch (err) { showToast('Delete failed', true); }
+        renderMedia(); closeDetail(); showToast('Removed');
+    } catch(err) { showToast('Delete failed', true); }
 }
 
-// ============ FILTER ============
+// ============ FILTER & RENDER ============
 function getFilteredData() {
     let data = [...mediaData];
     if (currentStatusFilter !== 'all') data = data.filter(x => x.status === currentStatusFilter);
     if (currentTypeFilter !== 'all') data = data.filter(x => x.type === currentTypeFilter);
     if (currentGenreFilter !== 'all') data = data.filter(x => x.genre && x.genre.toLowerCase().includes(currentGenreFilter.toLowerCase()));
-    const query = document.getElementById('search-input').value.toLowerCase().trim();
-    if (query) data = data.filter(x => x.title.toLowerCase().includes(query) || (x.genre && x.genre.toLowerCase().includes(query)));
-    const sortBy = document.getElementById('sort-select').value;
-    if (sortBy === 'rating') data.sort((a, b) => b.rating - a.rating);
-    else if (sortBy === 'title') data.sort((a, b) => a.title.localeCompare(b.title));
-    else if (sortBy === 'year') data.sort((a, b) => b.year - a.year);
-    else data.sort((a, b) => b.added - a.added);
+    let q = document.getElementById('search-input').value.toLowerCase().trim();
+    if (q) data = data.filter(x => x.title.toLowerCase().includes(q) || (x.genre && x.genre.toLowerCase().includes(q)));
+    let sort = document.getElementById('sort-select').value;
+    if (sort === 'rating') data.sort((a,b) => b.rating - a.rating);
+    else if (sort === 'title') data.sort((a,b) => a.title.localeCompare(b.title));
+    else if (sort === 'year') data.sort((a,b) => b.year - a.year);
+    else data.sort((a,b) => b.added - a.added);
     return data;
 }
-function setStatusFilter(status, el) { currentStatusFilter = status; renderMedia(); }
-function setTypeFilter(type, el) { currentTypeFilter = type; renderMedia(); }
-function setGenreFilter(genre) { currentGenreFilter = currentGenreFilter === genre ? 'all' : genre; renderMedia(); }
-function applyStatusFilter(status) { currentStatusFilter = status; renderMedia(); }
+function setStatusFilter(s) { currentStatusFilter = s; renderMedia(); }
+function setTypeFilter(t) { currentTypeFilter = t; renderMedia(); }
+function setGenreFilter(g) { currentGenreFilter = currentGenreFilter === g ? 'all' : g; renderMedia(); }
+function applyStatusFilter(s) { currentStatusFilter = s; renderMedia(); }
 function resetAllFilters() { currentStatusFilter = 'all'; currentTypeFilter = 'all'; currentGenreFilter = 'all'; document.getElementById('sort-select').value = 'added'; renderMedia(); closeDrawer(); }
-
-// ============ RENDER ============
-function renderStars(rating) {
-    let stars = '';
-    for (let i = 1; i <= 10; i++) stars += `<span class="star${i <= rating ? ' filled' : ''}">★</span>`;
-    return stars;
+function renderStars(r) { let s = ''; for (let i=1; i<=10; i++) s += `<span class="star${i<=r?' filled':''}">★</span>`; return s; }
+function formatEpisodeDisplay(cur, total) {
+    if (!cur) return '';
+    if (cur.includes('/')) return cur;
+    if (total && total.match(/\d+\s*eps?/i)) return `${cur}/${total.match(/\d+/)[0]} eps`;
+    if (total && total.match(/\d+\s*min/i)) return `${cur}/${total.match(/\d+/)[0]} min`;
+    return cur;
 }
-
-function formatEpisodeDisplay(current, total) {
-    if (!current) return '';
-    if (current.includes('/')) return current;
-    if (total && total.match(/\d+\s*eps?/i)) {
-        const totalNum = total.match(/\d+/)[0];
-        return `${current}/${totalNum} eps`;
-    }
-    if (total && total.match(/\d+\s*min/i)) {
-        const totalMin = total.match(/\d+/)[0];
-        return `${current}/${totalMin} min`;
-    }
-    return `${current}`;
-}
-
 function renderMedia() {
     updateStats(); updateCounts(); updateGenreCloud();
-    const data = getFilteredData();
-    const container = document.getElementById('media-container');
-    
-    if (!data.length) { 
-        container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-film"></i></div><div class="empty-title">No titles found</div><div class="empty-sub">Add your first film or anime</div></div>'; 
-        return; 
-    }
-    
+    let data = getFilteredData();
+    let container = document.getElementById('media-container');
+    if (!data.length) { container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-film"></i></div><div class="empty-title">No titles found</div><div class="empty-sub">Add your first film or anime</div></div>'; return; }
     if (currentViewMode === 'grid') {
         container.innerHTML = `<div class="media-grid">${data.map(m => {
-            const statusClass = {watching:'badge-watching',completed:'badge-completed',plan:'badge-plan',dropped:'badge-dropped'}[m.status];
-            const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
-            const hasPoster = m.poster && m.poster.trim();
-            const posterHTML = hasPoster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
-            const episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
-            return `<div class="media-card" onclick="showDetail(${m.id})">
-                        ${posterHTML}
-                        <span class="card-badge ${statusClass}">${statusLabel}</span>
-                        <div class="card-info">
-                            <div class="card-title">${m.title}</div>
-                            <div class="card-meta">${m.year} · ${m.type}</div>
-                            ${episodeDisplay ? `<div style="font-size:0.65rem;color:var(--gold);margin-top:0.25rem">${episodeDisplay}</div>` : ''}
-                            ${m.rating ? `<div class="star-row">${renderStars(m.rating)}</div>` : ''}
-                            <div class="watch-date-badge">${formatWatchDate(m.watchDate)}</div>
-                            ${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}
-                            ${m.progress > 0 ? `<div class="progress-bar" style="margin-top:0.5rem;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${m.progress}%;height:100%;background:var(--gold)"></div></div>` : ''}
-                        </div>
-                    </div>`;
+            let statusClass = {watching:'badge-watching',completed:'badge-completed',plan:'badge-plan',dropped:'badge-dropped'}[m.status];
+            let statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
+            let posterHtml = m.poster ? `<img class="card-poster" src="${m.poster}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="poster-placeholder" style="display:none">${m.title.charAt(0)}</div>` : `<div class="poster-placeholder">${m.title.charAt(0)}</div>`;
+            return `<div class="media-card" onclick="showDetail(${m.id})">${posterHtml}<span class="card-badge ${statusClass}">${statusLabel}</span><div class="card-info"><div class="card-title">${m.title}</div><div class="card-meta">${m.year} · ${m.type}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div style="font-size:0.65rem;color:var(--gold);margin-top:0.2rem">${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}<div class="watch-date-badge">${formatWatchDate(m.watchDate)}</div>${m.rewatch>0?`<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x</div>`:''}${m.progress>0?`<div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%"></div></div>`:''}</div></div>`;
         }).join('')}</div>`;
     } else {
         container.innerHTML = `<div class="media-list">${data.map(m => {
-            const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
-            const hasPoster = m.poster && m.poster.trim();
-            const thumbHTML = hasPoster ? 
-                `<div class="list-thumb"><img src="${m.poster}" onerror="this.parentElement.innerHTML='<div class=list-thumb-placeholder>${m.title.charAt(0)}</div>'"></div>` : 
-                `<div class="list-thumb"><div class="list-thumb-placeholder">${m.title.charAt(0)}</div></div>`;
-            const episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
-            
-            return `<div class="list-item" onclick="showDetail(${m.id})">
-                        ${thumbHTML}
-                        <div class="list-content">
-                            <div class="list-title">
-                                ${m.title}
-                                <span class="list-badge">${statusLabel}</span>
-                            </div>
-                            <div class="list-meta">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
-                            ${episodeDisplay ? `<div class="list-meta" style="color:var(--gold)">📺 ${episodeDisplay}</div>` : ''}
-                            <div class="list-watch-date">${formatWatchDate(m.watchDate)}</div>
-                            ${m.rewatch > 0 ? `<div class="rewatch-badge"><i class="fas fa-redo-alt"></i> ${m.rewatch}x rewatch</div>` : ''}
-                            ${m.rating ? `<div class="star-row" style="margin-top:0.25rem">${renderStars(m.rating)}</div>` : ''}
-                            ${m.progress > 0 ? `<div class="progress-bar" style="margin-top:0.5rem;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="width:${m.progress}%;height:100%;background:var(--gold)"></div></div>` : ''}
-                        </div>
-                    </div>`;
+            let posterHtml = m.poster ? `<div class="list-thumb"><img src="${m.poster}" onerror="this.parentElement.innerHTML='<div class=list-thumb-placeholder>${m.title.charAt(0)}</div>'"></div>` : `<div class="list-thumb"><div class="list-thumb-placeholder">${m.title.charAt(0)}</div></div>`;
+            return `<div class="list-item" onclick="showDetail(${m.id})">${posterHtml}<div class="list-content"><div class="list-title">${m.title}<span class="list-badge">${m.status}</span></div><div class="list-meta">${m.year} · ${m.type} ${m.genre?'· '+m.genre:''}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div class="list-meta" style="color:var(--gold)">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}<div class="list-watch-date">${formatWatchDate(m.watchDate)}</div>${m.rating?`<div class="star-row">${renderStars(m.rating)}</div>`:''}${m.progress>0?`<div class="progress-bar"><div class="progress-fill" style="width:${m.progress}%"></div></div>`:''}</div></div>`;
         }).join('')}</div>`;
     }
-    
     document.getElementById('btn-grid').className = 'view-btn' + (currentViewMode === 'grid' ? ' active' : '');
     document.getElementById('btn-list').className = 'view-btn' + (currentViewMode === 'list' ? ' active' : '');
-    
-    let titleText = {all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All';
-    document.getElementById('section-title').innerHTML = titleText + ' <em>Titles</em>';
+    document.getElementById('section-title').innerHTML = ({all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All') + ' <em>Titles</em>';
 }
-
 function updateStats() {
     document.getElementById('stat-total').textContent = mediaData.length;
     document.getElementById('stat-watching').textContent = mediaData.filter(x => x.status === 'watching').length;
     document.getElementById('stat-completed').textContent = mediaData.filter(x => x.status === 'completed').length;
     document.getElementById('stat-plan').textContent = mediaData.filter(x => x.status === 'plan').length;
 }
-
 function updateCounts() {
-    const counts = { 
-        all: mediaData.length, 
-        watching: mediaData.filter(x => x.status === 'watching').length, 
-        completed: mediaData.filter(x => x.status === 'completed').length, 
-        plan: mediaData.filter(x => x.status === 'plan').length, 
-        dropped: mediaData.filter(x => x.status === 'dropped').length, 
-        movie: mediaData.filter(x => x.type === 'Movie').length, 
-        series: mediaData.filter(x => x.type === 'Series').length, 
-        'anime-movie': mediaData.filter(x => x.type === 'Anime Movie').length, 
-        'anime-series': mediaData.filter(x => x.type === 'Anime Series').length 
-    };
-    Object.keys(counts).forEach(k => { let el = document.getElementById('cnt-' + k); if (el) el.textContent = counts[k]; });
+    let c = { all:mediaData.length, watching:mediaData.filter(x=>x.status==='watching').length, completed:mediaData.filter(x=>x.status==='completed').length, plan:mediaData.filter(x=>x.status==='plan').length, dropped:mediaData.filter(x=>x.status==='dropped').length, movie:mediaData.filter(x=>x.type==='Movie').length, series:mediaData.filter(x=>x.type==='Series').length, 'anime-movie':mediaData.filter(x=>x.type==='Anime Movie').length, 'anime-series':mediaData.filter(x=>x.type==='Anime Series').length };
+    Object.keys(c).forEach(k => { let el = document.getElementById('cnt-'+k); if(el) el.textContent = c[k]; });
 }
-
 function updateGenreCloud() {
-    const genres = new Set();
-    mediaData.forEach(m => { if (m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
-    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => 
-        `<button class="genre-tag${currentGenreFilter === g ? ' active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}')">${g}</button>`
-    ).join('') || '<span style="color:var(--text-dim)">No genres</span>';
+    let genres = new Set();
+    mediaData.forEach(m => { if(m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
+    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => `<button class="genre-tag${currentGenreFilter===g?' active':''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}')">${g}</button>`).join('') || '<span style="color:var(--text-tertiary)">No genres</span>';
 }
-
-function setViewMode(mode) { currentViewMode = mode; renderMedia(); }
+function setViewMode(m) { currentViewMode = m; renderMedia(); }
 
 // ============ MODAL ============
 function openModal(id) {
     editingId = id || null;
-    const m = id ? mediaData.find(x => x.id === id) : null;
-    
+    let m = id ? mediaData.find(x => x.id === id) : null;
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit"></i> Edit Title' : '<i class="fas fa-plus-circle"></i> Add New Title';
-    document.getElementById('f-title').value = m ? m.title : '';
-    document.getElementById('f-type').value = m ? m.type : 'Movie';
-    document.getElementById('f-year').value = m ? m.year : '';
-    document.getElementById('f-status').value = m ? m.status : 'plan';
-    document.getElementById('f-genre').value = m ? m.genre : '';
-    document.getElementById('f-episodes').value = m ? m.episodes : '';
-    document.getElementById('f-current-episode').value = m ? m.currentEpisode : '';
-    document.getElementById('f-progress').value = m ? m.progress : 0;
-    document.getElementById('f-notes').value = m ? m.notes : '';
-    document.getElementById('f-rewatch').value = m ? m.rewatch : 0;
-    document.getElementById('f-poster').value = m ? m.poster : '';
-    document.getElementById('f-tmdbid').value = m ? m.tmdbId : '';
-    document.getElementById('tmdb-q').value = m ? m.title : '';
-    
-    const watchDateValue = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
-    document.getElementById('f-watchdate').value = watchDateValue;
-    
-    setRating(m ? m.rating : 0);
-    updatePosterPreview(m ? m.poster : '', m ? m.title : '');
+    document.getElementById('f-title').value = m?.title || '';
+    document.getElementById('f-type').value = m?.type || 'Movie';
+    document.getElementById('f-year').value = m?.year || '';
+    document.getElementById('f-status').value = m?.status || 'plan';
+    document.getElementById('f-genre').value = m?.genre || '';
+    document.getElementById('f-episodes').value = m?.episodes || '';
+    document.getElementById('f-current-episode').value = m?.currentEpisode || '';
+    document.getElementById('f-progress').value = m?.progress || 0;
+    document.getElementById('f-notes').value = m?.notes || '';
+    document.getElementById('f-rewatch').value = m?.rewatch || 0;
+    document.getElementById('f-poster').value = m?.poster || '';
+    document.getElementById('f-tmdbid').value = m?.tmdbId || '';
+    document.getElementById('tmdb-q').value = m?.title || '';
+    document.getElementById('f-watchdate').value = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
+    setRating(m?.rating || 0);
+    updatePosterPreview(m?.poster, m?.title);
     document.getElementById('modal-overlay').classList.add('open');
 }
-
-function closeModal() { 
-    document.getElementById('modal-overlay').classList.remove('open'); 
-    editingId = null; 
-}
-function closeModalOutside(e) { 
-    if (e.target === document.getElementById('modal-overlay')) closeModal(); 
-}
-function setRating(v) { 
-    currentRating = v; 
-    document.querySelectorAll('#star-rating .star-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) <= v)); 
-}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); editingId = null; }
+function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+function setRating(v) { currentRating = v; document.querySelectorAll('#star-rating .star-btn').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) <= v)); }
 function updatePosterPreview(url, title) {
-    const box = document.getElementById('poster-box');
-    if (url && url !== 'null' && url !== 'undefined' && url !== '') {
-        box.innerHTML = `<img src="${url}" style="width:100px;height:150px;object-fit:cover;border-radius:12px">`;
-    } else {
-        box.innerHTML = `<div class="poster-ph" style="width:100px;height:150px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>`;
-    }
+    let box = document.getElementById('poster-box');
+    if (url && url !== 'null' && url !== '') box.innerHTML = `<img src="${url}" style="width:90px;height:135px;object-fit:cover;border-radius:16px">`;
+    else box.innerHTML = `<div class="poster-ph" style="width:90px;height:135px;display:flex;align-items:center;justify-content:center;background:var(--bg-card);border-radius:16px"><i class="fas fa-image" style="font-size:2rem;opacity:0.3"></i></div>`;
 }
 
 // ============ DETAIL ============
 function showDetail(id) {
-    const m = mediaData.find(x => x.id === id);
+    let m = mediaData.find(x => x.id === id);
     if (!m) return;
-    const statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[m.status];
-    const episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
     document.getElementById('detail-body').innerHTML = `
-        <div class="detail-hero">
-            <img class="detail-poster" src="${m.poster || ''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23111117%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%238A8899%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'">
-            <div class="detail-info">
-                <div class="detail-title">${m.title}</div>
-                <div class="detail-meta">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div>
-                ${episodeDisplay ? `<div class="detail-meta" style="color:var(--gold)">📺 ${episodeDisplay}</div>` : ''}
-                <div class="detail-rating">${renderStars(m.rating)}</div>
-            </div>
-        </div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(201,168,76,0.2);color:var(--gold)">${statusLabel}</span></span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate && m.watchDate !== '' ? new Date(m.watchDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '<span style="opacity:0.6">Not set</span>'}</span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch Count</span><span class="detail-val">${m.rewatch} ${m.rewatch === 1 ? 'time' : 'times'}</span></div>
+        <div class="detail-hero"><img class="detail-poster" src="${m.poster||''}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 150%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%2312121A%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%236B697A%22 font-size=%2240%22%3E${m.title.charAt(0)}%3C/text%3E%3C/svg%3E'"><div class="detail-info"><div class="detail-title">${m.title}</div><div class="detail-meta">${m.type} · ${m.year} · ${m.genre||'No genre'}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes)?`<div class="detail-meta" style="color:var(--gold)">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>`:''}<div class="detail-rating">${renderStars(m.rating)}</div></div></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-flag-checkered"></i> Status</span><span class="detail-val"><span class="card-badge" style="position:static;display:inline-block;background:rgba(212,175,55,0.15);color:var(--gold)">${m.status}</span></span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-calendar-day"></i> Watch Date</span><span class="detail-val">${m.watchDate&&m.watchDate!==''?new Date(m.watchDate).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}):'<span style="opacity:0.6">Not set</span>'}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-redo-alt"></i> Rewatch</span><span class="detail-val">${m.rewatch} ${m.rewatch===1?'time':'times'}</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-chart-line"></i> Progress</span><span class="detail-val">${m.progress}%</span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div>
-        <div class="detail-row"><span class="detail-key"><i class="fas fa-play-circle"></i> Current Episode/Minutes</span><span class="detail-val">${m.currentEpisode || '-'}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-hourglass-half"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes||'-'}</span></div>
+        <div class="detail-row"><span class="detail-key"><i class="fas fa-play-circle"></i> Current Episode</span><span class="detail-val">${m.currentEpisode||'-'}</span></div>
         <div class="detail-row"><span class="detail-key"><i class="fas fa-clock"></i> Last Edited</span><span class="detail-val">${new Date(m.lastEdit).toLocaleString()}</span></div>
-        ${m.notes ? `<div style="margin-top:1rem;padding:1rem;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>` : ''}
-        <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(224,90,90,0.4);color:var(--red)"><i class="fas fa-trash"></i> Delete</button></div>
+        ${m.notes?`<div style="margin-top:1rem;padding:0.8rem;background:var(--bg-card);border-radius:16px;border-left:3px solid var(--gold)"><i class="fas fa-quote-left" style="color:var(--gold);margin-right:0.5rem"></i>${m.notes}</div>`:''}
+        <div style="margin-top:1.2rem;display:flex;gap:0.8rem;flex-wrap:wrap"><button class="btn btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn" onclick="deleteEntry(${m.id})" style="border-color:rgba(229,115,115,0.4);color:var(--danger)"><i class="fas fa-trash"></i> Delete</button></div>
     `;
     document.getElementById('detail-overlay').classList.add('open');
 }
@@ -1206,58 +896,34 @@ function closeDetail() { document.getElementById('detail-overlay').classList.rem
 function closeDetailOutside(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
 
 // ============ TMDB ============
-function onTmdbType(value) {
+function onTmdbType(v) {
     clearTimeout(tmdbTimer);
-    if (value.length < 2) { document.getElementById('tmdb-dd').style.display = 'none'; return; }
-    tmdbTimer = setTimeout(() => searchTmdb(value), 400);
+    if (v.length < 2) { document.getElementById('tmdb-dd').style.display = 'none'; return; }
+    tmdbTimer = setTimeout(() => searchTmdb(v), 400);
 }
-async function searchTmdb(query) {
+async function searchTmdb(q) {
     try {
-        const url = `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(query)}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        const items = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv').slice(0, 6);
-        const dd = document.getElementById('tmdb-dd');
+        let res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`);
+        let data = await res.json();
+        let items = (data.results || []).filter(x => x.media_type === 'movie' || x.media_type === 'tv').slice(0, 6);
+        let dd = document.getElementById('tmdb-dd');
         if (!items.length) { dd.style.display = 'none'; return; }
-        
-        const itemsWithDetails = await Promise.all(items.map(async (item) => {
-            let genres = '';
-            let runtime = '';
-            let posterUrl = '';
+        let itemsWithDetails = await Promise.all(items.map(async item => {
+            let genres = '', runtime = '', poster = '';
             try {
-                const detailUrl = `https://api.themoviedb.org/3/${item.media_type === 'tv' ? 'tv' : 'movie'}/${item.id}?api_key=${TMDB_KEY}`;
-                const detailRes = await fetch(detailUrl);
-                const detailData = await detailRes.json();
-                genres = (detailData.genres || []).map(g => g.name).slice(0, 3).join(', ');
-                if (item.media_type === 'movie') {
-                    runtime = detailData.runtime ? `${detailData.runtime} min` : '';
-                } else {
-                    runtime = detailData.number_of_episodes ? `${detailData.number_of_episodes} eps` : '';
-                }
-                // Gunakan resolusi w342 untuk poster di dropdown
-                posterUrl = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
+                let detail = await fetch(`https://api.themoviedb.org/3/${item.media_type==='tv'?'tv':'movie'}/${item.id}?api_key=${TMDB_KEY}`);
+                let d = await detail.json();
+                genres = (d.genres || []).map(g=>g.name).slice(0,3).join(', ');
+                runtime = item.media_type==='tv' ? (d.number_of_episodes?`${d.number_of_episodes} eps`:''): (d.runtime?`${d.runtime} min`:'');
+                poster = item.poster_path ? TMDB_IMG_BASE + item.poster_path : '';
             } catch(e) {}
-            return { ...item, genres, runtime, posterUrl };
+            return {...item, genres, runtime, poster};
         }));
-        
-        dd.innerHTML = itemsWithDetails.map(item => {
-            const title = item.title || item.name;
-            const year = (item.release_date || item.first_air_date || '').slice(0, 4);
-            const type = item.media_type === 'tv' ? 'Series' : 'Movie';
-            const posterHtml = item.posterUrl ? `<img class="tmdb-item-img" src="${item.posterUrl}" onerror="this.style.display='none'">` : `<div class="tmdb-item-img" style="display:flex;align-items:center;justify-content:center;background:var(--surface3)"><i class="fas fa-film" style="opacity:0.5"></i></div>`;
-            return `<div class="tmdb-item" onclick="selectTmdbWithData('${title.replace(/'/g, "\\'")}', '${type}', '${year}', '${item.posterUrl}', '${item.genres.replace(/'/g, "\\'")}', '${item.runtime}')">
-                        ${posterHtml}
-                        <div class="tmdb-item-info">
-                            <div class="tmdb-item-title">${title}</div>
-                            <div class="tmdb-item-year">${year} · ${type} ${item.runtime ? '· ' + item.runtime : ''}</div>
-                            <div class="tmdb-item-genre">${item.genres || 'Click to select'}</div>
-                        </div>
-                    </div>`;
-        }).join('');
+        dd.innerHTML = itemsWithDetails.map(item => `<div class="tmdb-item" onclick="selectTmdb('${item.title||item.name}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres}','${item.runtime}')"><img class="tmdb-item-img" src="${item.poster||''}" onerror="this.style.display='none'"><div><div class="tmdb-item-title">${item.title||item.name}</div><div class="tmdb-item-year">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div class="tmdb-item-genre">${item.genres||'Click to select'}</div></div></div>`).join('');
         dd.style.display = 'block';
-    } catch (err) { console.error(err); }
+    } catch(e) { console.error(e); }
 }
-function selectTmdbWithData(title, type, year, poster, genres, runtime) {
+function selectTmdb(title, type, year, poster, genres, runtime) {
     document.getElementById('f-title').value = title;
     document.getElementById('f-type').value = type;
     document.getElementById('f-year').value = year;
@@ -1269,18 +935,16 @@ function selectTmdbWithData(title, type, year, poster, genres, runtime) {
 }
 function clearTmdb() { document.getElementById('tmdb-q').value = ''; document.getElementById('tmdb-dd').style.display = 'none'; }
 
-// ============ DRAWER ============
+// ============ DRAWER ==========
 function openDrawer() { document.getElementById('filter-drawer').classList.add('open'); updateDrawerContent(); }
 function closeDrawer() { document.getElementById('filter-drawer').classList.remove('open'); }
 function updateDrawerContent() {
-    const genres = [...new Set(mediaData.map(m => m.genre).filter(Boolean).flatMap(g => g.split(',').map(s => s.trim())))];
-    const statusDiv = document.getElementById('drawer-status');
-    if (statusDiv) statusDiv.innerHTML = `<button class="dchip ${currentStatusFilter === 'all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();"><i class="fas fa-list"></i> All</button><button class="dchip ${currentStatusFilter === 'watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();"><i class="fas fa-eye"></i> Watching</button><button class="dchip ${currentStatusFilter === 'completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();"><i class="fas fa-check"></i> Completed</button><button class="dchip ${currentStatusFilter === 'plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();"><i class="fas fa-clock"></i> Plan</button>`;
-    const genreDiv = document.getElementById('drawer-genre');
-    if (genreDiv) genreDiv.innerHTML = genres.map(g => `<button class="dchip ${currentGenreFilter === g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g, "\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span>No genres</span>';
+    let genres = [...new Set(mediaData.map(m=>m.genre).filter(Boolean).flatMap(g=>g.split(',').map(s=>s.trim())))];
+    document.getElementById('drawer-status').innerHTML = `<button class="dchip ${currentStatusFilter==='all'?'active':''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();"><i class="fas fa-list"></i> All</button><button class="dchip ${currentStatusFilter==='watching'?'active':''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();"><i class="fas fa-eye"></i> Watching</button><button class="dchip ${currentStatusFilter==='completed'?'active':''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();"><i class="fas fa-check"></i> Completed</button><button class="dchip ${currentStatusFilter==='plan'?'active':''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();"><i class="fas fa-clock"></i> Plan</button>`;
+    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="dchip ${currentGenreFilter===g?'active':''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span>No genres</span>';
 }
 
-// ============ INIT ============
+// ============ INIT ==========
 document.addEventListener('click', e => { if (!e.target.closest('.tmdb-wrap')) document.getElementById('tmdb-dd').style.display = 'none'; });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeDetail(); } });
 setInterval(loadFromSheets, 120000);
