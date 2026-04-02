@@ -8,145 +8,160 @@
 <title>CINÉMA JUN — Film & Anime Diary</title>
 <link rel="icon" type="image/jpeg" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link rel="apple-touch-icon" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        screens: {
-          'xs': '480px',
-          'sm': '640px',
-          'md': '768px',
-          'lg': '1024px',
-          'xl': '1280px',
-          '2xl': '1536px',
-        },
-        animation: {
-          'shimmer': 'shimmer 1.5s infinite',
-          'fade-in': 'fadeIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1)',
-          'lift': 'liftUp 0.3s ease forwards',
-        },
-        keyframes: {
-          shimmer: {
-            '0%': { backgroundPosition: '200% 0' },
-            '100%': { backgroundPosition: '-200% 0' },
-          },
-          fadeIn: {
-            from: { opacity: 0, transform: 'scale(0.95) translateY(20px)' },
-            to: { opacity: 1, transform: 'scale(1) translateY(0)' },
-          },
-          liftUp: {
-            to: { transform: 'translateY(-4px)', boxShadow: '0 20px 25px -12px rgba(139, 92, 246, 0.3)' },
-          },
-        },
-      },
-    },
-  }
-</script>
 <style>
-  /* Custom Styles */
+  /* ========== RESET & VARIABLES ========== */
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
   
+  :root {
+    --primary: #8B5CF6;
+    --primary-dark: #6D28D9;
+    --primary-light: #A855F7;
+    --secondary: #3B82F6;
+    --success: #10B981;
+    --danger: #EF4444;
+    --warning: #F59E0B;
+    --dark-bg: #0A0A0F;
+    --dark-card: #111117;
+    --dark-surface: #15151E;
+    --dark-surface-2: #1F1F2A;
+    --text-primary: #F5F3F0;
+    --text-secondary: #A5A3B0;
+    --text-muted: #6B697A;
+    --border-light: rgba(139, 92, 246, 0.2);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+    --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.4);
+    --shadow-glow: 0 0 20px rgba(139, 92, 246, 0.3);
+    --transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  }
+  
   body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0A0A0F 0%, #0F0F1A 100%);
-    color: #F5F3F0;
+    font-family: 'Inter', 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #0F0F1A 100%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.5;
   }
   
-  /* Custom Scrollbar */
+  /* ========== CUSTOM SCROLLBAR ========== */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: #1A1A2E; }
-  ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #8B5CF6, #A855F7); border-radius: 10px; }
+  ::-webkit-scrollbar-track { background: var(--dark-surface); }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 10px; }
   
-  /* Glassmorphism Card */
-  .glass-card {
-    background: rgba(20, 20, 35, 0.5);
+  /* ========== HEADER - GLASSMORPHISM ========== */
+  .header-glass {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10, 10, 15, 0.8);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    border-bottom: 1px solid var(--border-light);
   }
-  .glass-card:hover {
+  
+  /* ========== STATS CARDS ========== */
+  .stat-card {
+    background: rgba(20, 20, 35, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    transition: var(--transition);
+  }
+  .stat-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 20px 25px -12px rgba(139, 92, 246, 0.3);
+    box-shadow: var(--shadow-glow);
     border-color: rgba(139, 92, 246, 0.3);
   }
-  
-  /* Gradient Text for Stats */
-  .gradient-text {
-    background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 50%, #C084FC 100%);
+  .gradient-number {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, #C084FC 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   
-  /* Movie Card Styles */
+  /* ========== MOVIE GRID - RESPONSIVE ========== */
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  
+  @media (min-width: 768px) {
+    .movies-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 24px;
+    }
+  }
+  
+  /* ========== MOVIE CARD ========== */
   .movie-card {
-    transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    background: rgba(15, 15, 26, 0.8);
-    backdrop-filter: blur(4px);
+    position: relative;
+    background: var(--dark-card);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
   }
   .movie-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 30px -15px rgba(139, 92, 246, 0.4);
-    border-color: rgba(139, 92, 246, 0.5);
+    transform: translateY(-5px);
+  }
+  .movie-card:hover .movie-poster {
+    transform: scale(1.05);
   }
   
   /* Poster Container */
   .poster-container {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 2/3;
+    border-radius: 12px;
+    aspect-ratio: 2 / 3;
   }
-  .poster-container img {
-    transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  .movie-poster {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
-  .movie-card:hover .poster-container img {
-    transform: scale(1.08);
+    transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
   
-  /* Poster Overlay */
-  .poster-overlay {
+  /* Gradient Overlay for Info */
+  .poster-gradient-overlay {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.8) 100%);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+    padding: 16px 12px 12px;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 1rem;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
   }
-  .movie-card:hover .poster-overlay {
+  .movie-card:hover .poster-gradient-overlay {
     opacity: 1;
+    transform: translateY(0);
   }
   
-  /* Rating Badge */
+  /* Rating Badge - Top Right */
   .rating-badge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: linear-gradient(135deg, #8B5CF6, #A855F7);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     border-radius: 30px;
     padding: 4px 10px;
     font-size: 0.7rem;
     font-weight: 700;
     color: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-sm);
     z-index: 10;
     backdrop-filter: blur(4px);
   }
   
-  /* Status Badge */
+  /* Status Badge - Bottom Left */
   .status-badge {
     position: absolute;
     bottom: 10px;
@@ -160,12 +175,45 @@
     backdrop-filter: blur(8px);
     z-index: 10;
   }
-  .status-watching { background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; }
-  .status-completed { background: linear-gradient(135deg, #10B981, #059669); color: white; }
-  .status-plan { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; }
-  .status-dropped { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
+  .status-watching { background: linear-gradient(135deg, var(--secondary), #1E40AF); color: white; }
+  .status-completed { background: linear-gradient(135deg, var(--success), #059669); color: white; }
+  .status-plan { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+  .status-dropped { background: linear-gradient(135deg, var(--danger), #DC2626); color: white; }
   
-  /* Chip Tags / Pills */
+  /* Card Info */
+  .card-info {
+    padding: 12px;
+  }
+  .card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .progress-bar-custom {
+    margin-top: 8px;
+    height: 3px;
+    background: var(--dark-surface-2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill-custom {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    border-radius: 10px;
+    transition: width 0.3s ease;
+  }
+  
+  /* ========== SIDEBAR FILTERS ========== */
   .filter-chip {
     padding: 0.5rem 1rem;
     border-radius: 40px;
@@ -173,35 +221,42 @@
     font-weight: 500;
     transition: all 0.2s ease;
     cursor: pointer;
-    border: 1px solid rgba(139, 92, 246, 0.3);
+    border: 1px solid var(--border-light);
     background: rgba(15, 15, 26, 0.6);
-    color: #A5A3B0;
+    color: var(--text-secondary);
   }
   .filter-chip:hover {
-    border-color: #8B5CF6;
+    border-color: var(--primary);
     background: rgba(139, 92, 246, 0.15);
-    color: #C084FC;
+    color: var(--primary-light);
     transform: translateY(-1px);
   }
   .filter-chip.active {
-    background: linear-gradient(135deg, #8B5CF6, #A855F7);
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
     border-color: transparent;
     color: white;
     box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
   }
   
-  /* Modern Input */
+  /* ========== MODAL ========== */
+  .modal-glass {
+    background: linear-gradient(135deg, rgba(15, 15, 26, 0.98), rgba(10, 10, 15, 0.98));
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    border-radius: 28px;
+  }
   .input-modern {
     background: rgba(10, 10, 15, 0.8);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    border: 1px solid var(--border-light);
     border-radius: 12px;
-    padding: 0.7rem 1rem;
+    padding: 0.75rem 1rem;
     color: white;
     font-size: 0.875rem;
-    transition: all 0.2s ease;
+    transition: var(--transition);
+    width: 100%;
   }
   .input-modern:focus {
-    border-color: #8B5CF6;
+    border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
     outline: none;
   }
@@ -210,14 +265,14 @@
   }
   
   /* Star Rating */
-  .star-btn {
+  .star-rating .star-btn {
     transition: all 0.1s ease;
   }
-  .star-btn:hover {
+  .star-rating .star-btn:hover {
     transform: scale(1.1);
   }
   
-  /* Skeleton Animation */
+  /* ========== SKELETON LOADING ========== */
   .skeleton {
     background: linear-gradient(90deg, #1A1A2E 25%, #2A2A3E 50%, #1A1A2E 75%);
     background-size: 200% 100%;
@@ -227,222 +282,283 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
+  .skeleton-poster {
+    aspect-ratio: 2/3;
+    border-radius: 12px;
+  }
+  .skeleton-text {
+    height: 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+  }
+  .skeleton-text-sm {
+    width: 60%;
+    height: 10px;
+    border-radius: 4px;
+    margin-top: 6px;
+  }
   
-  /* Progress Bar */
-  .progress-bar-custom {
-    height: 4px;
-    background: rgba(139, 92, 246, 0.2);
-    border-radius: 10px;
-    overflow: hidden;
+  /* ========== EMPTY STATE ========== */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(15, 15, 26, 0.5);
+    border-radius: 32px;
+    border: 1px dashed var(--border-light);
   }
-  .progress-fill-custom {
-    height: 100%;
-    background: linear-gradient(90deg, #8B5CF6, #A855F7);
-    border-radius: 10px;
-    transition: width 0.3s ease;
+  .empty-icon {
+    font-size: 4rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .empty-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .empty-sub {
+    color: var(--text-muted);
+    font-size: 0.875rem;
   }
   
-  /* Modal Animation */
-  .modal {
-    animation: fadeIn 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  /* ========== FLOATING ACTION BUTTON (MOBILE) ========== */
+  .fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 50;
   }
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.95) translateY(20px);
+  .fab:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-glow);
+  }
+  @media (min-width: 768px) {
+    .fab {
+      display: none;
     }
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
+  }
+  
+  /* ========== MOBILE DRAWER ========== */
+  .filter-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #0F0F1A, #0A0A0F);
+    border-radius: 28px 28px 0 0;
+    border-top: 1px solid var(--border-light);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    z-index: 60;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .filter-drawer.open {
+    transform: translateY(0);
+  }
+  
+  /* ========== UTILITIES ========== */
+  .container-custom {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 16px;
+  }
+  @media (min-width: 768px) {
+    .container-custom {
+      padding: 0 32px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-custom {
+      padding: 0 40px;
     }
   }
   
-  /* Toast */
-  .toast {
-    transition: all 0.3s ease;
+  .sidebar-filters {
+    background: rgba(15, 15, 26, 0.5);
+    border-radius: 24px;
+    border: 1px solid var(--border-light);
+    backdrop-filter: blur(8px);
   }
-  
-  /* Hide sidebar filters on mobile, show only in drawer */
   @media (max-width: 767px) {
     .sidebar-filters {
       display: none;
     }
   }
+  
+  /* Toast Notification */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    background: var(--dark-surface);
+    border: 1px solid var(--primary);
+    border-radius: 40px;
+    padding: 10px 20px;
+    color: var(--primary-light);
+    font-size: 0.875rem;
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
   @media (min-width: 768px) {
-    .mobile-drawer {
-      display: none;
+    .toast {
+      bottom: 20px;
     }
   }
   
-  /* Responsive Grid Container */
-  .movies-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1rem;
-  }
-  @media (min-width: 480px) {
-    .movies-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
+  /* Scroll Reveal Animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
-  @media (min-width: 768px) {
-    .movies-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-    }
-  }
-  @media (min-width: 1024px) {
-    .movies-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-    }
-  }
-  @media (min-width: 1280px) {
-    .movies-grid {
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1.5rem;
-    }
-  }
-  
-  /* Max width container */
-  .content-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
+  .animate-fade-in {
+    animation: fadeInUp 0.4s ease forwards;
   }
 </style>
 </head>
 <body>
-<!-- Sync Bar -->
-<div class="fixed top-0 left-0 right-0 z-50 bg-[#0F0F1A]/80 backdrop-blur-xl border-b border-purple-500/20 px-5 py-2 text-xs text-purple-300/60">
-  <span class="sync-dot w-2 h-2 rounded-full bg-purple-500 inline-block mr-2"></span>
-  <span id="sync-status">Connecting...</span>
-</div>
 
-<!-- Header -->
-<header class="sticky top-0 z-50 bg-[#0A0A0F]/90 backdrop-blur-xl border-b border-purple-500/20 px-4 sm:px-6 md:px-10 h-16 md:h-20 flex items-center justify-between">
-  <div class="flex items-center gap-3 md:gap-6">
-    <div class="logo font-['Playfair_Display'] text-xl md:text-2xl font-semibold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent cursor-pointer" onclick="resetToHome()">
+<!-- Header - Glassmorphism Sticky -->
+<header class="header-glass py-3 md:py-4">
+  <div class="container-custom flex items-center justify-between">
+    <div class="logo font-['Poppins'] text-xl md:text-2xl font-bold bg-gradient-to-r from-purple-400 via-purple-500 to-purple-600 bg-clip-text text-transparent cursor-pointer" onclick="resetToHome()">
       CINÉMA JUN
     </div>
-    <div class="tagline hidden md:block text-xs text-purple-300/50 border-l border-purple-500/30 pl-4">
-      track · rate · remember
+    <div class="hidden md:flex items-center gap-4">
+      <button class="btn bg-white/5 border border-purple-500/30 rounded-full px-4 py-2 text-sm text-purple-300 hover:bg-purple-500/20 transition-all" onclick="loadFromSheets()">
+        <i class="fas fa-sync-alt mr-1"></i> Sync
+      </button>
+      <button class="btn bg-gradient-to-r from-purple-500 to-purple-600 rounded-full px-5 py-2 text-sm text-white font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all" onclick="openModal()">
+        <i class="fas fa-plus mr-1"></i> Add Title
+      </button>
     </div>
-  </div>
-  <div class="flex gap-2">
-    <button class="btn bg-white/5 border border-purple-500/30 rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-purple-300 hover:bg-purple-500/20 transition-all" onclick="loadFromSheets()">
-      <i class="fas fa-sync-alt mr-1"></i> Sync
-    </button>
-    <button class="btn btn-primary bg-gradient-to-r from-purple-500 to-purple-600 rounded-full px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm text-white font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all" onclick="openModal()">
-      <i class="fas fa-plus mr-1"></i> Add
-    </button>
+    <div class="md:hidden text-purple-400">
+      <i class="fas fa-film text-lg"></i>
+    </div>
   </div>
 </header>
 
-<!-- Stats Overview - Glassmorphism -->
-<div class="content-container px-4 sm:px-6 md:px-10 mt-4 md:mt-6 mb-6">
+<!-- Stats Overview -->
+<div class="container-custom mt-6">
   <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('all')">
-      <div class="flex items-center justify-center gap-2 mb-2">
-        <i class="fas fa-film text-2xl text-purple-400"></i>
-      </div>
-      <div class="stat-value text-2xl md:text-3xl font-bold gradient-text" id="stat-total">—</div>
+    <div class="stat-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('all')">
+      <i class="fas fa-film text-2xl text-purple-400 mb-2 block"></i>
+      <div class="text-2xl md:text-3xl font-bold gradient-number" id="stat-total">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Total Films</div>
     </div>
-    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('watching')">
-      <div class="flex items-center justify-center gap-2 mb-2">
-        <i class="fas fa-eye text-2xl text-blue-400"></i>
-      </div>
-      <div class="stat-value text-2xl md:text-3xl font-bold gradient-text" id="stat-watching">—</div>
+    <div class="stat-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('watching')">
+      <i class="fas fa-eye text-2xl text-blue-400 mb-2 block"></i>
+      <div class="text-2xl md:text-3xl font-bold gradient-number" id="stat-watching">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Watching</div>
     </div>
-    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('completed')">
-      <div class="flex items-center justify-center gap-2 mb-2">
-        <i class="fas fa-check-circle text-2xl text-green-400"></i>
-      </div>
-      <div class="stat-value text-2xl md:text-3xl font-bold gradient-text" id="stat-completed">—</div>
+    <div class="stat-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('completed')">
+      <i class="fas fa-check-circle text-2xl text-green-400 mb-2 block"></i>
+      <div class="text-2xl md:text-3xl font-bold gradient-number" id="stat-completed">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Completed</div>
     </div>
-    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('plan')">
-      <div class="flex items-center justify-center gap-2 mb-2">
-        <i class="fas fa-clock text-2xl text-purple-300"></i>
-      </div>
-      <div class="stat-value text-2xl md:text-3xl font-bold gradient-text" id="stat-plan">—</div>
+    <div class="stat-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('plan')">
+      <i class="fas fa-clock text-2xl text-purple-300 mb-2 block"></i>
+      <div class="text-2xl md:text-3xl font-bold gradient-number" id="stat-plan">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Watchlist</div>
     </div>
   </div>
 </div>
 
 <!-- Main Layout -->
-<main class="content-container px-4 sm:px-6 md:px-10 pb-20">
+<main class="container-custom py-6">
   <div class="flex flex-col md:flex-row gap-6">
-    <!-- Sidebar Filters - Hidden on mobile, visible on desktop -->
-    <aside class="sidebar-filters md:w-72 bg-[#0F0F1A]/50 rounded-2xl p-5 border border-purple-500/20 h-fit md:sticky md:top-24">
-      <div class="sidebar-section mb-6">
-        <div class="sidebar-title text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
+    <!-- Sidebar Filters - Desktop Only -->
+    <aside class="sidebar-filters md:w-80 p-5 h-fit md:sticky md:top-24">
+      <div class="mb-6">
+        <div class="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
           <i class="fas fa-film"></i> Status
         </div>
         <div class="space-y-1">
-          <div class="nav-item flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all active" id="nav-all" onclick="setStatusFilter('all',this)">
+          <div class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all active" id="nav-all" onclick="setStatusFilter('all',this)">
             <span><i class="fas fa-list-ul mr-2 text-purple-400"></i>All</span>
-            <span class="nav-count text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-all">0</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-all">0</span>
           </div>
-          <div class="nav-item flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-watching" onclick="setStatusFilter('watching',this)">
+          <div class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-watching" onclick="setStatusFilter('watching',this)">
             <span><i class="fas fa-eye mr-2 text-blue-400"></i>Watching</span>
-            <span class="nav-count text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-watching-nav">0</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-watching-nav">0</span>
           </div>
-          <div class="nav-item flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-completed" onclick="setStatusFilter('completed',this)">
+          <div class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-completed" onclick="setStatusFilter('completed',this)">
             <span><i class="fas fa-check-circle mr-2 text-green-400"></i>Completed</span>
-            <span class="nav-count text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-completed-nav">0</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-completed-nav">0</span>
           </div>
-          <div class="nav-item flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-plan" onclick="setStatusFilter('plan',this)">
+          <div class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-plan" onclick="setStatusFilter('plan',this)">
             <span><i class="fas fa-clock mr-2 text-purple-300"></i>Plan to Watch</span>
-            <span class="nav-count text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-plan-nav">0</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-plan-nav">0</span>
           </div>
-          <div class="nav-item flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-dropped" onclick="setStatusFilter('dropped',this)">
+          <div class="flex items-center justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10 transition-all" id="nav-dropped" onclick="setStatusFilter('dropped',this)">
             <span><i class="fas fa-times-circle mr-2 text-red-400"></i>Dropped</span>
-            <span class="nav-count text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-dropped-nav">0</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-dropped-nav">0</span>
           </div>
         </div>
       </div>
       
-      <div class="sidebar-section mb-6">
-        <div class="sidebar-title text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
+      <div class="mb-6">
+        <div class="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
           <i class="fas fa-tag"></i> Type
         </div>
         <div class="flex flex-wrap gap-2">
-          <button class="filter-chip text-xs" onclick="setTypeFilter('all',this)">All Types</button>
-          <button class="filter-chip text-xs" onclick="setTypeFilter('Movie',this)">🎬 Movie</button>
-          <button class="filter-chip text-xs" onclick="setTypeFilter('Series',this)">📺 Series</button>
-          <button class="filter-chip text-xs" onclick="setTypeFilter('Anime Movie',this)">🎬 Anime Movie</button>
-          <button class="filter-chip text-xs" onclick="setTypeFilter('Anime Series',this)">📺 Anime Series</button>
+          <button class="filter-chip" onclick="setTypeFilter('all',this)">All Types</button>
+          <button class="filter-chip" onclick="setTypeFilter('Movie',this)">🎬 Movie</button>
+          <button class="filter-chip" onclick="setTypeFilter('Series',this)">📺 Series</button>
+          <button class="filter-chip" onclick="setTypeFilter('Anime Movie',this)">🎬 Anime Movie</button>
+          <button class="filter-chip" onclick="setTypeFilter('Anime Series',this)">📺 Anime Series</button>
         </div>
-        <div class="mt-3 grid grid-cols-2 gap-2">
-          <div class="text-xs text-purple-300/50"><span class="text-purple-400" id="cnt-movie">0</span> Movies</div>
-          <div class="text-xs text-purple-300/50"><span class="text-purple-400" id="cnt-series">0</span> Series</div>
-          <div class="text-xs text-purple-300/50"><span class="text-purple-400" id="cnt-anime-movie">0</span> Anime Movies</div>
-          <div class="text-xs text-purple-300/50"><span class="text-purple-400" id="cnt-anime-series">0</span> Anime Series</div>
+        <div class="grid grid-cols-2 gap-2 mt-3 text-xs text-purple-300/50">
+          <div><span class="text-purple-400" id="cnt-movie">0</span> Movies</div>
+          <div><span class="text-purple-400" id="cnt-series">0</span> Series</div>
+          <div><span class="text-purple-400" id="cnt-anime-movie">0</span> Anime Movies</div>
+          <div><span class="text-purple-400" id="cnt-anime-series">0</span> Anime Series</div>
         </div>
       </div>
       
-      <div class="sidebar-section">
-        <div class="sidebar-title text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
+      <div>
+        <div class="text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3 flex items-center gap-2">
           <i class="fas fa-tags"></i> Genres
         </div>
         <div class="genre-cloud flex flex-wrap gap-2" id="genre-cloud"></div>
       </div>
     </aside>
 
-    <!-- Content -->
+    <!-- Content Area -->
     <div class="flex-1">
-      <!-- Search and Sort Row -->
+      <!-- Search & Sort -->
       <div class="flex flex-col sm:flex-row gap-3 mb-6">
-        <div class="search-wrap flex-1 relative">
+        <div class="flex-1 relative">
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/50 text-sm"></i>
-          <input class="search-input w-full bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder:text-purple-300/30 focus:border-purple-500 focus:outline-none transition-all" type="text" placeholder="Search by title, genre..." id="search-input" oninput="renderMedia()">
+          <input class="w-full bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder:text-purple-300/30 focus:border-purple-500 focus:outline-none transition-all" type="text" placeholder="Search by title, genre..." id="search-input" oninput="renderMedia()">
         </div>
-        <select class="filter-select bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 px-4 text-sm text-purple-300 cursor-pointer" id="sort-select" onchange="renderMedia()">
+        <select class="bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 px-4 text-sm text-purple-300 cursor-pointer" id="sort-select" onchange="renderMedia()">
           <option value="added">Recently Added</option>
           <option value="rating">Highest Rated</option>
           <option value="title">A → Z</option>
@@ -450,12 +566,12 @@
         </select>
       </div>
       
-      <!-- Content Header with View Toggle -->
+      <!-- Header with View Toggle -->
       <div class="flex justify-between items-center mb-4">
-        <div class="section-title font-['Playfair_Display'] text-xl md:text-2xl font-semibold" id="section-title">All <em class="text-purple-400 not-italic">Titles</em></div>
+        <div class="font-['Poppins'] text-xl md:text-2xl font-semibold" id="section-title">All <span class="text-purple-400">Titles</span></div>
         <div class="flex gap-2">
-          <button class="view-btn w-9 h-9 rounded-xl border border-purple-500/30 bg-purple-500/20 text-purple-400" id="btn-grid" onclick="setViewMode('grid')"><i class="fas fa-th"></i></button>
-          <button class="view-btn w-9 h-9 rounded-xl border border-purple-500/30 bg-transparent text-purple-300/60 hover:bg-purple-500/10 transition-all" id="btn-list" onclick="setViewMode('list')"><i class="fas fa-list"></i></button>
+          <button class="w-9 h-9 rounded-xl border border-purple-500/30 bg-purple-500/20 text-purple-400 transition-all" id="btn-grid" onclick="setViewMode('grid')"><i class="fas fa-th"></i></button>
+          <button class="w-9 h-9 rounded-xl border border-purple-500/30 bg-transparent text-purple-300/60 hover:bg-purple-500/10 transition-all" id="btn-list" onclick="setViewMode('list')"><i class="fas fa-list"></i></button>
         </div>
       </div>
       
@@ -465,84 +581,75 @@
   </div>
 </main>
 
-<!-- Mobile FAB - Only shows on mobile -->
-<div class="mobile-drawer fixed bottom-5 right-5 flex gap-3 z-40 md:hidden">
-  <button class="fab-filter bg-[#0F0F1A] border border-purple-500/30 rounded-full px-4 py-2 text-sm text-purple-300 backdrop-blur-xl" id="fab-filter-btn" onclick="openDrawer()">
-    <i class="fas fa-sliders-h mr-1"></i> Filter & Sort
-  </button>
-  <button class="fab-add w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-white text-xl shadow-lg shadow-purple-500/30" onclick="openModal()">
-    <i class="fas fa-plus"></i>
-  </button>
+<!-- Floating Action Button (Mobile) -->
+<div class="fab" onclick="openModal()">
+  <i class="fas fa-plus"></i>
 </div>
 
 <!-- Mobile Filter Drawer -->
-<div class="filter-drawer fixed bottom-0 left-0 right-0 bg-[#0F0F1A] rounded-t-3xl border-t border-purple-500/30 transform translate-y-full transition-transform duration-300 z-50 md:hidden" id="filter-drawer">
-  <div class="drawer-handle w-12 h-1 bg-purple-500/50 rounded-full mx-auto mt-3"></div>
-  <div class="drawer-header flex justify-between items-center p-4 border-b border-purple-500/20">
-    <div class="drawer-title font-['Playfair_Display'] text-xl text-purple-400">Filter & Sort</div>
-    <button class="drawer-reset text-purple-400 text-sm" onclick="resetAllFilters()"><i class="fas fa-undo mr-1"></i> Reset</button>
+<div class="filter-drawer" id="filter-drawer">
+  <div class="w-12 h-1 bg-purple-500/50 rounded-full mx-auto mt-3"></div>
+  <div class="p-4 border-b border-purple-500/20 flex justify-between items-center">
+    <div class="font-['Poppins'] text-xl text-purple-400">Filter & Sort</div>
+    <button class="text-purple-400 text-sm" onclick="resetAllFilters()"><i class="fas fa-undo mr-1"></i> Reset</button>
   </div>
-  
-  <div class="drawer-section p-4">
-    <div class="drawer-section-title text-purple-400 text-xs font-semibold mb-2">Status</div>
+  <div class="p-4">
+    <div class="text-purple-400 text-xs font-semibold mb-2">Status</div>
     <div id="drawer-status" class="flex flex-wrap gap-2"></div>
   </div>
-  
-  <div class="drawer-section p-4 pt-0">
-    <div class="drawer-section-title text-purple-400 text-xs font-semibold mb-2">Type</div>
+  <div class="px-4 pb-4">
+    <div class="text-purple-400 text-xs font-semibold mb-2">Type</div>
     <div id="drawer-type" class="flex flex-wrap gap-2"></div>
   </div>
-  
-  <div class="drawer-section p-4 pt-0">
-    <div class="drawer-section-title text-purple-400 text-xs font-semibold mb-2">Genre</div>
+  <div class="px-4 pb-4">
+    <div class="text-purple-400 text-xs font-semibold mb-2">Genre</div>
     <div id="drawer-genre" class="flex flex-wrap gap-2"></div>
   </div>
-  
-  <div class="drawer-section p-4 pt-0">
-    <div class="drawer-section-title text-purple-400 text-xs font-semibold mb-2">Sort By</div>
+  <div class="px-4 pb-4">
+    <div class="text-purple-400 text-xs font-semibold mb-2">Sort By</div>
     <div class="flex flex-wrap gap-2">
-      <button class="dchip px-3 py-1.5 rounded-full border border-purple-500/30 text-xs" onclick="document.getElementById('sort-select').value='added';renderMedia();closeDrawer()">Recently Added</button>
-      <button class="dchip px-3 py-1.5 rounded-full border border-purple-500/30 text-xs" onclick="document.getElementById('sort-select').value='rating';renderMedia();closeDrawer()">Highest Rated</button>
-      <button class="dchip px-3 py-1.5 rounded-full border border-purple-500/30 text-xs" onclick="document.getElementById('sort-select').value='title';renderMedia();closeDrawer()">A → Z</button>
-      <button class="dchip px-3 py-1.5 rounded-full border border-purple-500/30 text-xs" onclick="document.getElementById('sort-select').value='year';renderMedia();closeDrawer()">Year</button>
+      <button class="filter-chip" onclick="document.getElementById('sort-select').value='added';renderMedia();closeDrawer()">Recently Added</button>
+      <button class="filter-chip" onclick="document.getElementById('sort-select').value='rating';renderMedia();closeDrawer()">Highest Rated</button>
+      <button class="filter-chip" onclick="document.getElementById('sort-select').value='title';renderMedia();closeDrawer()">A → Z</button>
+      <button class="filter-chip" onclick="document.getElementById('sort-select').value='year';renderMedia();closeDrawer()">Year</button>
     </div>
   </div>
-  <button class="drawer-apply w-[calc(100%-2rem)] mx-4 mb-5 py-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full text-white font-semibold" onclick="closeDrawer()"><i class="fas fa-check mr-1"></i> Apply Filters</button>
+  <button class="w-[calc(100%-2rem)] mx-4 mb-5 py-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full text-white font-semibold" onclick="closeDrawer()"><i class="fas fa-check mr-1"></i> Apply Filters</button>
 </div>
 
-<!-- Modal Overlay - Add/Edit Title -->
-<div class="modal-overlay fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity" id="modal-overlay" onclick="closeModalOutside(event)">
-  <div class="modal bg-[#0F0F1A] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30">
-    <div class="modal-header flex justify-between items-center p-5 border-b border-purple-500/20 sticky top-0 bg-[#0F0F1A] z-10">
-      <div class="modal-title font-['Playfair_Display'] text-xl text-purple-400" id="modal-heading"><i class="fas fa-plus-circle mr-2"></i> Add New Title</div>
-      <button class="modal-close w-8 h-8 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 hover:border-red-500 transition-all" onclick="closeModal()"><i class="fas fa-times"></i></button>
+<!-- Modal Add/Edit Title -->
+<div class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal-glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-[#0F0F1A]/95 backdrop-blur-xl p-5 border-b border-purple-500/20 flex justify-between items-center">
+      <div class="font-['Poppins'] text-xl text-purple-400" id="modal-heading"><i class="fas fa-plus-circle mr-2"></i> Add New Title</div>
+      <button class="w-8 h-8 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 hover:border-red-500 transition-all" onclick="closeModal()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="modal-body p-5">
+    <div class="p-5">
       <!-- TMDB Search -->
       <div class="mb-5">
         <label class="text-purple-400 text-xs uppercase tracking-wide block mb-2"><i class="fas fa-search mr-1"></i> Search TMDB</label>
-        <div class="tmdb-wrap relative">
+        <div class="relative">
           <div class="flex gap-2">
-            <input class="tmdb-input flex-1 bg-[#0A0A0F] border border-purple-500/20 rounded-xl py-2.5 px-4 text-sm text-white placeholder:text-purple-300/30 focus:border-purple-500 focus:outline-none transition-all" id="tmdb-q" placeholder="Type movie or series title..." oninput="onTmdbType(this.value)">
-            <button class="btn bg-white/5 border border-purple-500/30 rounded-xl px-3 text-purple-300" type="button" onclick="clearTmdb()"><i class="fas fa-times"></i></button>
+            <input class="flex-1 input-modern" id="tmdb-q" placeholder="Type movie or series title..." oninput="onTmdbType(this.value)">
+            <button class="bg-white/5 border border-purple-500/30 rounded-xl px-3 text-purple-300" onclick="clearTmdb()"><i class="fas fa-times"></i></button>
           </div>
-          <div class="tmdb-dropdown absolute top-full left-0 right-0 bg-[#0F0F1A] border border-purple-500/30 rounded-xl mt-1 max-h-72 overflow-y-auto z-50 hidden" id="tmdb-dd"></div>
+          <div class="absolute top-full left-0 right-0 bg-[#0F0F1A] border border-purple-500/30 rounded-xl mt-1 max-h-72 overflow-y-auto z-50 hidden" id="tmdb-dd"></div>
         </div>
       </div>
       
-      <!-- Poster and Title Row -->
+      <!-- Poster and Title -->
       <div class="flex gap-4 mb-4 flex-wrap">
-        <div class="poster-box w-24 h-36 bg-[#0A0A0F] rounded-xl flex items-center justify-center border border-purple-500/20 overflow-hidden" id="poster-box">
+        <div class="w-24 h-36 bg-[#0A0A0F] rounded-xl flex items-center justify-center border border-purple-500/20 overflow-hidden" id="poster-box">
           <i class="fas fa-image text-3xl text-purple-500/30"></i>
         </div>
         <div class="flex-1 min-w-[200px]">
           <div class="mb-3">
-            <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-heading mr-1"></i> Title *</label>
+            <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Title *</label>
             <input type="text" id="f-title" class="w-full input-modern" placeholder="Enter title...">
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-layer-group mr-1"></i> Type</label>
+              <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Type</label>
               <select id="f-type" class="w-full input-modern">
                 <option value="Movie">🎬 Movie</option>
                 <option value="Series">📺 Series</option>
@@ -551,17 +658,17 @@
               </select>
             </div>
             <div>
-              <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-calendar mr-1"></i> Year</label>
+              <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Year</label>
               <input type="number" id="f-year" class="w-full input-modern" placeholder="2024">
             </div>
           </div>
         </div>
       </div>
       
-      <!-- 2 Column Form for Desktop -->
+      <!-- 2 Column Form -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-flag-checkered mr-1"></i> Status</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Status</label>
           <select id="f-status" class="w-full input-modern">
             <option value="plan">📋 Plan to Watch</option>
             <option value="watching">👀 Watching</option>
@@ -570,28 +677,28 @@
           </select>
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-calendar-day mr-1"></i> Watch Date</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Watch Date</label>
           <input type="date" id="f-watchdate" class="w-full input-modern">
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-tags mr-1"></i> Genre</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Genre</label>
           <input type="text" id="f-genre" class="w-full input-modern" placeholder="Drama, Action...">
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-hourglass-half mr-1"></i> Episodes / Runtime</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Episodes / Runtime</label>
           <input type="text" id="f-episodes" class="w-full input-modern" placeholder="12 eps / 120 min">
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-play-circle mr-1"></i> Current Episode / Minutes</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Current Episode / Minutes</label>
           <input type="text" id="f-current-episode" class="w-full input-modern" placeholder="4 / 60 min">
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-chart-line mr-1"></i> Progress (%)</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Progress (%)</label>
           <input type="number" id="f-progress" min="0" max="100" class="w-full input-modern">
-          <div class="text-xs text-purple-300/50 mt-1"><i class="fas fa-calculator mr-1"></i> Otomatis dari current episode</div>
+          <div class="text-xs text-purple-300/50 mt-1">Auto from current episode</div>
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-star mr-1"></i> Rating (1-10)</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Rating (1-10)</label>
           <div class="star-rating flex gap-1 mt-1" id="star-rating">
             <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400 transition-all" data-v="1" onclick="setRating(1)">★</button>
             <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400 transition-all" data-v="2" onclick="setRating(2)">★</button>
@@ -606,11 +713,11 @@
           </div>
         </div>
         <div>
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-redo-alt mr-1"></i> Rewatch Count</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Rewatch Count</label>
           <input type="number" id="f-rewatch" min="0" value="0" class="w-full input-modern">
         </div>
         <div class="md:col-span-2">
-          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1"><i class="fas fa-pen mr-1"></i> Notes</label>
+          <label class="text-purple-400 text-xs uppercase tracking-wide block mb-1">Notes</label>
           <textarea id="f-notes" rows="2" class="w-full input-modern" placeholder="Your personal thoughts..."></textarea>
         </div>
       </div>
@@ -619,29 +726,29 @@
       <input type="hidden" id="f-tmdbid">
       
       <div class="flex justify-end gap-3 mt-5 pt-4 border-t border-purple-500/20">
-        <button class="btn bg-transparent border border-purple-500/30 rounded-xl px-5 py-2 text-purple-300 hover:bg-purple-500/10 transition-all" onclick="closeModal()"><i class="fas fa-times mr-1"></i> Cancel</button>
-        <button class="btn btn-primary bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl px-5 py-2 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/30 hover:scale-[1.02] transition-all" id="btn-save" onclick="saveEntry()"><i class="fas fa-save mr-1"></i> Save Title</button>
+        <button class="bg-transparent border border-purple-500/30 rounded-xl px-5 py-2 text-purple-300 hover:bg-purple-500/10 transition-all" onclick="closeModal()">Cancel</button>
+        <button class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl px-5 py-2 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all" id="btn-save" onclick="saveEntry()"><i class="fas fa-save mr-1"></i> Save Title</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Detail Modal -->
-<div class="modal-overlay fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity" id="detail-overlay" onclick="closeDetailOutside(event)">
-  <div class="modal bg-[#0F0F1A] rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30">
-    <div class="modal-header flex justify-between items-center p-5 border-b border-purple-500/20 sticky top-0 bg-[#0F0F1A]">
-      <div class="modal-title font-['Playfair_Display'] text-xl text-purple-400"><i class="fas fa-info-circle mr-2"></i> Title Details</div>
-      <button class="modal-close w-8 h-8 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 hover:border-red-500 transition-all" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+<div class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity" id="detail-overlay" onclick="closeDetailOutside(event)">
+  <div class="modal-glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-[#0F0F1A]/95 backdrop-blur-xl p-5 border-b border-purple-500/20 flex justify-between items-center">
+      <div class="font-['Poppins'] text-xl text-purple-400"><i class="fas fa-info-circle mr-2"></i> Title Details</div>
+      <button class="w-8 h-8 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 hover:border-red-500 transition-all" onclick="closeDetail()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="modal-body p-5" id="detail-body"></div>
+    <div class="p-5" id="detail-body"></div>
   </div>
 </div>
 
-<div class="toast fixed bottom-5 right-5 bg-[#0F0F1A] border border-purple-500 rounded-full py-2 px-4 text-purple-400 text-sm z-50 opacity-0 transform translate-y-4 transition-all pointer-events-none" id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 // ============ KONFIGURASI ============
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzTg1SrJ_2teSqBnktnVEM3J75_l1502bsJXsy4DyI4KGK0gJi-hIayCL6UVSG9PsIPVg/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzREN2MeLrjdCLVOTx_1k0w37nz8LcsAx37KyGzM7seL_nhzKROSCnk7eU0op6mQqo8xA/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -658,16 +765,14 @@ let isLoading = true;
 
 // ============ UTILITY ==========
 function setSyncStatus(status, msg) {
-    const dot = document.querySelector('.sync-dot');
     const text = document.getElementById('sync-status');
-    if (dot) dot.className = 'sync-dot w-2 h-2 rounded-full inline-block ' + (status === 'online' ? 'bg-green-500' : status === 'syncing' ? 'bg-purple-500 animate-pulse' : 'bg-red-500');
     if (text) text.textContent = msg;
 }
 function showToast(msg, isError) {
     const t = document.getElementById('toast');
     t.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-1"></i> ${msg}`;
-    t.classList.add('opacity-100', 'translate-y-0');
-    setTimeout(() => t.classList.remove('opacity-100', 'translate-y-0'), 2500);
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
 }
 function resetToHome() {
     currentStatusFilter = 'all';
@@ -767,13 +872,11 @@ function showSkeleton() {
     const container = document.getElementById('media-container');
     if (container && isLoading) {
         container.innerHTML = `<div class="movies-grid">
-            ${Array(10).fill().map(() => `
-                <div class="rounded-xl overflow-hidden">
-                    <div class="skeleton w-full aspect-[2/3] rounded-xl"></div>
-                    <div class="mt-2 space-y-2">
-                        <div class="skeleton h-4 w-3/4 rounded"></div>
-                        <div class="skeleton h-3 w-1/2 rounded"></div>
-                    </div>
+            ${Array(12).fill().map(() => `
+                <div>
+                    <div class="skeleton skeleton-poster w-full rounded-xl"></div>
+                    <div class="skeleton skeleton-text w-3/4"></div>
+                    <div class="skeleton skeleton-text-sm w-1/2"></div>
                 </div>
             `).join('')}
         </div>`;
@@ -857,14 +960,14 @@ function getFilteredData() {
 }
 function setStatusFilter(s, el) { 
     currentStatusFilter = s; 
-    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active', 'bg-purple-500/10'));
-    if (el) el.classList.add('active', 'bg-purple-500/10');
+    document.querySelectorAll('.sidebar-filters .nav-item').forEach(item => item.classList.remove('bg-purple-500/10'));
+    if (el) el.classList.add('bg-purple-500/10');
     renderMedia(); 
 }
 function setTypeFilter(t, el) { 
     currentTypeFilter = t; 
     document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
-    if (el) el.classList.add('active', 'bg-purple-500/20', 'text-white');
+    if (el) el.classList.add('active');
     renderMedia(); 
 }
 function setGenreFilter(g) { 
@@ -904,7 +1007,12 @@ function renderMedia() {
     let data = getFilteredData();
     let container = document.getElementById('media-container');
     if (!data.length) { 
-        container.innerHTML = '<div class="text-center py-20"><i class="fas fa-film text-5xl text-purple-500/30 mb-4 block"></i><div class="text-purple-300/60">No titles found</div><div class="text-sm text-purple-300/40 mt-2">Add your first film or anime</div></div>'; 
+        container.innerHTML = `<div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-film"></i></div>
+            <div class="empty-title">No titles found</div>
+            <div class="empty-sub">Add your first film or anime to start tracking</div>
+            <button class="mt-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full px-5 py-2 text-sm text-white font-semibold hover:shadow-lg transition-all" onclick="openModal()"><i class="fas fa-plus mr-1"></i> Add Your First Title</button>
+        </div>`; 
         return; 
     }
     if (currentViewMode === 'grid') {
@@ -912,24 +1020,22 @@ function renderMedia() {
             let statusClass = {watching:'status-watching',completed:'status-completed',plan:'status-plan',dropped:'status-dropped'}[m.status];
             let statusLabel = {watching:'Watching',completed:'Completed',plan:'Plan',dropped:'Dropped'}[m.status];
             let ratingDisplay = m.rating > 0 ? m.rating.toFixed(1) : 'NR';
-            let posterHtml = m.poster ? `<img src="${m.poster}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/300x450/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-purple-800/30 text-4xl text-purple-400/50">${m.title.charAt(0)}</div>`;
+            let posterHtml = m.poster ? `<img src="${m.poster}" loading="lazy" class="movie-poster" onerror="this.src='https://placehold.co/300x450/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div class="movie-poster flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-purple-800/30 text-4xl text-purple-400/50">${m.title.charAt(0)}</div>`;
             let watchDateFormatted = formatWatchDate(m.watchDate);
             let rewatchText = formatRewatch(m.rewatch);
-            return `<div class="movie-card rounded-xl overflow-hidden bg-[#0F0F1A] border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer group" onclick="showDetail(${m.id})">
-                        <div class="poster-container relative">
+            return `<div class="movie-card" onclick="showDetail(${m.id})">
+                        <div class="poster-container">
                             ${posterHtml}
-                            <div class="poster-overlay">
-                                <div class="poster-overlay-content">
-                                    <div class="text-white text-sm font-semibold line-clamp-2">${m.title}</div>
-                                    <div class="flex items-center gap-1 mt-1">${renderStars(m.rating)}</div>
-                                </div>
+                            <div class="poster-gradient-overlay">
+                                <div class="text-white text-xs font-semibold">${m.year}</div>
+                                <div class="flex items-center gap-1 mt-1">${renderStars(m.rating)}</div>
                             </div>
                             <div class="rating-badge">⭐ ${ratingDisplay}</div>
                             <div class="status-badge ${statusClass}">${statusLabel}</div>
                         </div>
-                        <div class="p-3">
-                            <div class="card-title font-semibold text-sm truncate">${m.title}</div>
-                            <div class="card-meta text-xs text-purple-300/50 mt-1">${m.year} · ${m.type}</div>
+                        <div class="card-info">
+                            <div class="card-title">${m.title}</div>
+                            <div class="card-meta">${m.year} · ${m.type}</div>
                             ${formatEpisodeDisplay(m.currentEpisode,m.episodes) ? `<div class="text-xs text-purple-400 mt-1">${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>` : ''}
                             <div class="flex justify-between items-center mt-2 text-xs text-purple-300/50">
                                 <span><i class="far fa-calendar-alt mr-1"></i>${watchDateFormatted !== 'Not set' ? watchDateFormatted.substring(0, 10) : 'Not set'}</span>
@@ -945,14 +1051,14 @@ function renderMedia() {
             let watchDateFormatted = formatWatchDate(m.watchDate);
             let rewatchText = formatRewatch(m.rewatch);
             let posterHtml = m.poster ? `<img src="${m.poster}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x120/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-purple-800/30 text-xl text-purple-400/50">${m.title.charAt(0)}</div>`;
-            return `<div class="list-item bg-[#0F0F1A] rounded-xl border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer p-3 flex gap-3" onclick="showDetail(${m.id})">
-                        <div class="list-thumb w-16 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-[#0A0A0F]">${posterHtml}</div>
-                        <div class="list-content flex-1">
+            return `<div class="bg-[#0F0F1A] rounded-xl border border-purple-500/20 hover:border-purple-500/50 transition-all cursor-pointer p-3 flex gap-3" onclick="showDetail(${m.id})">
+                        <div class="w-16 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-[#0A0A0F]">${posterHtml}</div>
+                        <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 mb-1">
-                                <div class="list-title font-semibold">${m.title}</div>
-                                <span class="status-badge-static ${statusClass} text-xs px-2 py-0.5 rounded-full">${m.status}</span>
+                                <div class="font-semibold">${m.title}</div>
+                                <span class="${statusClass} text-xs px-2 py-0.5 rounded-full">${m.status}</span>
                             </div>
-                            <div class="list-meta text-xs text-purple-300/50">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
+                            <div class="text-xs text-purple-300/50">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
                             ${formatEpisodeDisplay(m.currentEpisode,m.episodes) ? `<div class="text-xs text-purple-400 mt-1">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>` : ''}
                             <div class="flex flex-wrap gap-3 mt-2 text-xs text-purple-300/50">
                                 <span><i class="far fa-calendar-alt mr-1"></i>${watchDateFormatted}</span>
@@ -964,9 +1070,9 @@ function renderMedia() {
                     </div>`;
         }).join('')}</div>`;
     }
-    document.getElementById('btn-grid').className = 'view-btn w-9 h-9 rounded-xl border border-purple-500/30 ' + (currentViewMode === 'grid' ? 'bg-purple-500/20 text-purple-400' : 'bg-transparent text-purple-300/60');
-    document.getElementById('btn-list').className = 'view-btn w-9 h-9 rounded-xl border border-purple-500/30 ' + (currentViewMode === 'list' ? 'bg-purple-500/20 text-purple-400' : 'bg-transparent text-purple-300/60');
-    document.getElementById('section-title').innerHTML = ({all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All') + ' <em class="text-purple-400 not-italic">Titles</em>';
+    document.getElementById('btn-grid').className = 'w-9 h-9 rounded-xl border border-purple-500/30 ' + (currentViewMode === 'grid' ? 'bg-purple-500/20 text-purple-400' : 'bg-transparent text-purple-300/60');
+    document.getElementById('btn-list').className = 'w-9 h-9 rounded-xl border border-purple-500/30 ' + (currentViewMode === 'list' ? 'bg-purple-500/20 text-purple-400' : 'bg-transparent text-purple-300/60');
+    document.getElementById('section-title').innerHTML = ({all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All') + ' <span class="text-purple-400">Titles</span>';
 }
 function updateStats() {
     document.getElementById('stat-total').textContent = mediaData.length;
@@ -999,7 +1105,7 @@ function updateCounts() {
 function updateGenreCloud() {
     let genres = new Set();
     mediaData.forEach(m => { if(m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
-    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => `<button class="genre-tag px-3 py-1 rounded-full border border-purple-500/30 text-xs text-purple-300/70 hover:border-purple-500 hover:text-purple-400 transition-all ${currentGenreFilter===g ? 'border-purple-500 text-purple-400 bg-purple-500/10' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}')">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
+    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}')">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
 }
 function setViewMode(m) { currentViewMode = m; renderMedia(); }
 
@@ -1053,29 +1159,27 @@ function showDetail(id) {
     let watchDateFormatted = formatWatchDate(m.watchDate);
     let rewatchText = formatRewatch(m.rewatch);
     let episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
-    let posterHtml = m.poster ? `<img class="detail-poster w-32 h-48 object-cover rounded-xl shadow-lg" src="${m.poster}" loading="lazy" onerror="this.src='https://placehold.co/128x192/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div class="detail-poster w-32 h-48 rounded-xl bg-gradient-to-br from-purple-900/50 to-purple-800/30 flex items-center justify-center text-4xl text-purple-400/50 shadow-lg">${m.title.charAt(0)}</div>`;
+    let posterHtml = m.poster ? `<img class="w-32 h-48 object-cover rounded-xl shadow-lg" src="${m.poster}" loading="lazy" onerror="this.src='https://placehold.co/128x192/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div class="w-32 h-48 rounded-xl bg-gradient-to-br from-purple-900/50 to-purple-800/30 flex items-center justify-center text-4xl text-purple-400/50 shadow-lg">${m.title.charAt(0)}</div>`;
     document.getElementById('detail-body').innerHTML = `
-        <div class="detail-hero flex gap-4 flex-wrap md:flex-nowrap">
+        <div class="flex gap-4 flex-wrap md:flex-nowrap">
             ${posterHtml}
-            <div class="detail-info flex-1">
-                <div class="detail-title text-xl md:text-2xl font-semibold">${m.title}</div>
-                <div class="detail-meta text-purple-300/60 text-sm mt-1">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div>
+            <div class="flex-1">
+                <div class="text-xl md:text-2xl font-semibold">${m.title}</div>
+                <div class="text-purple-300/60 text-sm mt-1">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div>
                 ${episodeDisplay ? `<div class="text-purple-400 text-sm mt-1">📺 ${episodeDisplay}</div>` : ''}
-                <div class="detail-rating flex items-center gap-2 mt-2"><span class="text-2xl font-bold text-purple-400">${m.rating > 0 ? m.rating.toFixed(1) : 'NR'}</span><span class="text-sm text-purple-300/50">/10</span>${renderStars(m.rating)}</div>
+                <div class="flex items-center gap-2 mt-2"><span class="text-2xl font-bold text-purple-400">${m.rating > 0 ? m.rating.toFixed(1) : 'NR'}</span><span class="text-sm text-purple-300/50">/10</span>${renderStars(m.rating)}</div>
             </div>
         </div>
-        <div class="detail-info-grid mt-4 space-y-3">
-            <div class="detail-row flex justify-between py-2 border-b border-purple-500/20"><span class="detail-key text-purple-300/50"><i class="fas fa-flag-checkered mr-1"></i> Status</span><span class="detail-val status-badge-static ${m.status === 'watching' ? 'status-watching' : m.status === 'completed' ? 'status-completed' : m.status === 'plan' ? 'status-plan' : 'status-dropped'} text-xs px-2 py-0.5 rounded-full inline-block">${m.status}</span></div>
-            <div class="detail-row flex justify-between py-2 border-b border-purple-500/20"><span class="detail-key text-purple-300/50"><i class="fas fa-calendar-day mr-1"></i> Watch Date</span><span class="detail-val">${watchDateFormatted !== 'Not set' ? watchDateFormatted : '<span class="text-purple-300/40">Not set</span>'}</span></div>
-            <div class="detail-row flex justify-between py-2 border-b border-purple-500/20"><span class="detail-key text-purple-300/50"><i class="fas fa-redo-alt mr-1"></i> Rewatch</span><span class="detail-val">${rewatchText || '0 time'}</span></div>
-            <div class="detail-row flex justify-between py-2 border-b border-purple-500/20"><span class="detail-key text-purple-300/50"><i class="fas fa-chart-line mr-1"></i> Progress</span><span class="detail-val"><div class="progress-bar-custom w-32 inline-block ml-2"><div class="progress-fill-custom" style="width: ${m.progress}%"></div></div><span class="ml-2 text-sm">${m.progress}%</span></span></div>
-            <div class="detail-row flex justify-between py-2 border-b border-purple-500/20"><span class="detail-key text-purple-300/50"><i class="fas fa-hourglass-half mr-1"></i> Episodes/Runtime</span><span class="detail-val">${m.episodes || '-'}</span></div>
-            <div class="detail-row flex justify-between py-2 border-b border-purple-500/20"><span class="detail-key text-purple-300/50"><i class="fas fa-play-circle mr-1"></i> Current Episode</span><span class="detail-val">${m.currentEpisode || '-'}</span></div>
+        <div class="mt-4 space-y-3">
+            <div class="flex justify-between py-2 border-b border-purple-500/20"><span class="text-purple-300/50"><i class="fas fa-flag-checkered mr-1"></i> Status</span><span class="${m.status === 'watching' ? 'status-watching' : m.status === 'completed' ? 'status-completed' : m.status === 'plan' ? 'status-plan' : 'status-dropped'} text-xs px-2 py-0.5 rounded-full inline-block">${m.status}</span></div>
+            <div class="flex justify-between py-2 border-b border-purple-500/20"><span class="text-purple-300/50"><i class="fas fa-calendar-day mr-1"></i> Watch Date</span><span>${watchDateFormatted !== 'Not set' ? watchDateFormatted : '<span class="text-purple-300/40">Not set</span>'}</span></div>
+            <div class="flex justify-between py-2 border-b border-purple-500/20"><span class="text-purple-300/50"><i class="fas fa-redo-alt mr-1"></i> Rewatch</span><span>${rewatchText || '0 time'}</span></div>
+            <div class="flex justify-between py-2 border-b border-purple-500/20"><span class="text-purple-300/50"><i class="fas fa-chart-line mr-1"></i> Progress</span><span><div class="progress-bar-custom w-32 inline-block ml-2"><div class="progress-fill-custom" style="width: ${m.progress}%"></div></div><span class="ml-2 text-sm">${m.progress}%</span></span></div>
             ${m.notes ? `<div class="mt-3 p-3 bg-purple-500/5 rounded-xl border border-purple-500/20"><i class="fas fa-quote-left text-purple-400 mr-2"></i>${m.notes}</div>` : ''}
         </div>
         <div class="flex gap-3 mt-5 pt-3 border-t border-purple-500/20">
-            <button class="btn bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl px-5 py-2 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/30 transition-all" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit mr-1"></i> Edit</button>
-            <button class="btn bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-2 text-red-400 hover:bg-red-500/20 transition-all" onclick="deleteEntry(${m.id})"><i class="fas fa-trash mr-1"></i> Delete</button>
+            <button class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl px-5 py-2 text-white font-semibold hover:shadow-lg transition-all" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit mr-1"></i> Edit</button>
+            <button class="bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-2 text-red-400 hover:bg-red-500/20 transition-all" onclick="deleteEntry(${m.id})"><i class="fas fa-trash mr-1"></i> Delete</button>
         </div>
     `;
     document.getElementById('detail-overlay').classList.remove('opacity-0', 'pointer-events-none');
@@ -1111,7 +1215,7 @@ async function searchTmdb(q) {
             } catch(e) {}
             return {...item, genres, runtime, poster};
         }));
-        dd.innerHTML = itemsWithDetails.map(item => `<div class="tmdb-item p-3 border-b border-purple-500/20 hover:bg-purple-500/10 cursor-pointer flex gap-3 transition-all" onclick="selectTmdb('${(item.title||item.name).replace(/'/g,"\\'")}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres.replace(/'/g,"\\'")}','${item.runtime}')"><img class="tmdb-item-img w-10 h-14 object-cover rounded" src="${item.poster||''}" onerror="this.style.display='none'"><div><div class="tmdb-item-title font-semibold text-purple-400">${item.title||item.name}</div><div class="tmdb-item-year text-xs text-purple-300/50">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div class="tmdb-item-genre text-xs text-purple-300/40">${item.genres||'Click to select'}</div></div></div>`).join('');
+        dd.innerHTML = itemsWithDetails.map(item => `<div class="p-3 border-b border-purple-500/20 hover:bg-purple-500/10 cursor-pointer flex gap-3 transition-all" onclick="selectTmdb('${(item.title||item.name).replace(/'/g,"\\'")}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres.replace(/'/g,"\\'")}','${item.runtime}')"><img class="w-10 h-14 object-cover rounded" src="${item.poster||''}" onerror="this.style.display='none'"><div><div class="font-semibold text-purple-400">${item.title||item.name}</div><div class="text-xs text-purple-300/50">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div class="text-xs text-purple-300/40">${item.genres||'Click to select'}</div></div></div>`).join('');
         dd.style.display = 'block';
     } catch(e) { console.error(e); }
 }
@@ -1129,26 +1233,26 @@ function clearTmdb() { document.getElementById('tmdb-q').value = ''; document.ge
 
 // ============ DRAWER ==========
 function openDrawer() { 
-    document.getElementById('filter-drawer').classList.add('translate-y-0');
+    document.getElementById('filter-drawer').classList.add('open');
     updateDrawerContent(); 
 }
 function closeDrawer() { 
-    document.getElementById('filter-drawer').classList.remove('translate-y-0'); 
+    document.getElementById('filter-drawer').classList.remove('open'); 
 }
 function updateDrawerContent() {
     let genres = [...new Set(mediaData.map(m=>m.genre).filter(Boolean).flatMap(g=>g.split(',').map(s=>s.trim())))];
     document.getElementById('drawer-status').innerHTML = `
-        <button class="filter-chip text-xs ${currentStatusFilter==='all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();"><i class="fas fa-list mr-1"></i> All</button>
-        <button class="filter-chip text-xs ${currentStatusFilter==='watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();"><i class="fas fa-eye mr-1"></i> Watching</button>
-        <button class="filter-chip text-xs ${currentStatusFilter==='completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();"><i class="fas fa-check mr-1"></i> Completed</button>
-        <button class="filter-chip text-xs ${currentStatusFilter==='plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();"><i class="fas fa-clock mr-1"></i> Plan</button>`;
+        <button class="filter-chip ${currentStatusFilter==='all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();">All</button>
+        <button class="filter-chip ${currentStatusFilter==='watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();">Watching</button>
+        <button class="filter-chip ${currentStatusFilter==='completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();">Completed</button>
+        <button class="filter-chip ${currentStatusFilter==='plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();">Plan</button>`;
     document.getElementById('drawer-type').innerHTML = `
-        <button class="filter-chip text-xs ${currentTypeFilter==='all' ? 'active' : ''}" onclick="setTypeFilter('all',this);closeDrawer();renderMedia();">All Types</button>
-        <button class="filter-chip text-xs ${currentTypeFilter==='Movie' ? 'active' : ''}" onclick="setTypeFilter('Movie',this);closeDrawer();renderMedia();">🎬 Movie</button>
-        <button class="filter-chip text-xs ${currentTypeFilter==='Series' ? 'active' : ''}" onclick="setTypeFilter('Series',this);closeDrawer();renderMedia();">📺 Series</button>
-        <button class="filter-chip text-xs ${currentTypeFilter==='Anime Movie' ? 'active' : ''}" onclick="setTypeFilter('Anime Movie',this);closeDrawer();renderMedia();">🎬 Anime Movie</button>
-        <button class="filter-chip text-xs ${currentTypeFilter==='Anime Series' ? 'active' : ''}" onclick="setTypeFilter('Anime Series',this);closeDrawer();renderMedia();">📺 Anime Series</button>`;
-    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="filter-chip text-xs ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
+        <button class="filter-chip ${currentTypeFilter==='all' ? 'active' : ''}" onclick="setTypeFilter('all',this);closeDrawer();renderMedia();">All Types</button>
+        <button class="filter-chip ${currentTypeFilter==='Movie' ? 'active' : ''}" onclick="setTypeFilter('Movie',this);closeDrawer();renderMedia();">🎬 Movie</button>
+        <button class="filter-chip ${currentTypeFilter==='Series' ? 'active' : ''}" onclick="setTypeFilter('Series',this);closeDrawer();renderMedia();">📺 Series</button>
+        <button class="filter-chip ${currentTypeFilter==='Anime Movie' ? 'active' : ''}" onclick="setTypeFilter('Anime Movie',this);closeDrawer();renderMedia();">🎬 Anime Movie</button>
+        <button class="filter-chip ${currentTypeFilter==='Anime Series' ? 'active' : ''}" onclick="setTypeFilter('Anime Series',this);closeDrawer();renderMedia();">📺 Anime Series</button>`;
+    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
 }
 
 // ============ INIT ==========
