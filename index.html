@@ -100,7 +100,7 @@
     gap: 24px;
   }
   
-  /* Sidebar */
+  /* Sidebar - Desktop Only */
   .sidebar {
     width: 280px;
     background: rgba(15,15,26,0.5);
@@ -229,10 +229,10 @@
     border-radius: 16px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     border: 1px solid rgba(139,92,246,0.2);
   }
-  .movie-card:hover { transform: translateY(-5px); border-color: #8B5CF6; box-shadow: 0 10px 25px -10px rgba(139,92,246,0.3); }
+  .movie-card:hover { transform: translateY(-5px); border-color: #8B5CF6; box-shadow: 0 10px 25px -10px rgba(139,92,246,0.4); }
   .poster-container {
     position: relative;
     aspect-ratio: 2/3;
@@ -242,7 +242,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s;
+    transition: transform 0.4s ease;
   }
   .movie-card:hover .poster-container img { transform: scale(1.05); }
   .rating-badge {
@@ -255,6 +255,7 @@
     font-size: 0.7rem;
     font-weight: 600;
     color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   .status-badge {
     position: absolute;
@@ -275,6 +276,54 @@
   .card-meta { font-size: 0.7rem; color: #6B697A; margin-top: 4px; }
   .progress-bar { margin-top: 8px; height: 3px; background: #2A2A35; border-radius: 3px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, #8B5CF6, #A855F7); }
+  
+  /* Detail Modal - Professional */
+  .detail-backdrop {
+    position: relative;
+    height: 200px;
+    background-size: cover;
+    background-position: center 30%;
+    border-radius: 24px 24px 0 0;
+    margin: -20px -20px 0 -20px;
+  }
+  .detail-backdrop-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, #0F0F1A 0%, rgba(15,15,26,0.5) 50%, transparent 100%);
+    border-radius: 24px 24px 0 0;
+  }
+  .detail-poster {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    margin-top: -50px;
+    margin-left: 20px;
+    position: relative;
+    z-index: 2;
+    border: 2px solid rgba(139,92,246,0.3);
+  }
+  .detail-title-section {
+    margin-left: 20px;
+    margin-top: 16px;
+  }
+  .detail-genre-pill {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(139,92,246,0.15);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #C084FC;
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+  .detail-info-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 16px;
+  }
   
   /* Modal */
   .modal-overlay {
@@ -380,7 +429,6 @@
   }
   @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   .skeleton-poster { aspect-ratio: 2/3; border-radius: 12px; }
-  .skeleton-text { height: 12px; border-radius: 6px; margin-top: 8px; }
   
   /* Empty State */
   .empty-state {
@@ -391,19 +439,20 @@
     border: 1px dashed rgba(139,92,246,0.3);
   }
   
-  /* Mobile */
+  /* Mobile Styles */
   @media (max-width: 768px) {
     .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px; }
-    .main-container { flex-direction: column; padding: 16px; }
-    .sidebar { width: 100%; position: static; margin-bottom: 20px; }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-group.full { grid-column: span 1; }
+    .main-container { padding: 16px; flex-direction: column; }
+    .sidebar { display: none; }
     .movies-grid { gap: 12px; }
     .header { padding: 10px 16px; }
     .logo { font-size: 1.2rem; }
     .btn { padding: 6px 12px; font-size: 0.7rem; }
+    .search-bar { flex-direction: column; }
+    .sort-select { width: 100%; }
   }
   
+  /* FAB and Drawer - Mobile Only */
   .fab {
     position: fixed;
     bottom: 20px;
@@ -412,7 +461,7 @@
     height: 56px;
     border-radius: 28px;
     background: linear-gradient(135deg, #8B5CF6, #A855F7);
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: white;
@@ -420,9 +469,33 @@
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     z-index: 50;
+    transition: all 0.2s;
   }
-  @media (max-width: 768px) { .fab { display: flex; } .desktop-add { display: none; } }
-  @media (min-width: 769px) { .mobile-only { display: none; } }
+  .fab:hover { transform: scale(1.05); }
+  
+  .filter-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 90px;
+    background: rgba(15,15,26,0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(139,92,246,0.3);
+    border-radius: 28px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #C084FC;
+    font-size: 0.8rem;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { background: rgba(139,92,246,0.2); }
+  
+  @media (min-width: 769px) {
+    .fab, .filter-btn { display: none; }
+  }
   
   .filter-drawer {
     position: fixed;
@@ -433,7 +506,7 @@
     border-radius: 28px 28px 0 0;
     border-top: 1px solid rgba(139,92,246,0.3);
     transform: translateY(100%);
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
     z-index: 60;
     max-height: 80vh;
     overflow-y: auto;
@@ -453,8 +526,27 @@
     justify-content: space-between;
     align-items: center;
   }
-  .drawer-section { padding: 16px; }
+  .drawer-section { padding: 16px; border-bottom: 1px solid rgba(139,92,246,0.1); }
   .drawer-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #C084FC; }
+  .drawer-apply {
+    width: calc(100% - 32px);
+    margin: 16px;
+    padding: 12px;
+    background: linear-gradient(135deg, #8B5CF6, #A855F7);
+    border: none;
+    border-radius: 40px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  /* Desktop Add Button */
+  @media (max-width: 768px) {
+    .desktop-add { display: none; }
+  }
+  @media (min-width: 769px) {
+    .desktop-add { display: inline-block; }
+  }
 </style>
 </head>
 <body>
@@ -494,7 +586,7 @@
 
 <!-- Main -->
 <div class="main-container">
-  <!-- Sidebar -->
+  <!-- Sidebar - Desktop Only -->
   <div class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-title"><i class="fas fa-film"></i> Status</div>
@@ -548,9 +640,12 @@
   </div>
 </div>
 
-<!-- Mobile FAB -->
+<!-- Mobile FAB and Filter Button -->
 <div class="fab" onclick="openModal()">
   <i class="fas fa-plus"></i>
+</div>
+<div class="filter-btn" onclick="openDrawer()">
+  <i class="fas fa-sliders-h"></i> Filter
 </div>
 
 <!-- Mobile Filter Drawer -->
@@ -581,10 +676,10 @@
       <button class="filter-chip" onclick="document.getElementById('sort-select').value='year';renderMedia();closeDrawer()">Year</button>
     </div>
   </div>
-  <button class="btn-primary" style="width: calc(100% - 32px); margin: 0 16px 20px 16px; padding: 12px;" onclick="closeDrawer()">Apply Filters</button>
+  <button class="drawer-apply" onclick="closeDrawer()">Apply Filters</button>
 </div>
 
-<!-- Modal -->
+<!-- Modal Add/Edit -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal">
     <div class="modal-header">
@@ -654,9 +749,9 @@
   </div>
 </div>
 
-<!-- Detail Modal -->
+<!-- Detail Modal - Professional -->
 <div class="modal-overlay" id="detail-overlay">
-  <div class="modal">
+  <div class="modal" style="max-width: 600px;">
     <div class="modal-header">
       <div class="modal-title"><i class="fas fa-info-circle"></i> Title Details</div>
       <button class="modal-close" onclick="closeDetail()"><i class="fas fa-times"></i></button>
@@ -669,9 +764,10 @@
 
 <script>
 // ============ KONFIGURASI ============
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbyYDKECWU0dKxZC6_F4hvKRgYzEY3G8PO0xSj32G2zRkCYoBBt2VD19ni1L5x-9n0nD/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbwVxgE5bMMXtt-Nh3o75hxLDdS554SM1Ob6B_7NJwE18PQXPgHuKiZtdrgICyFW_sEwdA/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
+const TMDB_BACKDROP_BASE = 'https://image.tmdb.org/t/p/w780';
 
 let mediaData = [];
 let currentRating = 0;
@@ -791,7 +887,7 @@ async function loadFromSheets() {
 function showSkeleton() {
     const container = document.getElementById('media-container');
     if (container && isLoading) {
-        container.innerHTML = `<div class="movies-grid">${Array(12).fill().map(() => `<div><div class="skeleton skeleton-poster"></div><div class="skeleton skeleton-text" style="width: 80%;"></div><div class="skeleton skeleton-text" style="width: 50%;"></div></div>`).join('')}</div>`;
+        container.innerHTML = `<div class="movies-grid">${Array(12).fill().map(() => `<div><div class="skeleton skeleton-poster"></div><div class="skeleton" style="height: 12px; width: 80%; margin-top: 8px; border-radius: 6px;"></div><div class="skeleton" style="height: 10px; width: 50%; margin-top: 6px; border-radius: 4px;"></div></div>`).join('')}</div>`;
     }
 }
 
@@ -912,7 +1008,7 @@ function renderMedia() {
             let watchDateFormatted = formatWatchDate(m.watchDate);
             let rewatchText = formatRewatch(m.rewatch);
             let posterHtml = m.poster ? `<img src="${m.poster}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1A1A2E;font-size:1.5rem;\">${m.title.charAt(0)}</div>'">` : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #1A1A2E; font-size: 1.5rem;">${m.title.charAt(0)}</div>`;
-            return `<div style="background: #111117; border-radius: 16px; border: 1px solid rgba(139,92,246,0.2); padding: 12px; display: flex; gap: 16px; cursor: pointer;" onclick="showDetail(${m.id})"><div style="width: 60px; height: 90px; border-radius: 10px; overflow: hidden; flex-shrink: 0;">${posterHtml}</div><div style="flex: 1;"><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-weight: 600;">${m.title}</span><span class="${statusClass}" style="padding: 2px 8px; border-radius: 20px; font-size: 0.6rem;">${m.status}</span></div><div style="font-size: 0.7rem; color: #6B697A; margin-top: 4px;">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes) ? `<div style="font-size: 0.7rem; color: #C084FC; margin-top: 4px;">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>` : ''}<div style="display: flex; gap: 16px; margin-top: 8px; font-size: 0.7rem; color: #6B697A;"><span><i class="far fa-calendar-alt"></i> ${watchDateFormatted}</span>${rewatchText ? `<span><i class="fas fa-redo-alt"></i> ${rewatchText}</span>` : ''}${m.rating ? `<span><i class="fas fa-star" style="color: #FBBF24;"></i> ${m.rating}/10</span>` : ''}</div>${m.progress > 0 ? `<div class="progress-bar" style="margin-top: 8px;"><div class="progress-fill" style="width: ${m.progress}%"></div></div>` : ''}</div></div>`;
+            return `<div style="background: #111117; border-radius: 16px; border: 1px solid rgba(139,92,246,0.2); padding: 12px; display: flex; gap: 16px; cursor: pointer; transition: all 0.2s;" onclick="showDetail(${m.id})" onmouseover="this.style.borderColor='#8B5CF6'" onmouseout="this.style.borderColor='rgba(139,92,246,0.2)'"><div style="width: 60px; height: 90px; border-radius: 10px; overflow: hidden; flex-shrink: 0;">${posterHtml}</div><div style="flex: 1;"><div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-weight: 600;">${m.title}</span><span class="${statusClass}" style="padding: 2px 8px; border-radius: 20px; font-size: 0.6rem;">${m.status}</span></div><div style="font-size: 0.7rem; color: #6B697A; margin-top: 4px;">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>${formatEpisodeDisplay(m.currentEpisode,m.episodes) ? `<div style="font-size: 0.7rem; color: #C084FC; margin-top: 4px;">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>` : ''}<div style="display: flex; gap: 16px; margin-top: 8px; font-size: 0.7rem; color: #6B697A;"><span><i class="far fa-calendar-alt"></i> ${watchDateFormatted}</span>${rewatchText ? `<span><i class="fas fa-redo-alt"></i> ${rewatchText}</span>` : ''}${m.rating ? `<span><i class="fas fa-star" style="color: #FBBF24;"></i> ${m.rating}/10</span>` : ''}</div>${m.progress > 0 ? `<div class="progress-bar" style="margin-top: 8px;"><div class="progress-fill" style="width: ${m.progress}%"></div></div>` : ''}</div></div>`;
         }).join('')}</div>`;
     }
     document.getElementById('btn-grid').className = 'view-btn ' + (currentViewMode === 'grid' ? 'active' : '');
@@ -985,21 +1081,51 @@ function updatePosterPreview(url, title) {
     else box.innerHTML = `<i class="fas fa-image" style="font-size: 2rem; color: #4A4A5A;"></i>`;
 }
 
+// Professional Detail View
 function showDetail(id) {
     let m = mediaData.find(x => x.id === id);
     if (!m) return;
     let watchDateFormatted = formatWatchDate(m.watchDate);
     let rewatchText = formatRewatch(m.rewatch);
     let episodeDisplay = formatEpisodeDisplay(m.currentEpisode, m.episodes);
-    let posterHtml = m.poster ? `<img style="width: 120px; height: 180px; object-fit: cover; border-radius: 16px;" src="${m.poster}" onerror="this.src='https://placehold.co/120x180/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div style="width: 120px; height: 180px; border-radius: 16px; background: linear-gradient(135deg, #1A1A2E, #0A0A0F); display: flex; align-items: center; justify-content: center; font-size: 3rem;">${m.title.charAt(0)}</div>`;
+    let genres = m.genre ? m.genre.split(',').map(g => g.trim()) : [];
+    let backdropUrl = m.tmdbId ? `${TMDB_BACKDROP_BASE}/${m.tmdbId}_backdrop.jpg` : '';
+    
     document.getElementById('detail-body').innerHTML = `
-        <div style="display: flex; gap: 20px; flex-wrap: wrap;">${posterHtml}<div style="flex: 1;"><div style="font-size: 1.5rem; font-weight: 600;">${m.title}</div><div style="color: #A5A3B0; margin-top: 4px;">${m.type} · ${m.year} · ${m.genre || 'No genre'}</div>${episodeDisplay ? `<div style="color: #C084FC; margin-top: 4px;">📺 ${episodeDisplay}</div>` : ''}<div style="display: flex; align-items: center; gap: 8px; margin-top: 12px;"><span style="font-size: 1.5rem; font-weight: 600; color: #C084FC;">${m.rating > 0 ? m.rating.toFixed(1) : 'NR'}</span><span style="color: #A5A3B0;">/10</span>${renderStars(m.rating)}</div></div></div>
-        <div style="margin-top: 20px;"><div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(139,92,246,0.2);"><span style="color: #A5A3B0;">Status</span><span class="${m.status === 'watching' ? 'status-watching' : m.status === 'completed' ? 'status-completed' : m.status === 'plan' ? 'status-plan' : 'status-dropped'}" style="padding: 2px 10px; border-radius: 20px; font-size: 0.7rem;">${m.status}</span></div>
-        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(139,92,246,0.2);"><span style="color: #A5A3B0;">Watch Date</span><span>${watchDateFormatted !== 'Not set' ? watchDateFormatted : 'Not set'}</span></div>
-        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(139,92,246,0.2);"><span style="color: #A5A3B0;">Rewatch</span><span>${rewatchText || '0 time'}</span></div>
-        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(139,92,246,0.2);"><span style="color: #A5A3B0;">Progress</span><span><div style="width: 150px; height: 4px; background: #2A2A35; border-radius: 4px; display: inline-block; overflow: hidden; margin-left: 8px;"><div style="width: ${m.progress}%; height: 100%; background: linear-gradient(90deg, #8B5CF6, #A855F7);"></div></div><span style="margin-left: 8px;">${m.progress}%</span></span></div>
-        ${m.notes ? `<div style="margin-top: 16px; padding: 12px; background: rgba(139,92,246,0.05); border-radius: 12px;"><i class="fas fa-quote-left" style="color: #C084FC; margin-right: 8px;"></i>${m.notes}</div>` : ''}</div>
-        <div style="display: flex; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(139,92,246,0.2);"><button class="btn-primary" onclick="closeDetail(); openModal(${m.id})"><i class="fas fa-edit"></i> Edit</button><button class="btn-outline" onclick="deleteEntry(${m.id})" style="border-color: rgba(239,68,68,0.5); color: #EF4444;"><i class="fas fa-trash"></i> Delete</button></div>
+        <div style="position: relative;">
+            <div style="height: 180px; background: linear-gradient(135deg, #1A1A2E, #0A0A0F); border-radius: 20px 20px 0 0; margin: -20px -20px 0 -20px; overflow: hidden;">
+                <div style="position: absolute; inset: 0; background: linear-gradient(0deg, #0F0F1A 0%, rgba(15,15,26,0.3) 60%, transparent 100%);"></div>
+                <div style="position: absolute; bottom: 16px; left: 20px; right: 20px;">
+                    <div style="display: flex; gap: 16px; align-items: flex-end;">
+                        ${m.poster ? `<img src="${m.poster}" style="width: 80px; height: 120px; object-fit: cover; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border: 2px solid rgba(139,92,246,0.3);">` : `<div style="width: 80px; height: 120px; background: linear-gradient(135deg, #1A1A2E, #0A0A0F); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #6B697A; border: 2px solid rgba(139,92,246,0.3);">${m.title.charAt(0)}</div>`}
+                        <div>
+                            <div style="font-size: 1.4rem; font-weight: 700;">${m.title}</div>
+                            <div style="color: #A5A3B0; font-size: 0.8rem; margin-top: 4px;">${m.year} · ${m.type}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 60px;">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                    ${genres.map(g => `<span class="detail-genre-pill">${g}</span>`).join('')}
+                </div>
+                <div class="detail-info-card">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                        <div><div style="color: #8B5CF6; font-size: 0.7rem; text-transform: uppercase;">Status</div><div><span class="${m.status === 'watching' ? 'status-watching' : m.status === 'completed' ? 'status-completed' : m.status === 'plan' ? 'status-plan' : 'status-dropped'}" style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; margin-top: 4px;">${m.status}</span></div></div>
+                        <div><div style="color: #8B5CF6; font-size: 0.7rem; text-transform: uppercase;">Rating</div><div style="font-size: 1.2rem; font-weight: 600; color: #FBBF24; margin-top: 4px;">${m.rating > 0 ? m.rating.toFixed(1) : 'NR'}<span style="font-size: 0.8rem; color: #6B697A;">/10</span></div></div>
+                        <div><div style="color: #8B5CF6; font-size: 0.7rem; text-transform: uppercase;">Watch Date</div><div style="margin-top: 4px;">${watchDateFormatted !== 'Not set' ? watchDateFormatted : 'Not set'}</div></div>
+                        <div><div style="color: #8B5CF6; font-size: 0.7rem; text-transform: uppercase;">Rewatch</div><div style="margin-top: 4px;">${rewatchText || '0 time'}</div></div>
+                        ${episodeDisplay ? `<div><div style="color: #8B5CF6; font-size: 0.7rem; text-transform: uppercase;">Episode</div><div style="margin-top: 4px; color: #C084FC;">${episodeDisplay}</div></div>` : ''}
+                        <div><div style="color: #8B5CF6; font-size: 0.7rem; text-transform: uppercase;">Progress</div><div style="margin-top: 4px;"><div class="progress-bar" style="width: 100%;"><div class="progress-fill" style="width: ${m.progress}%"></div></div><span style="font-size: 0.8rem; margin-left: 8px;">${m.progress}%</span></div></div>
+                    </div>
+                </div>
+                ${m.notes ? `<div style="margin-top: 16px; padding: 12px; background: rgba(139,92,246,0.05); border-radius: 12px; border-left: 3px solid #8B5CF6;"><i class="fas fa-quote-left" style="color: #C084FC; margin-right: 8px;"></i>${m.notes}</div>` : ''}
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button class="btn-primary" onclick="closeDetail(); openModal(${m.id})" style="flex: 1;"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn-outline" onclick="deleteEntry(${m.id})" style="border-color: rgba(239,68,68,0.5); color: #EF4444; flex: 1;"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+            </div>
+        </div>
     `;
     document.getElementById('detail-overlay').classList.add('open');
 }
@@ -1028,7 +1154,7 @@ async function searchTmdb(q) {
             } catch(e) {}
             return {...item, genres, runtime, poster};
         }));
-        dd.innerHTML = itemsWithDetails.map(item => `<div style="padding: 12px; border-bottom: 1px solid rgba(139,92,246,0.2); cursor: pointer; display: flex; gap: 12px;" onclick="selectTmdb('${(item.title||item.name).replace(/'/g,"\\'")}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres.replace(/'/g,"\\'")}','${item.runtime}')"><img style="width: 40px; height: 60px; object-fit: cover; border-radius: 6px;" src="${item.poster||''}" onerror="this.style.display='none'"><div><div style="font-weight: 600; color: #C084FC;">${item.title||item.name}</div><div style="font-size: 0.7rem; color: #A5A3B0;">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div style="font-size: 0.7rem; color: #6B697A;">${item.genres||'Click to select'}</div></div></div>`).join('');
+        dd.innerHTML = itemsWithDetails.map(item => `<div style="padding: 12px; border-bottom: 1px solid rgba(139,92,246,0.2); cursor: pointer; display: flex; gap: 12px; transition: background 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.1)'" onmouseout="this.style.background='transparent'" onclick="selectTmdb('${(item.title||item.name).replace(/'/g,"\\'")}','${item.media_type==='tv'?'Series':'Movie'}','${(item.release_date||item.first_air_date||'').slice(0,4)}','${item.poster}','${item.genres.replace(/'/g,"\\'")}','${item.runtime}')"><img style="width: 40px; height: 60px; object-fit: cover; border-radius: 6px;" src="${item.poster||''}" onerror="this.style.display='none'"><div><div style="font-weight: 600; color: #C084FC;">${item.title||item.name}</div><div style="font-size: 0.7rem; color: #A5A3B0;">${(item.release_date||item.first_air_date||'').slice(0,4)} · ${item.media_type==='tv'?'Series':'Movie'} ${item.runtime?'· '+item.runtime:''}</div><div style="font-size: 0.7rem; color: #6B697A;">${item.genres||'Click to select'}</div></div></div>`).join('');
         dd.style.display = 'block';
     } catch(e) { console.error(e); }
 }
