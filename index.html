@@ -4,14 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="CINÉMA JUN - Track, rate, and remember every film and anime you've watched.">
-<meta name="theme-color" content="#0A0A0F">
+<meta name="theme-color" content="#8B5CF6">
 <title>CINÉMA JUN — Film & Anime Diary</title>
 <link rel="icon" type="image/jpeg" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link rel="apple-touch-icon" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
-  /* Custom Styles - No Tailwind CDN to avoid conflicts */
+  /* Custom Styles */
   * {
     margin: 0;
     padding: 0;
@@ -22,7 +23,6 @@
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #0A0A0F 0%, #0F0F1A 100%);
     color: #F5F3F0;
-    min-height: 100vh;
   }
   
   /* Custom Scrollbar */
@@ -196,9 +196,6 @@
   /* Star Rating */
   .star-btn {
     transition: all 0.1s ease;
-    background: none;
-    border: none;
-    cursor: pointer;
   }
   .star-btn:hover {
     transform: scale(1.1);
@@ -248,7 +245,7 @@
     transform: translateY(0);
   }
   
-  /* Responsive Grid */
+  /* Responsive Grid - FIXED */
   .movies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -334,26 +331,12 @@
     border-radius: 32px;
     border: 1px dashed rgba(139, 92, 246, 0.3);
   }
-  
-  /* Header styles - fixed for mobile */
-  .custom-header {
-    background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-  }
-  
-  /* Container */
-  .container-custom {
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-  }
 </style>
 </head>
 <body>
 
-<!-- Header - Fixed dark background -->
-<header class="custom-header sticky top-0 z-50 px-4 sm:px-6 md:px-10 py-3 md:py-4 flex items-center justify-between">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-[#0A0A0F]/90 backdrop-blur-xl border-b border-purple-500/20 px-4 sm:px-6 md:px-10 py-3 md:py-4 flex items-center justify-between">
   <div class="logo font-['Playfair_Display'] text-xl md:text-2xl font-semibold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent cursor-pointer" onclick="resetToHome()">
     CINÉMA JUN
   </div>
@@ -368,7 +351,7 @@
 </header>
 
 <!-- Stats Cards -->
-<div class="container-custom px-4 sm:px-6 md:px-10 mt-6">
+<div class="px-4 sm:px-6 md:px-10 mt-6">
   <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
     <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('all')">
       <i class="fas fa-film text-2xl text-purple-400 mb-2 block"></i>
@@ -394,7 +377,7 @@
 </div>
 
 <!-- Main Layout -->
-<main class="container-custom px-4 sm:px-6 md:px-10 py-6">
+<main class="px-4 sm:px-6 md:px-10 py-6">
   <div class="flex flex-col md:flex-row gap-6">
     <!-- Sidebar - Desktop -->
     <aside class="sidebar-desktop md:w-80 p-5 h-fit md:sticky md:top-24">
@@ -601,16 +584,16 @@
         <div>
           <label class="text-purple-400 text-xs uppercase mb-1 block">Rating (1-10)</label>
           <div class="star-rating flex gap-1 mt-1" id="star-rating">
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="1" onclick="setRating(1)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="2" onclick="setRating(2)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="3" onclick="setRating(3)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="4" onclick="setRating(4)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="5" onclick="setRating(5)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="6" onclick="setRating(6)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="7" onclick="setRating(7)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="8" onclick="setRating(8)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="9" onclick="setRating(9)">★</button>
-            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="10" onclick="setRating(10)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="1" onclick="setRating(1)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="2" onclick="setRating(2)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="3" onclick="setRating(3)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="4" onclick="setRating(4)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="5" onclick="setRating(5)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="6" onclick="setRating(6)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="7" onclick="setRating(7)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="8" onclick="setRating(8)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="9" onclick="setRating(9)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="10" onclick="setRating(10)">★</button>
           </div>
         </div>
         <div>
@@ -649,7 +632,7 @@
 
 <script>
 // ============ KONFIGURASI ============
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbxnlBk3icHj0qk0ZqXdM3r8c4ulDA7qzOPz8jOMFB9imH0eHZx1f3nLCcl_rmDxcxoz/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzIq_UOYT2OGYtAouw8YX5pr7W3QP4a3hscnZwXZQN-XNNnR0B39qzQVGz-qDqV480qOg/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -997,11 +980,10 @@ function updateGenreCloud() {
 }
 function setViewMode(m) { currentViewMode = m; renderMedia(); }
 
-// ============ MODAL - FIXED RATING ==========
+// ============ MODAL ==========
 function openModal(id) {
     editingId = id || null;
     let m = id ? mediaData.find(x => x.id === id) : null;
-    
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit mr-2"></i> Edit Title' : '<i class="fas fa-plus-circle mr-2"></i> Add New Title';
     document.getElementById('f-title').value = m?.title || '';
     document.getElementById('f-type').value = m?.type || 'Movie';
@@ -1017,11 +999,7 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m?.tmdbId || '';
     document.getElementById('tmdb-q').value = m?.title || '';
     document.getElementById('f-watchdate').value = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
-    
-    // FIX: Set rating with correct value
-    let ratingValue = (m && m.rating) ? m.rating : 0;
-    setRating(ratingValue);
-    
+    setRating(m?.rating || 0);
     updatePosterPreview(m?.poster, m?.title);
     document.getElementById('modal-overlay').classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('modal-overlay').classList.add('opacity-100', 'pointer-events-auto');
@@ -1035,14 +1013,8 @@ function closeModalOutside(e) { if (e.target === document.getElementById('modal-
 function setRating(v) { 
     currentRating = v; 
     document.querySelectorAll('#star-rating .star-btn').forEach(b => {
-        let btnValue = parseInt(b.dataset.v);
-        if (btnValue <= v) {
-            b.classList.add('text-purple-400');
-            b.classList.remove('text-purple-400/30');
-        } else {
-            b.classList.add('text-purple-400/30');
-            b.classList.remove('text-purple-400');
-        }
+        if (parseInt(b.dataset.v) <= v) b.classList.add('text-purple-400');
+        else b.classList.remove('text-purple-400');
     }); 
 }
 function updatePosterPreview(url, title) {
