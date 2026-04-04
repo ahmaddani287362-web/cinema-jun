@@ -4,13 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="description" content="CINÉMA JUN - Track, rate, and remember every film and anime you've watched.">
-<meta name="theme-color" content="#0A0A0F">
+<meta name="theme-color" content="#8B5CF6">
 <title>CINÉMA JUN — Film & Anime Diary</title>
 <link rel="icon" type="image/jpeg" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link rel="apple-touch-icon" href="https://i.ibb.co/RGhFkVQ7/22.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
+  /* Custom Styles */
   * {
     margin: 0;
     padding: 0;
@@ -21,11 +23,10 @@
     font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #0A0A0F 0%, #0F0F1A 100%);
     color: #F5F3F0;
-    min-height: 100vh;
   }
   
   /* Custom Scrollbar */
-  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: #1A1A2E; }
   ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #8B5CF6, #A855F7); border-radius: 10px; }
   
@@ -34,9 +35,7 @@
     background: rgba(20, 20, 35, 0.5);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 20px;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
   }
   .glass-card:hover {
     transform: translateY(-4px);
@@ -57,7 +56,7 @@
     background: #111117;
     border-radius: 16px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
     cursor: pointer;
     border: 1px solid rgba(139, 92, 246, 0.2);
   }
@@ -117,12 +116,41 @@
   .status-dropped { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
   
   /* Card Info */
-  .card-info { padding: 12px; }
-  .card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-meta { font-size: 0.7rem; color: #6B697A; }
-  .info-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.65rem; color: #6B697A; }
-  .progress-bar { margin-top: 8px; height: 3px; background: #2A2A35; border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, #8B5CF6, #A855F7); border-radius: 3px; }
+  .card-info {
+    padding: 12px;
+  }
+  .card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    font-size: 0.7rem;
+    color: #6B697A;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 0.65rem;
+    color: #6B697A;
+  }
+  .progress-bar {
+    margin-top: 8px;
+    height: 3px;
+    background: #2A2A35;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8B5CF6, #A855F7);
+    border-radius: 3px;
+  }
   
   /* Filter Chip */
   .filter-chip {
@@ -136,10 +164,16 @@
     background: rgba(15, 15, 26, 0.6);
     color: #A5A3B0;
   }
-  .filter-chip:hover, .filter-chip.active {
+  .filter-chip:hover {
     border-color: #8B5CF6;
     background: rgba(139, 92, 246, 0.15);
     color: #C084FC;
+  }
+  .filter-chip.active {
+    background: linear-gradient(135deg, #8B5CF6, #A855F7);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
   }
   
   /* Input Modern */
@@ -161,15 +195,11 @@
   
   /* Star Rating */
   .star-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
     transition: all 0.1s ease;
   }
-  .star-btn:hover { transform: scale(1.1); }
-  .star-btn.active { color: #FBBF24; }
-  .star-btn:not(.active) { color: #4A4A5A; }
+  .star-btn:hover {
+    transform: scale(1.1);
+  }
   
   /* Modal */
   .modal-glass {
@@ -188,8 +218,10 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-  .skeleton-poster { aspect-ratio: 2/3; border-radius: 12px; }
-  .skeleton-text { height: 12px; border-radius: 6px; margin-top: 8px; }
+  .skeleton-poster {
+    aspect-ratio: 2/3;
+    border-radius: 12px;
+  }
   
   /* Toast */
   .toast {
@@ -208,14 +240,18 @@
     transition: all 0.3s ease;
     pointer-events: none;
   }
-  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
   
-  /* Responsive Grid */
+  /* Responsive Grid - FIXED */
   .movies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 16px;
   }
+  
   @media (min-width: 768px) {
     .movies-grid {
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -223,7 +259,24 @@
     }
   }
   
-  /* Sidebar - Desktop */
+  /* Hide sidebar on mobile */
+  @media (max-width: 767px) {
+    .sidebar-desktop {
+      display: none;
+    }
+    .mobile-fab {
+      display: flex;
+    }
+  }
+  @media (min-width: 768px) {
+    .mobile-fab {
+      display: none;
+    }
+    .mobile-drawer {
+      display: none;
+    }
+  }
+  
   .sidebar-desktop {
     background: rgba(15, 15, 26, 0.5);
     border-radius: 24px;
@@ -231,14 +284,22 @@
     backdrop-filter: blur(8px);
   }
   
-  /* Mobile */
-  @media (max-width: 767px) {
-    .sidebar-desktop { display: none; }
-    .mobile-fab { display: block; }
+  .filter-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #0F0F1A, #0A0A0F);
+    border-radius: 28px 28px 0 0;
+    border-top: 1px solid rgba(139, 92, 246, 0.3);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    z-index: 60;
+    max-height: 85vh;
+    overflow-y: auto;
   }
-  @media (min-width: 768px) {
-    .mobile-fab { display: none; }
-    .mobile-drawer { display: none; }
+  .filter-drawer.open {
+    transform: translateY(0);
   }
   
   .fab {
@@ -259,23 +320,9 @@
     transition: all 0.3s ease;
     z-index: 50;
   }
-  .fab:hover { transform: scale(1.05); }
-  
-  .filter-drawer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #0F0F1A, #0A0A0F);
-    border-radius: 28px 28px 0 0;
-    border-top: 1px solid rgba(139, 92, 246, 0.3);
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    z-index: 60;
-    max-height: 85vh;
-    overflow-y: auto;
+  .fab:hover {
+    transform: scale(1.05);
   }
-  .filter-drawer.open { transform: translateY(0); }
   
   .empty-state {
     text-align: center;
@@ -284,210 +331,132 @@
     border-radius: 32px;
     border: 1px dashed rgba(139, 92, 246, 0.3);
   }
-  
-  /* Header - Fixed dark background (no white on mobile) */
-  .custom-header {
-    background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  
-  /* Container */
-  .container-custom {
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  
-  /* Utility */
-  .flex { display: flex; }
-  .flex-between { justify-content: space-between; }
-  .items-center { align-items: center; }
-  .gap-2 { gap: 8px; }
-  .gap-3 { gap: 12px; }
-  .gap-4 { gap: 16px; }
-  .gap-6 { gap: 24px; }
-  .p-4 { padding: 16px; }
-  .p-5 { padding: 20px; }
-  .px-4 { padding-left: 16px; padding-right: 16px; }
-  .px-5 { padding-left: 20px; padding-right: 20px; }
-  .py-3 { padding-top: 12px; padding-bottom: 12px; }
-  .py-6 { padding-top: 24px; padding-bottom: 24px; }
-  .mt-2 { margin-top: 8px; }
-  .mt-3 { margin-top: 12px; }
-  .mt-4 { margin-top: 16px; }
-  .mt-6 { margin-top: 24px; }
-  .mb-2 { margin-bottom: 8px; }
-  .mb-3 { margin-bottom: 12px; }
-  .mb-4 { margin-bottom: 16px; }
-  .mb-6 { margin-bottom: 24px; }
-  .text-center { text-align: center; }
-  .text-sm { font-size: 0.875rem; }
-  .text-xs { font-size: 0.75rem; }
-  .text-2xl { font-size: 1.5rem; }
-  .font-semibold { font-weight: 600; }
-  .font-bold { font-weight: 700; }
-  .uppercase { text-transform: uppercase; }
-  .rounded-full { border-radius: 9999px; }
-  .rounded-xl { border-radius: 12px; }
-  .rounded-2xl { border-radius: 16px; }
-  .cursor-pointer { cursor: pointer; }
-  .w-full { width: 100%; }
-  .h-full { height: 100%; }
-  .object-cover { object-fit: cover; }
-  .relative { position: relative; }
-  .absolute { position: absolute; }
-  .sticky { position: sticky; }
-  .top-0 { top: 0; }
-  .z-40 { z-index: 40; }
-  .z-50 { z-index: 50; }
-  .hidden { display: none; }
-  
-  /* Grid */
-  .grid-cols-2 { display: grid; grid-template-columns: repeat(2, 1fr); }
-  .grid-cols-4 { display: grid; grid-template-columns: repeat(4, 1fr); }
-  @media (min-width: 768px) {
-    .md-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-    .md-w-80 { width: 320px; }
-  }
-  
-  .space-y-1 > * + * { margin-top: 4px; }
-  .space-y-3 > * + * { margin-top: 12px; }
-  .flex-wrap { flex-wrap: wrap; }
-  .justify-between { justify-content: space-between; }
 </style>
 </head>
 <body>
 
-<!-- Header - Fixed dark background -->
-<header class="custom-header">
-  <div class="container-custom px-4 py-3 flex flex-between items-center">
-    <div class="logo font-['Playfair_Display'] text-xl font-semibold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent cursor-pointer" onclick="resetToHome()">
-      CINÉMA JUN
-    </div>
-    <div class="flex gap-3">
-      <button class="bg-white/5 border border-purple-500/30 rounded-full px-4 py-2 text-sm text-purple-300 hover:bg-purple-500/20 transition-all" onclick="loadFromSheets()">
-        <i class="fas fa-sync-alt mr-1"></i> Sync
-      </button>
-      <button class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-full px-5 py-2 text-sm text-white font-semibold hover:shadow-lg transition-all desktop-add" onclick="openModal()">
-        <i class="fas fa-plus mr-1"></i> Add Title
-      </button>
-    </div>
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-[#0A0A0F]/90 backdrop-blur-xl border-b border-purple-500/20 px-4 sm:px-6 md:px-10 py-3 md:py-4 flex items-center justify-between">
+  <div class="logo font-['Playfair_Display'] text-xl md:text-2xl font-semibold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent cursor-pointer" onclick="resetToHome()">
+    CINÉMA JUN
+  </div>
+  <div class="hidden md:flex gap-3">
+    <button class="bg-white/5 border border-purple-500/30 rounded-full px-4 py-2 text-sm text-purple-300 hover:bg-purple-500/20 transition-all" onclick="loadFromSheets()">
+      <i class="fas fa-sync-alt mr-1"></i> Sync
+    </button>
+    <button class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-full px-5 py-2 text-sm text-white font-semibold hover:shadow-lg transition-all" onclick="openModal()">
+      <i class="fas fa-plus mr-1"></i> Add Title
+    </button>
   </div>
 </header>
 
 <!-- Stats Cards -->
-<div class="container-custom px-4 mt-6">
-  <div class="grid-cols-2" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
-    <div class="glass-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('all')">
+<div class="px-4 sm:px-6 md:px-10 mt-6">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('all')">
       <i class="fas fa-film text-2xl text-purple-400 mb-2 block"></i>
-      <div class="text-2xl font-bold gradient-text" id="stat-total">—</div>
+      <div class="text-2xl md:text-3xl font-bold gradient-text" id="stat-total">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Total Films</div>
     </div>
-    <div class="glass-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('watching')">
+    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('watching')">
       <i class="fas fa-eye text-2xl text-blue-400 mb-2 block"></i>
-      <div class="text-2xl font-bold gradient-text" id="stat-watching">—</div>
+      <div class="text-2xl md:text-3xl font-bold gradient-text" id="stat-watching">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Watching</div>
     </div>
-    <div class="glass-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('completed')">
+    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('completed')">
       <i class="fas fa-check-circle text-2xl text-green-400 mb-2 block"></i>
-      <div class="text-2xl font-bold gradient-text" id="stat-completed">—</div>
+      <div class="text-2xl md:text-3xl font-bold gradient-text" id="stat-completed">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Completed</div>
     </div>
-    <div class="glass-card p-4 text-center cursor-pointer" onclick="applyStatusFilter('plan')">
+    <div class="glass-card rounded-2xl p-4 text-center cursor-pointer" onclick="applyStatusFilter('plan')">
       <i class="fas fa-clock text-2xl text-purple-300 mb-2 block"></i>
-      <div class="text-2xl font-bold gradient-text" id="stat-plan">—</div>
+      <div class="text-2xl md:text-3xl font-bold gradient-text" id="stat-plan">—</div>
       <div class="text-xs text-purple-300/60 mt-1">Watchlist</div>
     </div>
   </div>
 </div>
 
 <!-- Main Layout -->
-<main class="container-custom px-4 py-6">
-  <div class="flex" style="gap: 24px; flex-direction: column;">
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-      <!-- Sidebar - Desktop Only -->
-      <aside class="sidebar-desktop" style="width: 100%; padding: 20px;">
-        <div class="mb-6">
-          <div class="text-purple-400 text-xs font-semibold uppercase mb-3">Status</div>
-          <div class="space-y-1">
-            <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" onclick="setStatusFilter('all')">
-              <span><i class="fas fa-list-ul mr-2 text-purple-400"></i>All</span>
-              <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-all">0</span>
-            </div>
-            <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" onclick="setStatusFilter('watching')">
-              <span><i class="fas fa-eye mr-2 text-blue-400"></i>Watching</span>
-              <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-watching-nav">0</span>
-            </div>
-            <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" onclick="setStatusFilter('completed')">
-              <span><i class="fas fa-check-circle mr-2 text-green-400"></i>Completed</span>
-              <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-completed-nav">0</span>
-            </div>
-            <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" onclick="setStatusFilter('plan')">
-              <span><i class="fas fa-clock mr-2 text-purple-300"></i>Plan to Watch</span>
-              <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-plan-nav">0</span>
-            </div>
-            <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" onclick="setStatusFilter('dropped')">
-              <span><i class="fas fa-times-circle mr-2 text-red-400"></i>Dropped</span>
-              <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-dropped-nav">0</span>
-            </div>
+<main class="px-4 sm:px-6 md:px-10 py-6">
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Sidebar - Desktop -->
+    <aside class="sidebar-desktop md:w-80 p-5 h-fit md:sticky md:top-24">
+      <div class="mb-6">
+        <div class="text-purple-400 text-xs font-semibold uppercase mb-3">Status</div>
+        <div class="space-y-1">
+          <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" id="nav-all" onclick="setStatusFilter('all',this)">
+            <span><i class="fas fa-list-ul mr-2 text-purple-400"></i>All</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-all">0</span>
+          </div>
+          <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" id="nav-watching" onclick="setStatusFilter('watching',this)">
+            <span><i class="fas fa-eye mr-2 text-blue-400"></i>Watching</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-watching-nav">0</span>
+          </div>
+          <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" id="nav-completed" onclick="setStatusFilter('completed',this)">
+            <span><i class="fas fa-check-circle mr-2 text-green-400"></i>Completed</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-completed-nav">0</span>
+          </div>
+          <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" id="nav-plan" onclick="setStatusFilter('plan',this)">
+            <span><i class="fas fa-clock mr-2 text-purple-300"></i>Plan to Watch</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-plan-nav">0</span>
+          </div>
+          <div class="flex justify-between p-2 rounded-xl cursor-pointer hover:bg-purple-500/10" id="nav-dropped" onclick="setStatusFilter('dropped',this)">
+            <span><i class="fas fa-times-circle mr-2 text-red-400"></i>Dropped</span>
+            <span class="text-xs bg-purple-500/20 px-2 py-0.5 rounded-full" id="cnt-dropped-nav">0</span>
           </div>
         </div>
-        
-        <div class="mb-6">
-          <div class="text-purple-400 text-xs font-semibold uppercase mb-3">Type</div>
-          <div class="flex flex-wrap gap-2">
-            <button class="filter-chip" onclick="setTypeFilter('all')">All Types</button>
-            <button class="filter-chip" onclick="setTypeFilter('Movie')">🎬 Movie</button>
-            <button class="filter-chip" onclick="setTypeFilter('Series')">📺 Series</button>
-            <button class="filter-chip" onclick="setTypeFilter('Anime Movie')">🎬 Anime Movie</button>
-            <button class="filter-chip" onclick="setTypeFilter('Anime Series')">📺 Anime Series</button>
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; font-size: 0.7rem; color: #6B697A;">
-            <div><span class="text-purple-400" id="cnt-movie">0</span> Movies</div>
-            <div><span class="text-purple-400" id="cnt-series">0</span> Series</div>
-            <div><span class="text-purple-400" id="cnt-anime-movie">0</span> Anime Movies</div>
-            <div><span class="text-purple-400" id="cnt-anime-series">0</span> Anime Series</div>
-          </div>
-        </div>
-        
-        <div>
-          <div class="text-purple-400 text-xs font-semibold uppercase mb-3">Genres</div>
-          <div class="genre-cloud flex flex-wrap gap-2" id="genre-cloud"></div>
-        </div>
-      </aside>
-
-      <!-- Content -->
-      <div class="flex-1">
-        <!-- Search & Sort -->
-        <div class="flex" style="flex-direction: column; gap: 12px; margin-bottom: 24px;">
-          <div class="relative flex-1">
-            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/50 text-sm"></i>
-            <input class="w-full bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder:text-purple-300/30 focus:border-purple-500 focus:outline-none" type="text" placeholder="Search by title, genre..." id="search-input" oninput="renderMedia()">
-          </div>
-          <select class="bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 px-4 text-sm text-purple-300" id="sort-select" onchange="renderMedia()">
-            <option value="added">Recently Added</option>
-            <option value="rating">Highest Rated</option>
-            <option value="title">A → Z</option>
-            <option value="year">Year</option>
-          </select>
-        </div>
-        
-        <!-- Header with View Toggle -->
-        <div class="flex justify-between items-center mb-4">
-          <div class="font-['Playfair_Display'] text-xl font-semibold" id="section-title">All <span class="text-purple-400">Titles</span></div>
-          <div class="flex gap-2">
-            <button class="w-9 h-9 rounded-xl border border-purple-500/30 bg-purple-500/20 text-purple-400" id="btn-grid" onclick="setViewMode('grid')"><i class="fas fa-th"></i></button>
-            <button class="w-9 h-9 rounded-xl border border-purple-500/30 bg-transparent text-purple-300/60 hover:bg-purple-500/10" id="btn-list" onclick="setViewMode('list')"><i class="fas fa-list"></i></button>
-          </div>
-        </div>
-        
-        <!-- Movies Grid Container -->
-        <div id="media-container"></div>
       </div>
+      
+      <div class="mb-6">
+        <div class="text-purple-400 text-xs font-semibold uppercase mb-3">Type</div>
+        <div class="flex flex-wrap gap-2">
+          <button class="filter-chip" onclick="setTypeFilter('all',this)">All Types</button>
+          <button class="filter-chip" onclick="setTypeFilter('Movie',this)">🎬 Movie</button>
+          <button class="filter-chip" onclick="setTypeFilter('Series',this)">📺 Series</button>
+          <button class="filter-chip" onclick="setTypeFilter('Anime Movie',this)">🎬 Anime Movie</button>
+          <button class="filter-chip" onclick="setTypeFilter('Anime Series',this)">📺 Anime Series</button>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mt-3 text-xs text-purple-300/50">
+          <div><span class="text-purple-400" id="cnt-movie">0</span> Movies</div>
+          <div><span class="text-purple-400" id="cnt-series">0</span> Series</div>
+          <div><span class="text-purple-400" id="cnt-anime-movie">0</span> Anime Movies</div>
+          <div><span class="text-purple-400" id="cnt-anime-series">0</span> Anime Series</div>
+        </div>
+      </div>
+      
+      <div>
+        <div class="text-purple-400 text-xs font-semibold uppercase mb-3">Genres</div>
+        <div class="genre-cloud flex flex-wrap gap-2" id="genre-cloud"></div>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="flex-1">
+      <!-- Search & Sort -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-6">
+        <div class="flex-1 relative">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-purple-400/50 text-sm"></i>
+          <input class="w-full bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder:text-purple-300/30 focus:border-purple-500 focus:outline-none" type="text" placeholder="Search by title, genre..." id="search-input" oninput="renderMedia()">
+        </div>
+        <select class="bg-[#0F0F1A] border border-purple-500/20 rounded-xl py-3 px-4 text-sm text-purple-300" id="sort-select" onchange="renderMedia()">
+          <option value="added">Recently Added</option>
+          <option value="rating">Highest Rated</option>
+          <option value="title">A → Z</option>
+          <option value="year">Year</option>
+        </select>
+      </div>
+      
+      <!-- Header with View Toggle -->
+      <div class="flex justify-between items-center mb-4">
+        <div class="font-['Playfair_Display'] text-xl md:text-2xl font-semibold" id="section-title">All <span class="text-purple-400">Titles</span></div>
+        <div class="flex gap-2">
+          <button class="w-9 h-9 rounded-xl border border-purple-500/30 bg-purple-500/20 text-purple-400" id="btn-grid" onclick="setViewMode('grid')"><i class="fas fa-th"></i></button>
+          <button class="w-9 h-9 rounded-xl border border-purple-500/30 bg-transparent text-purple-300/60 hover:bg-purple-500/10" id="btn-list" onclick="setViewMode('list')"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+      
+      <!-- Movies Grid Container -->
+      <div id="media-container"></div>
     </div>
   </div>
 </main>
@@ -615,16 +584,16 @@
         <div>
           <label class="text-purple-400 text-xs uppercase mb-1 block">Rating (1-10)</label>
           <div class="star-rating flex gap-1 mt-1" id="star-rating">
-            <button type="button" class="star-btn" data-v="1" onclick="setRating(1)">★</button>
-            <button type="button" class="star-btn" data-v="2" onclick="setRating(2)">★</button>
-            <button type="button" class="star-btn" data-v="3" onclick="setRating(3)">★</button>
-            <button type="button" class="star-btn" data-v="4" onclick="setRating(4)">★</button>
-            <button type="button" class="star-btn" data-v="5" onclick="setRating(5)">★</button>
-            <button type="button" class="star-btn" data-v="6" onclick="setRating(6)">★</button>
-            <button type="button" class="star-btn" data-v="7" onclick="setRating(7)">★</button>
-            <button type="button" class="star-btn" data-v="8" onclick="setRating(8)">★</button>
-            <button type="button" class="star-btn" data-v="9" onclick="setRating(9)">★</button>
-            <button type="button" class="star-btn" data-v="10" onclick="setRating(10)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="1" onclick="setRating(1)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="2" onclick="setRating(2)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="3" onclick="setRating(3)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="4" onclick="setRating(4)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="5" onclick="setRating(5)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="6" onclick="setRating(6)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="7" onclick="setRating(7)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="8" onclick="setRating(8)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="9" onclick="setRating(9)">★</button>
+            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="10" onclick="setRating(10)">★</button>
           </div>
         </div>
         <div>
@@ -663,7 +632,7 @@
 
 <script>
 // ============ KONFIGURASI ============
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbx8YG2ndFXXHVsseqLdpaB03j0O4Bgw7TnVnfC-ixWXQsifiSjBHv1k82JW24OXcBSVBQ/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbwD-ptlWJH62_xzIfVwCoJQcxnVV06YiPHyXI5aBb2kBEZaTnNowKv0qP-K4JroaCuDOw/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -685,7 +654,6 @@ function showToast(msg, isError) {
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
 }
-
 function resetToHome() {
     currentStatusFilter = 'all';
     currentTypeFilter = 'all';
@@ -695,7 +663,6 @@ function resetToHome() {
     renderMedia();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 function formatWatchDate(dateValue) {
     if (!dateValue || dateValue === '') return 'Not set';
     try {
@@ -704,12 +671,10 @@ function formatWatchDate(dateValue) {
         return `${date.getDate()} ${date.toLocaleDateString('id-ID', { month: 'long' })} ${date.getFullYear()}`;
     } catch(e) { return 'Not set'; }
 }
-
 function formatRewatch(count) {
     if (!count || count === 0) return '';
     return `${count}x rewatch`;
 }
-
 function convertToYYYYMMDD(dateValue) {
     if (!dateValue || dateValue === '') return '';
     try {
@@ -719,7 +684,6 @@ function convertToYYYYMMDD(dateValue) {
         return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     } catch(e) { return ''; }
 }
-
 function calculateProgress(type, episodesText, currentText) {
     if (!currentText) return 0;
     let current = 0, total = 0;
@@ -740,7 +704,6 @@ function calculateProgress(type, episodesText, currentText) {
     if (total > 0 && current > 0) return Math.min(100, Math.round((current / total) * 100));
     return 0;
 }
-
 function updateProgressAutomatically() {
     let type = document.getElementById('f-type').value;
     let episodes = document.getElementById('f-episodes').value;
@@ -754,7 +717,6 @@ async function apiSheets(body) {
     let res = await fetch(API_SHEETS, { method: 'POST', body: JSON.stringify(body) });
     return await res.json();
 }
-
 async function loadFromSheets() {
     isLoading = true;
     showSkeleton();
@@ -783,7 +745,6 @@ async function loadFromSheets() {
         renderMedia();
     }
 }
-
 function showSkeleton() {
     const container = document.getElementById('media-container');
     if (container && isLoading) {
@@ -791,14 +752,13 @@ function showSkeleton() {
             ${Array(12).fill().map(() => `
                 <div>
                     <div class="skeleton skeleton-poster w-full rounded-xl"></div>
-                    <div class="skeleton skeleton-text" style="width: 80%;"></div>
-                    <div class="skeleton skeleton-text" style="width: 50%;"></div>
+                    <div class="skeleton h-3 w-3/4 rounded mt-2"></div>
+                    <div class="skeleton h-2 w-1/2 rounded mt-1"></div>
                 </div>
             `).join('')}
         </div>`;
     }
 }
-
 async function saveEntry() {
     if (isSaving) return;
     let title = document.getElementById('f-title').value.trim();
@@ -851,7 +811,6 @@ async function saveEntry() {
         btn.innerHTML = '<i class="fas fa-save mr-1"></i> Save Title';
     }
 }
-
 async function deleteEntry(id) {
     if (!confirm('Remove this title?')) return;
     try {
@@ -876,19 +835,37 @@ function getFilteredData() {
     else data.sort((a,b) => b.added - a.added);
     return data;
 }
-
-function setStatusFilter(s) { currentStatusFilter = s; renderMedia(); }
-function setTypeFilter(t) { currentTypeFilter = t; renderMedia(); }
-function setGenreFilter(g) { currentGenreFilter = currentGenreFilter === g ? 'all' : g; renderMedia(); }
-function applyStatusFilter(s) { currentStatusFilter = s; renderMedia(); }
-function resetAllFilters() { currentStatusFilter = 'all'; currentTypeFilter = 'all'; currentGenreFilter = 'all'; document.getElementById('sort-select').value = 'added'; renderMedia(); closeDrawer(); }
-
+function setStatusFilter(s, el) { 
+    currentStatusFilter = s; 
+    renderMedia(); 
+}
+function setTypeFilter(t, el) { 
+    currentTypeFilter = t; 
+    document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+    if (el) el.classList.add('active');
+    renderMedia(); 
+}
+function setGenreFilter(g) { 
+    currentGenreFilter = currentGenreFilter === g ? 'all' : g; 
+    renderMedia(); 
+}
+function applyStatusFilter(s) { 
+    currentStatusFilter = s; 
+    renderMedia(); 
+}
+function resetAllFilters() { 
+    currentStatusFilter = 'all'; 
+    currentTypeFilter = 'all'; 
+    currentGenreFilter = 'all'; 
+    document.getElementById('sort-select').value = 'added'; 
+    renderMedia(); 
+    closeDrawer(); 
+}
 function renderStars(r) { 
     let s = ''; 
-    for (let i=1; i<=10; i++) s += `<span class="star" style="color: ${i<=r ? '#FBBF24' : '#4A4A5A'};">★</span>`; 
+    for (let i=1; i<=10; i++) s += `<span class="star ${i<=r ? 'text-purple-400' : 'text-purple-400/30'} text-xs">★</span>`; 
     return s; 
 }
-
 function formatEpisodeDisplay(cur, total) {
     if (!cur) return '';
     if (cur.includes('/')) return cur;
@@ -896,17 +873,19 @@ function formatEpisodeDisplay(cur, total) {
     if (total && total.match(/\d+\s*min/i)) return `${cur}/${total.match(/\d+/)[0]} min`;
     return cur;
 }
-
 function renderMedia() {
-    if (isLoading) { showSkeleton(); return; }
+    if (isLoading) {
+        showSkeleton();
+        return;
+    }
     updateStats(); updateCounts(); updateGenreCloud();
     let data = getFilteredData();
     let container = document.getElementById('media-container');
     if (!data.length) { 
         container.innerHTML = `<div class="empty-state">
-            <i class="fas fa-film" style="font-size: 3rem; color: #4A4A5A; margin-bottom: 16px; display: block;"></i>
-            <div style="margin-bottom: 8px;">No titles found</div>
-            <div style="font-size: 0.8rem; color: #6B697A;">Add your first film or anime</div>
+            <i class="fas fa-film text-5xl text-purple-500/30 mb-4 block"></i>
+            <div class="text-purple-300/60">No titles found</div>
+            <div class="text-sm text-purple-300/40 mt-2">Add your first film or anime</div>
             <button class="mt-4 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full px-5 py-2 text-sm text-white font-semibold" onclick="openModal()"><i class="fas fa-plus mr-1"></i> Add Title</button>
         </div>`; 
         return; 
@@ -938,39 +917,40 @@ function renderMedia() {
                     </div>`;
         }).join('')}</div>`;
     } else {
-        container.innerHTML = `<div style="display: flex; flex-direction: column; gap: 12px;">${data.map(m => {
+        container.innerHTML = `<div class="space-y-3">${data.map(m => {
             let statusClass = {watching:'status-watching',completed:'status-completed',plan:'status-plan',dropped:'status-dropped'}[m.status];
             let watchDateFormatted = formatWatchDate(m.watchDate);
             let rewatchText = formatRewatch(m.rewatch);
-            let posterHtml = m.poster ? `<img src="${m.poster}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='<div style=\"width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1A1A2E;font-size:1.5rem;\">${m.title.charAt(0)}</div>'">` : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #1A1A2E; font-size: 1.5rem;">${m.title.charAt(0)}</div>`;
-            return `<div style="background: #111117; border-radius: 16px; border: 1px solid rgba(139,92,246,0.2); padding: 12px; display: flex; gap: 16px; cursor: pointer;" onclick="showDetail(${m.id})" onmouseover="this.style.borderColor='#8B5CF6'" onmouseout="this.style.borderColor='rgba(139,92,246,0.2)'">
-                        <div style="width: 60px; height: 90px; border-radius: 10px; overflow: hidden; flex-shrink: 0;">${posterHtml}</div>
-                        <div style="flex: 1;">
-                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;"><span style="font-weight: 600;">${m.title}</span><span class="${statusClass}" style="padding: 2px 8px; border-radius: 20px; font-size: 0.6rem;">${m.status}</span></div>
-                            <div style="font-size: 0.7rem; color: #6B697A; margin-top: 4px;">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
-                            ${formatEpisodeDisplay(m.currentEpisode,m.episodes) ? `<div style="font-size: 0.7rem; color: #C084FC; margin-top: 4px;">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>` : ''}
-                            <div style="display: flex; gap: 16px; margin-top: 8px; font-size: 0.7rem; color: #6B697A;">
+            let posterHtml = m.poster ? `<img src="${m.poster}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80x120/1A1A2E/8B5CF6?text=${m.title.charAt(0)}'">` : `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-purple-800/30 text-xl text-purple-400/50">${m.title.charAt(0)}</div>`;
+            return `<div class="bg-[#0F0F1A] rounded-xl border border-purple-500/20 hover:border-purple-500/50 cursor-pointer p-3 flex gap-3" onclick="showDetail(${m.id})">
+                        <div class="w-16 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-[#0A0A0F]">${posterHtml}</div>
+                        <div class="flex-1">
+                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                                <span class="font-semibold">${m.title}</span>
+                                <span class="${statusClass} text-xs px-2 py-0.5 rounded-full">${m.status}</span>
+                            </div>
+                            <div class="text-xs text-purple-300/50">${m.year} · ${m.type} ${m.genre ? '· ' + m.genre : ''}</div>
+                            ${formatEpisodeDisplay(m.currentEpisode,m.episodes) ? `<div class="text-xs text-purple-400 mt-1">📺 ${formatEpisodeDisplay(m.currentEpisode,m.episodes)}</div>` : ''}
+                            <div class="flex flex-wrap gap-3 mt-2 text-xs text-purple-300/50">
                                 <span><i class="far fa-calendar-alt mr-1"></i>${watchDateFormatted}</span>
                                 ${rewatchText ? `<span><i class="fas fa-redo-alt mr-1"></i>${rewatchText}</span>` : ''}
-                                ${m.rating ? `<span><i class="fas fa-star" style="color: #FBBF24;"></i> ${m.rating}/10</span>` : ''}
+                                ${m.rating ? `<span><i class="fas fa-star mr-1 text-purple-400"></i>${m.rating}/10</span>` : ''}
                             </div>
-                            ${m.progress > 0 ? `<div class="progress-bar" style="margin-top: 8px;"><div class="progress-fill" style="width: ${m.progress}%"></div></div>` : ''}
+                            ${m.progress > 0 ? `<div class="progress-bar mt-2"><div class="progress-fill" style="width: ${m.progress}%"></div></div>` : ''}
                         </div>
                     </div>`;
         }).join('')}</div>`;
     }
     document.getElementById('btn-grid').className = 'w-9 h-9 rounded-xl border border-purple-500/30 ' + (currentViewMode === 'grid' ? 'bg-purple-500/20 text-purple-400' : 'bg-transparent text-purple-300/60');
     document.getElementById('btn-list').className = 'w-9 h-9 rounded-xl border border-purple-500/30 ' + (currentViewMode === 'list' ? 'bg-purple-500/20 text-purple-400' : 'bg-transparent text-purple-300/60');
-    document.getElementById('section-title').innerHTML = ({all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All') + ' <span style="color: #C084FC;">Titles</span>';
+    document.getElementById('section-title').innerHTML = ({all:'All',watching:'Watching',completed:'Completed',plan:'Plan to Watch',dropped:'Dropped'}[currentStatusFilter] || 'All') + ' <span class="text-purple-400">Titles</span>';
 }
-
 function updateStats() {
     document.getElementById('stat-total').textContent = mediaData.length;
     document.getElementById('stat-watching').textContent = mediaData.filter(x => x.status === 'watching').length;
     document.getElementById('stat-completed').textContent = mediaData.filter(x => x.status === 'completed').length;
     document.getElementById('stat-plan').textContent = mediaData.filter(x => x.status === 'plan').length;
 }
-
 function updateCounts() {
     let c = { 
         all: mediaData.length, 
@@ -993,20 +973,17 @@ function updateCounts() {
     document.getElementById('cnt-anime-movie').textContent = c['anime-movie'];
     document.getElementById('cnt-anime-series').textContent = c['anime-series'];
 }
-
 function updateGenreCloud() {
     let genres = new Set();
     mediaData.forEach(m => { if(m.genre) m.genre.split(',').forEach(g => genres.add(g.trim())); });
-    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}')">${g}</button>`).join('') || '<span style="color: #6B697A;">No genres</span>';
+    document.getElementById('genre-cloud').innerHTML = [...genres].sort().map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}')">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
 }
-
 function setViewMode(m) { currentViewMode = m; renderMedia(); }
 
-// ============ MODAL - FIXED RATING ==========
+// ============ MODAL ==========
 function openModal(id) {
     editingId = id || null;
     let m = id ? mediaData.find(x => x.id === id) : null;
-    
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit mr-2"></i> Edit Title' : '<i class="fas fa-plus-circle mr-2"></i> Add New Title';
     document.getElementById('f-title').value = m?.title || '';
     document.getElementById('f-type').value = m?.type || 'Movie';
@@ -1022,36 +999,24 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m?.tmdbId || '';
     document.getElementById('tmdb-q').value = m?.title || '';
     document.getElementById('f-watchdate').value = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
-    
-    // FIX: Set rating with correct value from media data
-    let ratingValue = (m && typeof m.rating === 'number') ? m.rating : 0;
-    setRating(ratingValue);
-    
+    setRating(m?.rating || 0);
     updatePosterPreview(m?.poster, m?.title);
     document.getElementById('modal-overlay').classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('modal-overlay').classList.add('opacity-100', 'pointer-events-auto');
 }
-
 function closeModal() { 
     document.getElementById('modal-overlay').classList.add('opacity-0', 'pointer-events-none');
     document.getElementById('modal-overlay').classList.remove('opacity-100', 'pointer-events-auto');
     editingId = null; 
 }
-
 function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
-
 function setRating(v) { 
     currentRating = v; 
-    document.querySelectorAll('#star-rating .star-btn').forEach(btn => {
-        let btnValue = parseInt(btn.getAttribute('data-v'));
-        if (btnValue <= v) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+    document.querySelectorAll('#star-rating .star-btn').forEach(b => {
+        if (parseInt(b.dataset.v) <= v) b.classList.add('text-purple-400');
+        else b.classList.remove('text-purple-400');
     }); 
 }
-
 function updatePosterPreview(url, title) {
     let box = document.getElementById('poster-box');
     if (url && url !== 'null' && url !== '') box.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl">`;
@@ -1091,12 +1056,10 @@ function showDetail(id) {
     document.getElementById('detail-overlay').classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('detail-overlay').classList.add('opacity-100', 'pointer-events-auto');
 }
-
 function closeDetail() { 
     document.getElementById('detail-overlay').classList.add('opacity-0', 'pointer-events-none');
     document.getElementById('detail-overlay').classList.remove('opacity-100', 'pointer-events-auto');
 }
-
 function closeDetailOutside(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
 
 // ============ TMDB ==========
@@ -1105,7 +1068,6 @@ function onTmdbType(v) {
     if (v.length < 2) { document.getElementById('tmdb-dd').style.display = 'none'; return; }
     tmdbTimer = setTimeout(() => searchTmdb(v), 400);
 }
-
 async function searchTmdb(q) {
     try {
         let res = await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(q)}`);
@@ -1128,7 +1090,6 @@ async function searchTmdb(q) {
         dd.style.display = 'block';
     } catch(e) { console.error(e); }
 }
-
 function selectTmdb(title, type, year, poster, genres, runtime) {
     document.getElementById('f-title').value = title;
     document.getElementById('f-type').value = type;
@@ -1139,13 +1100,16 @@ function selectTmdb(title, type, year, poster, genres, runtime) {
     updatePosterPreview(poster, title);
     document.getElementById('tmdb-dd').style.display = 'none';
 }
-
 function clearTmdb() { document.getElementById('tmdb-q').value = ''; document.getElementById('tmdb-dd').style.display = 'none'; }
 
 // ============ DRAWER ==========
-function openDrawer() { document.getElementById('filter-drawer').classList.add('open'); updateDrawerContent(); }
-function closeDrawer() { document.getElementById('filter-drawer').classList.remove('open'); }
-
+function openDrawer() { 
+    document.getElementById('filter-drawer').classList.add('open');
+    updateDrawerContent(); 
+}
+function closeDrawer() { 
+    document.getElementById('filter-drawer').classList.remove('open'); 
+}
 function updateDrawerContent() {
     let genres = [...new Set(mediaData.map(m=>m.genre).filter(Boolean).flatMap(g=>g.split(',').map(s=>s.trim())))];
     document.getElementById('drawer-status').innerHTML = `
@@ -1154,12 +1118,12 @@ function updateDrawerContent() {
         <button class="filter-chip ${currentStatusFilter==='completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();">Completed</button>
         <button class="filter-chip ${currentStatusFilter==='plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();">Plan</button>`;
     document.getElementById('drawer-type').innerHTML = `
-        <button class="filter-chip ${currentTypeFilter==='all' ? 'active' : ''}" onclick="setTypeFilter('all');closeDrawer();renderMedia();">All Types</button>
-        <button class="filter-chip ${currentTypeFilter==='Movie' ? 'active' : ''}" onclick="setTypeFilter('Movie');closeDrawer();renderMedia();">🎬 Movie</button>
-        <button class="filter-chip ${currentTypeFilter==='Series' ? 'active' : ''}" onclick="setTypeFilter('Series');closeDrawer();renderMedia();">📺 Series</button>
-        <button class="filter-chip ${currentTypeFilter==='Anime Movie' ? 'active' : ''}" onclick="setTypeFilter('Anime Movie');closeDrawer();renderMedia();">🎬 Anime Movie</button>
-        <button class="filter-chip ${currentTypeFilter==='Anime Series' ? 'active' : ''}" onclick="setTypeFilter('Anime Series');closeDrawer();renderMedia();">📺 Anime Series</button>`;
-    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span>No genres</span>';
+        <button class="filter-chip ${currentTypeFilter==='all' ? 'active' : ''}" onclick="setTypeFilter('all',this);closeDrawer();renderMedia();">All Types</button>
+        <button class="filter-chip ${currentTypeFilter==='Movie' ? 'active' : ''}" onclick="setTypeFilter('Movie',this);closeDrawer();renderMedia();">🎬 Movie</button>
+        <button class="filter-chip ${currentTypeFilter==='Series' ? 'active' : ''}" onclick="setTypeFilter('Series',this);closeDrawer();renderMedia();">📺 Series</button>
+        <button class="filter-chip ${currentTypeFilter==='Anime Movie' ? 'active' : ''}" onclick="setTypeFilter('Anime Movie',this);closeDrawer();renderMedia();">🎬 Anime Movie</button>
+        <button class="filter-chip ${currentTypeFilter==='Anime Series' ? 'active' : ''}" onclick="setTypeFilter('Anime Series',this);closeDrawer();renderMedia();">📺 Anime Series</button>`;
+    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
 }
 
 // ============ INIT ==========
