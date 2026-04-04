@@ -25,12 +25,10 @@
     color: #F5F3F0;
   }
   
-  /* Custom Scrollbar */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: #1A1A2E; }
   ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #8B5CF6, #A855F7); border-radius: 10px; }
   
-  /* Glassmorphism Card */
   .glass-card {
     background: rgba(20, 20, 35, 0.5);
     backdrop-filter: blur(12px);
@@ -43,7 +41,6 @@
     border-color: rgba(139, 92, 246, 0.3);
   }
   
-  /* Gradient Text */
   .gradient-text {
     background: linear-gradient(135deg, #8B5CF6 0%, #A855F7 50%, #C084FC 100%);
     -webkit-background-clip: text;
@@ -51,7 +48,6 @@
     color: transparent;
   }
   
-  /* Movie Card */
   .movie-card {
     background: #111117;
     border-radius: 16px;
@@ -66,7 +62,6 @@
     box-shadow: 0 20px 30px -15px rgba(139, 92, 246, 0.4);
   }
   
-  /* Poster Container */
   .poster-container {
     position: relative;
     overflow: hidden;
@@ -82,7 +77,6 @@
     transform: scale(1.05);
   }
   
-  /* Rating Badge */
   .rating-badge {
     position: absolute;
     top: 10px;
@@ -97,7 +91,6 @@
     z-index: 10;
   }
   
-  /* Status Badge */
   .status-badge {
     position: absolute;
     bottom: 10px;
@@ -115,44 +108,13 @@
   .status-plan { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: white; }
   .status-dropped { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
   
-  /* Card Info */
-  .card-info {
-    padding: 12px;
-  }
-  .card-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .card-meta {
-    font-size: 0.7rem;
-    color: #6B697A;
-  }
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-    font-size: 0.65rem;
-    color: #6B697A;
-  }
-  .progress-bar {
-    margin-top: 8px;
-    height: 3px;
-    background: #2A2A35;
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #8B5CF6, #A855F7);
-    border-radius: 3px;
-  }
+  .card-info { padding: 12px; }
+  .card-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-meta { font-size: 0.7rem; color: #6B697A; }
+  .info-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.65rem; color: #6B697A; }
+  .progress-bar { margin-top: 8px; height: 3px; background: #2A2A35; border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #8B5CF6, #A855F7); border-radius: 3px; }
   
-  /* Filter Chip */
   .filter-chip {
     padding: 0.5rem 1rem;
     border-radius: 40px;
@@ -176,7 +138,6 @@
     box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
   }
   
-  /* Input Modern */
   .input-modern {
     background: rgba(10, 10, 15, 0.8);
     border: 1px solid rgba(139, 92, 246, 0.2);
@@ -193,22 +154,22 @@
     outline: none;
   }
   
-  /* Star Rating */
   .star-btn {
     transition: all 0.1s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
   }
   .star-btn:hover {
     transform: scale(1.1);
   }
   
-  /* Modal */
   .modal-glass {
     background: linear-gradient(135deg, #0F0F1A, #0A0A0F);
     border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 28px;
   }
   
-  /* Skeleton */
   .skeleton {
     background: linear-gradient(90deg, #1A1A2E 25%, #2A2A3E 50%, #1A1A2E 75%);
     background-size: 200% 100%;
@@ -223,7 +184,6 @@
     border-radius: 12px;
   }
   
-  /* Toast */
   .toast {
     position: fixed;
     bottom: 20px;
@@ -245,7 +205,6 @@
     transform: translateY(0);
   }
   
-  /* Responsive Grid - FIXED */
   .movies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -259,22 +218,13 @@
     }
   }
   
-  /* Hide sidebar on mobile */
   @media (max-width: 767px) {
-    .sidebar-desktop {
-      display: none;
-    }
-    .mobile-fab {
-      display: flex;
-    }
+    .sidebar-desktop { display: none; }
+    .mobile-fab { display: flex; }
   }
   @media (min-width: 768px) {
-    .mobile-fab {
-      display: none;
-    }
-    .mobile-drawer {
-      display: none;
-    }
+    .mobile-fab { display: none; }
+    .mobile-drawer { display: none; }
   }
   
   .sidebar-desktop {
@@ -298,9 +248,7 @@
     max-height: 85vh;
     overflow-y: auto;
   }
-  .filter-drawer.open {
-    transform: translateY(0);
-  }
+  .filter-drawer.open { transform: translateY(0); }
   
   .fab {
     position: fixed;
@@ -320,9 +268,7 @@
     transition: all 0.3s ease;
     z-index: 50;
   }
-  .fab:hover {
-    transform: scale(1.05);
-  }
+  .fab:hover { transform: scale(1.05); }
   
   .empty-state {
     text-align: center;
@@ -446,7 +392,6 @@
         </select>
       </div>
       
-      <!-- Header with View Toggle -->
       <div class="flex justify-between items-center mb-4">
         <div class="font-['Playfair_Display'] text-xl md:text-2xl font-semibold" id="section-title">All <span class="text-purple-400">Titles</span></div>
         <div class="flex gap-2">
@@ -455,7 +400,6 @@
         </div>
       </div>
       
-      <!-- Movies Grid Container -->
       <div id="media-container"></div>
     </div>
   </div>
@@ -552,58 +496,29 @@
       
       <!-- 2 Column Form -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Status</label>
-          <select id="f-status" class="w-full input-modern">
-            <option value="plan">📋 Plan to Watch</option>
-            <option value="watching">👀 Watching</option>
-            <option value="completed">✅ Completed</option>
-            <option value="dropped">❌ Dropped</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Watch Date</label>
-          <input type="date" id="f-watchdate" class="w-full input-modern">
-        </div>
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Genre</label>
-          <input type="text" id="f-genre" class="w-full input-modern" placeholder="Drama, Action...">
-        </div>
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Episodes / Runtime</label>
-          <input type="text" id="f-episodes" class="w-full input-modern" placeholder="12 eps / 120 min">
-        </div>
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Current Episode / Minutes</label>
-          <input type="text" id="f-current-episode" class="w-full input-modern" placeholder="4 / 60 min">
-        </div>
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Progress (%)</label>
-          <input type="number" id="f-progress" min="0" max="100" class="w-full input-modern">
-        </div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Status</label><select id="f-status" class="w-full input-modern"><option value="plan">📋 Plan to Watch</option><option value="watching">👀 Watching</option><option value="completed">✅ Completed</option><option value="dropped">❌ Dropped</option></select></div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Watch Date</label><input type="date" id="f-watchdate" class="w-full input-modern"></div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Genre</label><input type="text" id="f-genre" class="w-full input-modern" placeholder="Drama, Action..."></div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Episodes / Runtime</label><input type="text" id="f-episodes" class="w-full input-modern" placeholder="12 eps / 120 min"></div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Current Episode / Minutes</label><input type="text" id="f-current-episode" class="w-full input-modern" placeholder="4 / 60 min"></div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Progress (%)</label><input type="number" id="f-progress" min="0" max="100" class="w-full input-modern"></div>
         <div>
           <label class="text-purple-400 text-xs uppercase mb-1 block">Rating (1-10)</label>
           <div class="star-rating flex gap-1 mt-1" id="star-rating">
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="1" onclick="setRating(1)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="2" onclick="setRating(2)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="3" onclick="setRating(3)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="4" onclick="setRating(4)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="5" onclick="setRating(5)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="6" onclick="setRating(6)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="7" onclick="setRating(7)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="8" onclick="setRating(8)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="9" onclick="setRating(9)">★</button>
-            <button class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="10" onclick="setRating(10)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="1" onclick="setRating(1)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="2" onclick="setRating(2)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="3" onclick="setRating(3)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="4" onclick="setRating(4)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="5" onclick="setRating(5)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="6" onclick="setRating(6)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="7" onclick="setRating(7)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="8" onclick="setRating(8)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="9" onclick="setRating(9)">★</button>
+            <button type="button" class="star-btn text-2xl text-purple-400/30 hover:text-purple-400" data-v="10" onclick="setRating(10)">★</button>
           </div>
         </div>
-        <div>
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Rewatch Count</label>
-          <input type="number" id="f-rewatch" min="0" value="0" class="w-full input-modern">
-        </div>
-        <div class="md:col-span-2">
-          <label class="text-purple-400 text-xs uppercase mb-1 block">Notes</label>
-          <textarea id="f-notes" rows="2" class="w-full input-modern" placeholder="Your personal thoughts..."></textarea>
-        </div>
+        <div><label class="text-purple-400 text-xs uppercase mb-1 block">Rewatch Count</label><input type="number" id="f-rewatch" min="0" value="0" class="w-full input-modern"></div>
+        <div class="md:col-span-2"><label class="text-purple-400 text-xs uppercase mb-1 block">Notes</label><textarea id="f-notes" rows="2" class="w-full input-modern" placeholder="Your personal thoughts..."></textarea></div>
       </div>
       
       <input type="hidden" id="f-poster">
@@ -632,7 +547,7 @@
 
 <script>
 // ============ KONFIGURASI ============
-const API_SHEETS = 'https://script.google.com/macros/s/AKfycbwD-ptlWJH62_xzIfVwCoJQcxnVV06YiPHyXI5aBb2kBEZaTnNowKv0qP-K4JroaCuDOw/exec';
+const API_SHEETS = 'https://script.google.com/macros/s/AKfycbzh8io9WKVNYNeCzuS-zciBpGMon4Wu_OtdDwZjz9KvQmavgaN_91dT4Uj4obTOU1RqZw/exec';
 const TMDB_KEY = 'a2c120d7d3aaaf1321ffe8a9899ef765';
 const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w342';
 
@@ -835,37 +750,12 @@ function getFilteredData() {
     else data.sort((a,b) => b.added - a.added);
     return data;
 }
-function setStatusFilter(s, el) { 
-    currentStatusFilter = s; 
-    renderMedia(); 
-}
-function setTypeFilter(t, el) { 
-    currentTypeFilter = t; 
-    document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
-    if (el) el.classList.add('active');
-    renderMedia(); 
-}
-function setGenreFilter(g) { 
-    currentGenreFilter = currentGenreFilter === g ? 'all' : g; 
-    renderMedia(); 
-}
-function applyStatusFilter(s) { 
-    currentStatusFilter = s; 
-    renderMedia(); 
-}
-function resetAllFilters() { 
-    currentStatusFilter = 'all'; 
-    currentTypeFilter = 'all'; 
-    currentGenreFilter = 'all'; 
-    document.getElementById('sort-select').value = 'added'; 
-    renderMedia(); 
-    closeDrawer(); 
-}
-function renderStars(r) { 
-    let s = ''; 
-    for (let i=1; i<=10; i++) s += `<span class="star ${i<=r ? 'text-purple-400' : 'text-purple-400/30'} text-xs">★</span>`; 
-    return s; 
-}
+function setStatusFilter(s, el) { currentStatusFilter = s; renderMedia(); }
+function setTypeFilter(t, el) { currentTypeFilter = t; renderMedia(); }
+function setGenreFilter(g) { currentGenreFilter = currentGenreFilter === g ? 'all' : g; renderMedia(); }
+function applyStatusFilter(s) { currentStatusFilter = s; renderMedia(); }
+function resetAllFilters() { currentStatusFilter = 'all'; currentTypeFilter = 'all'; currentGenreFilter = 'all'; document.getElementById('sort-select').value = 'added'; renderMedia(); closeDrawer(); }
+function renderStars(r) { let s = ''; for (let i=1; i<=10; i++) s += `<span class="star ${i<=r ? 'text-purple-400' : 'text-purple-400/30'} text-xs">★</span>`; return s; }
 function formatEpisodeDisplay(cur, total) {
     if (!cur) return '';
     if (cur.includes('/')) return cur;
@@ -874,10 +764,7 @@ function formatEpisodeDisplay(cur, total) {
     return cur;
 }
 function renderMedia() {
-    if (isLoading) {
-        showSkeleton();
-        return;
-    }
+    if (isLoading) { showSkeleton(); return; }
     updateStats(); updateCounts(); updateGenreCloud();
     let data = getFilteredData();
     let container = document.getElementById('media-container');
@@ -980,10 +867,13 @@ function updateGenreCloud() {
 }
 function setViewMode(m) { currentViewMode = m; renderMedia(); }
 
-// ============ MODAL ==========
+// ============ MODAL - FIXED RATING ==========
 function openModal(id) {
     editingId = id || null;
     let m = id ? mediaData.find(x => x.id === id) : null;
+    
+    console.log("Opening modal - rating value:", m?.rating);
+    
     document.getElementById('modal-heading').innerHTML = m ? '<i class="fas fa-edit mr-2"></i> Edit Title' : '<i class="fas fa-plus-circle mr-2"></i> Add New Title';
     document.getElementById('f-title').value = m?.title || '';
     document.getElementById('f-type').value = m?.type || 'Movie';
@@ -999,24 +889,54 @@ function openModal(id) {
     document.getElementById('f-tmdbid').value = m?.tmdbId || '';
     document.getElementById('tmdb-q').value = m?.title || '';
     document.getElementById('f-watchdate').value = (m && m.watchDate && m.watchDate !== '') ? m.watchDate : '';
-    setRating(m?.rating || 0);
+    
+    // FIX: Set rating with correct value
+    let ratingValue = (m && typeof m.rating === 'number') ? m.rating : 0;
+    console.log("Setting rating to:", ratingValue);
+    
+    // Clear all star classes first
+    document.querySelectorAll('#star-rating .star-btn').forEach(btn => {
+        btn.classList.remove('text-purple-400');
+        btn.classList.add('text-purple-400/30');
+    });
+    
+    // Set stars based on rating value
+    for (let i = 1; i <= ratingValue; i++) {
+        let starBtn = document.querySelector(`#star-rating .star-btn[data-v="${i}"]`);
+        if (starBtn) {
+            starBtn.classList.remove('text-purple-400/30');
+            starBtn.classList.add('text-purple-400');
+        }
+    }
+    currentRating = ratingValue;
+    
     updatePosterPreview(m?.poster, m?.title);
     document.getElementById('modal-overlay').classList.remove('opacity-0', 'pointer-events-none');
     document.getElementById('modal-overlay').classList.add('opacity-100', 'pointer-events-auto');
 }
+
 function closeModal() { 
     document.getElementById('modal-overlay').classList.add('opacity-0', 'pointer-events-none');
     document.getElementById('modal-overlay').classList.remove('opacity-100', 'pointer-events-auto');
     editingId = null; 
 }
 function closeModalOutside(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+
 function setRating(v) { 
     currentRating = v; 
-    document.querySelectorAll('#star-rating .star-btn').forEach(b => {
-        if (parseInt(b.dataset.v) <= v) b.classList.add('text-purple-400');
-        else b.classList.remove('text-purple-400');
+    console.log("setRating called with value:", v);
+    document.querySelectorAll('#star-rating .star-btn').forEach(btn => {
+        let btnValue = parseInt(btn.getAttribute('data-v'));
+        if (btnValue <= v) {
+            btn.classList.remove('text-purple-400/30');
+            btn.classList.add('text-purple-400');
+        } else {
+            btn.classList.remove('text-purple-400');
+            btn.classList.add('text-purple-400/30');
+        }
     }); 
 }
+
 function updatePosterPreview(url, title) {
     let box = document.getElementById('poster-box');
     if (url && url !== 'null' && url !== '') box.innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl">`;
@@ -1103,27 +1023,13 @@ function selectTmdb(title, type, year, poster, genres, runtime) {
 function clearTmdb() { document.getElementById('tmdb-q').value = ''; document.getElementById('tmdb-dd').style.display = 'none'; }
 
 // ============ DRAWER ==========
-function openDrawer() { 
-    document.getElementById('filter-drawer').classList.add('open');
-    updateDrawerContent(); 
-}
-function closeDrawer() { 
-    document.getElementById('filter-drawer').classList.remove('open'); 
-}
+function openDrawer() { document.getElementById('filter-drawer').classList.add('open'); updateDrawerContent(); }
+function closeDrawer() { document.getElementById('filter-drawer').classList.remove('open'); }
 function updateDrawerContent() {
     let genres = [...new Set(mediaData.map(m=>m.genre).filter(Boolean).flatMap(g=>g.split(',').map(s=>s.trim())))];
-    document.getElementById('drawer-status').innerHTML = `
-        <button class="filter-chip ${currentStatusFilter==='all' ? 'active' : ''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();">All</button>
-        <button class="filter-chip ${currentStatusFilter==='watching' ? 'active' : ''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();">Watching</button>
-        <button class="filter-chip ${currentStatusFilter==='completed' ? 'active' : ''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();">Completed</button>
-        <button class="filter-chip ${currentStatusFilter==='plan' ? 'active' : ''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();">Plan</button>`;
-    document.getElementById('drawer-type').innerHTML = `
-        <button class="filter-chip ${currentTypeFilter==='all' ? 'active' : ''}" onclick="setTypeFilter('all',this);closeDrawer();renderMedia();">All Types</button>
-        <button class="filter-chip ${currentTypeFilter==='Movie' ? 'active' : ''}" onclick="setTypeFilter('Movie',this);closeDrawer();renderMedia();">🎬 Movie</button>
-        <button class="filter-chip ${currentTypeFilter==='Series' ? 'active' : ''}" onclick="setTypeFilter('Series',this);closeDrawer();renderMedia();">📺 Series</button>
-        <button class="filter-chip ${currentTypeFilter==='Anime Movie' ? 'active' : ''}" onclick="setTypeFilter('Anime Movie',this);closeDrawer();renderMedia();">🎬 Anime Movie</button>
-        <button class="filter-chip ${currentTypeFilter==='Anime Series' ? 'active' : ''}" onclick="setTypeFilter('Anime Series',this);closeDrawer();renderMedia();">📺 Anime Series</button>`;
-    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="filter-chip ${currentGenreFilter===g ? 'active' : ''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
+    document.getElementById('drawer-status').innerHTML = `<button class="filter-chip ${currentStatusFilter==='all'?'active':''}" onclick="setStatusFilter('all');closeDrawer();renderMedia();">All</button><button class="filter-chip ${currentStatusFilter==='watching'?'active':''}" onclick="setStatusFilter('watching');closeDrawer();renderMedia();">Watching</button><button class="filter-chip ${currentStatusFilter==='completed'?'active':''}" onclick="setStatusFilter('completed');closeDrawer();renderMedia();">Completed</button><button class="filter-chip ${currentStatusFilter==='plan'?'active':''}" onclick="setStatusFilter('plan');closeDrawer();renderMedia();">Plan</button>`;
+    document.getElementById('drawer-type').innerHTML = `<button class="filter-chip ${currentTypeFilter==='all'?'active':''}" onclick="setTypeFilter('all');closeDrawer();renderMedia();">All Types</button><button class="filter-chip ${currentTypeFilter==='Movie'?'active':''}" onclick="setTypeFilter('Movie');closeDrawer();renderMedia();">🎬 Movie</button><button class="filter-chip ${currentTypeFilter==='Series'?'active':''}" onclick="setTypeFilter('Series');closeDrawer();renderMedia();">📺 Series</button><button class="filter-chip ${currentTypeFilter==='Anime Movie'?'active':''}" onclick="setTypeFilter('Anime Movie');closeDrawer();renderMedia();">🎬 Anime Movie</button><button class="filter-chip ${currentTypeFilter==='Anime Series'?'active':''}" onclick="setTypeFilter('Anime Series');closeDrawer();renderMedia();">📺 Anime Series</button>`;
+    document.getElementById('drawer-genre').innerHTML = genres.map(g => `<button class="filter-chip ${currentGenreFilter===g?'active':''}" onclick="setGenreFilter('${g.replace(/'/g,"\\'")}');closeDrawer();renderMedia();">${g}</button>`).join('') || '<span class="text-purple-300/40 text-xs">No genres</span>';
 }
 
 // ============ INIT ==========
